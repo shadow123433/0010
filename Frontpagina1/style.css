@@ -19,21 +19,47 @@ h1 {
 
 
 
-/* justifica a imagem no fundo do meu titulo */
-     .titulo-bg {
-    background-image: url("/imagenspagina1/imagem3.jpg");
-    background-size: cover;
-    background-position: center;
-    padding: 60px 0; /* aumenta a área */
+ .titulo-bg {                           /* Container do banner/título */
+    position: relative;               /* Base para posicionar o overlay (::before) */
+    background-image: url("/imagenspagina1/imagem3.jpeg"); /* Imagem de fundo do banner */
+    background-size: cover;           /* Faz a imagem cobrir todo o container (pode cortar) */
+    background-position: center 10%;  /* Ajusta a posição vertical da imagem (desce um pouco) */
+    min-height: 300px;                /* Define altura mínima do banner */
+    display: flex;                    /* Ativa flexbox para alinhamento do conteúdo */
+    align-items: center;              /* Centraliza o conteúdo verticalmente */
+    justify-content: center;          /* Centraliza o conteúdo horizontalmente */
+    text-align: center;               /* Centraliza o texto */
+}
+
+/* overlay escuro */
+.titulo-bg::before {                 /* Pseudo-elemento usado como camada escura */
+    content: "";                      /* Obrigatório para o pseudo-elemento existir */
+    position: absolute;               /* Permite cobrir todo o banner */
+    inset: 0;                         /* Ocupa 100% da largura e altura do container */
+    background-color: rgba(0, 0, 0, 0.55); /* Escurece a imagem sem escondê-la */
+    z-index: 1;                       /* Fica acima da imagem e abaixo do texto */
+}
+
+/* texto do banner */
+.titulo-bg h1 {                      /* Título dentro do banner */
+    position: relative;               /* Permite controlar a camada (z-index) */
+    z-index: 2;                       /* Garante que o texto fique acima do overlay */
+    color: #ffffff;                   /* Define o texto como branco forte */
+    font-size: 40px;                  /* Tamanho grande para destaque */
+    margin: 0;                        /* Remove margens padrão do h1 */
+}
+
+
+
+
+
+/* centraliza o subtitulo da minha 2 pagina */
+h1 {
+    color: white; /* cor do texto */
     text-align: center;
+    margin-top: 40px;
+    font-size: 30px;
 }
-
-.titulo-bg h1 {
-    color: white;
-    font-size: 40px;
-    margin: 0;
-}
-
 
 
 
