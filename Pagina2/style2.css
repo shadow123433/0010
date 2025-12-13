@@ -1,0 +1,22 @@
+/* justifica a imagem no fundo do meu titulo */
+    .pagina2 .titulo-bg {
+    background-image: url("/imagenspagina2/imagem5.jpg");
+    background-size: cover;
+    background-position: center;
+    padding: 60px 0; /* aumenta a área */
+    text-align: center;
+}
+
+    .titulo-bg h3 {
+    color: black;
+    font-size: 40px;
+    margin: 0;
+}
+
+
+/* centraliza o subtitulo da minha 2 pagina */
+h3 {
+    color: black; /* cor do texto */
+    text-align: center;
+    margin-top: 40px;
+}
