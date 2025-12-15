@@ -1,144 +1,178 @@
-// ==========================
-// ESTADO DO SISTEMA
-// ==========================
+/* =========================
+   ESTADO GLOBAL
+========================= */
 let carrinho = [];
 let total = 0;
 
-// ==========================
-// ELEMENTOS FIXOS
-// ==========================
+/* =========================
+   ELEMENTOS FIXOS
+========================= */
 const container = document.querySelector(".container");
 const carrinhoTexto = document.querySelector(".carrinho p");
 const totalTexto = document.querySelector(".total");
-const botaoFinalizar = document.querySelector(".finalizar");
+const finalizarBtn = document.querySelector(".finalizar");
 const botoesEscola = document.querySelectorAll(".escola-card button");
 
-// ==========================
-// TOAST (MENSAGEM VISUAL)
-// ==========================
+/* =========================
+   TOAST
+========================= */
 const toast = document.createElement("div");
 toast.className = "toast";
-container.appendChild(toast);
+document.body.appendChild(toast);
 
-function mostrarToast(mensagem) {
-    toast.textContent = mensagem;
-    toast.classList.add("show");
-
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2500);
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2500);
 }
 
-// ==========================
-// ÁREA DE PRODUTOS
-// ==========================
-const produtosSection = document.createElement("section");
-produtosSection.style.display = "none";
-produtosSection.style.marginTop = "40px";
+/* =========================
+   PRODUTOS
+========================= */
+const produtosPadrao = [
+  { nome: "Camisa escolar masculino", preco: 49.9, tamanhos: ["P", "M", "G", "GG"] },
+  { nome: "Short escolar masculino", preco: 79.9, tamanhos: ["P", "M", "G", "GG"] },
+  { nome: "Camisa escolar feminina", preco: 129.9, tamanhos: ["P", "M", "G", "GG"] },
+  { nome: "Calça escolar feminina", preco: 89.9, tamanhos: ["P", "M", "G", "GG"] }
+];
 
-produtosSection.innerHTML = `
-    <h2>Uniformes disponíveis</h2>
-    <div id="produtos"></div>
-    <button class="botao-secundario" id="cancelar">Cancelar</button>
+/* =========================
+   SEÇÃO PRODUTOS
+========================= */
+const produtosSec = document.createElement("section");
+produtosSec.className = "produtos";
+produtosSec.style.display = "none";
+produtosSec.innerHTML = `
+  <h2>Uniformes disponíveis</h2>
+  <div class="produtos-grid"></div>
+  <button class="botao-secundario" id="fecharProdutos">Voltar</button>
 `;
 
-container.insertBefore(produtosSection, document.querySelector(".carrinho"));
+container.insertBefore(produtosSec, document.querySelector(".carrinho"));
+const produtosGrid = produtosSec.querySelector(".produtos-grid");
 
-const produtosDiv = produtosSection.querySelector("#produtos");
-const botaoCancelar = produtosSection.querySelector("#cancelar");
+function mostrarProdutos(escola) {
+  produtosGrid.innerHTML = "";
 
-// ==========================
-// FUNÇÃO: MOSTRAR UNIFORMES
-// ==========================
-function mostrarUniformes(escola) {
-    produtosDiv.innerHTML = "";
+  produtosPadrao.forEach(produto => {
+    const card = document.createElement("div");
+    card.className = "produto-card";
 
-    const produtos = [
-        { nome: "Camisa Escolar", preco: 49.9 },
-        { nome: "Calça Escolar", preco: 79.9 },
-        { nome: "Agasalho Escolar", preco: 129.9 }
-    ];
+    card.innerHTML = `
+      <strong>${produto.nome}</strong>
+      <small>${escola}</small>
 
-    produtos.forEach(produto => {
-        const card = document.createElement("div");
-        card.style.border = "1px solid #ddd";
-        card.style.padding = "15px";
-        card.style.marginBottom = "15px";
+      <select>
+        <option value="">Selecione o tamanho</option>
+        ${produto.tamanhos.map(t => `<option value="${t}">${t}</option>`).join("")}
+      </select>
 
-        card.innerHTML = `
-            <strong>${produto.nome}</strong><br>
-            Escola: ${escola}<br>
-            Preço: R$ ${produto.preco.toFixed(2)}<br><br>
-            <button class="botao-primario">Adicionar ao carrinho</button>
-        `;
+      <div class="preco">R$ ${produto.preco.toFixed(2)}</div>
 
-        card.querySelector("button").addEventListener("click", () => {
-            adicionarAoCarrinho(`${produto.nome} - ${escola}`, produto.preco);
-        });
+      <button class="botao-primario">Adicionar</button>
+    `;
 
-        produtosDiv.appendChild(card);
-    });
+    card.querySelector("button").onclick = () => {
+      const tamanho = card.querySelector("select").value;
+      if (!tamanho) return showToast("Selecione um tamanho");
 
-    produtosSection.style.display = "block";
+      addCarrinho(
+        `${produto.nome} (${escola}) - Tam: ${tamanho}`,
+        produto.preco
+      );
+    };
+
+    produtosGrid.appendChild(card);
+  });
+
+  produtosSec.style.display = "block";
 }
 
-// ==========================
-// FUNÇÃO: ADICIONAR AO CARRINHO
-// ==========================
-function adicionarAoCarrinho(nome, preco) {
-    carrinho.push({ nome, preco });
-    total += preco;
-
-    atualizarCarrinho();
-    mostrarToast("Item adicionado ao carrinho");
+/* =========================
+   CARRINHO
+========================= */
+function addCarrinho(nome, preco) {
+  carrinho.push({ nome, preco });
+  total += preco;
+  atualizarCarrinho();
+  showToast("Item adicionado");
 }
 
-// ==========================
-// FUNÇÃO: ATUALIZAR CARRINHO
-// ==========================
 function atualizarCarrinho() {
-    if (carrinho.length === 0) {
-        carrinhoTexto.textContent = "Nenhum item adicionado.";
-    } else {
-        carrinhoTexto.innerHTML = carrinho
-            .map(item => `• ${item.nome}`)
-            .join("<br>");
-    }
+  carrinhoTexto.innerHTML = carrinho.length
+    ? carrinho.map(i => `• ${i.nome}`).join("<br>")
+    : "Nenhum item adicionado.";
 
-    totalTexto.innerHTML = `<strong>Total:</strong> R$ ${total.toFixed(2)}`;
+  totalTexto.innerHTML = `<strong>Total:</strong> R$ ${total.toFixed(2)}`;
 }
 
-// ==========================
-// EVENTOS DAS ESCOLAS
-// ==========================
-botoesEscola.forEach(botao => {
-    botao.addEventListener("click", () => {
-        const escola = botao.previousElementSibling.textContent;
-        mostrarUniformes(escola);
-    });
+/* =========================
+   MODAL DE CONFIRMAÇÃO
+========================= */
+const modal = document.createElement("div");
+modal.className = "modal-overlay";
+modal.style.display = "none";
+
+modal.innerHTML = `
+  <div class="modal">
+    <h2>Confirmação de entrega</h2>
+
+    <input id="nome" placeholder="Nome completo">
+    <input id="whats" placeholder="WhatsApp">
+    <input id="endereco" placeholder="Rua / Avenida">
+    <input id="numero" placeholder="Número da casa">
+    <input id="referencia" placeholder="Ponto de referência">
+
+    <div>
+      <button class="botao-secundario" id="cancelar">Cancelar</button>
+      <button class="botao-primario" id="confirmar">Confirmar pedido</button>
+    </div>
+  </div>
+`;
+
+document.body.appendChild(modal);
+
+/* =========================
+   EVENTOS
+========================= */
+botoesEscola.forEach(btn => {
+  btn.onclick = () => {
+    const escola = btn.previousElementSibling.textContent;
+    mostrarProdutos(escola);
+  };
 });
 
-// ==========================
-// CANCELAR UNIFORMES
-// ==========================
-botaoCancelar.addEventListener("click", () => {
-    produtosSection.style.display = "none";
-});
+document.getElementById("fecharProdutos").onclick = () => {
+  produtosSec.style.display = "none";
+};
 
-// ==========================
-// FINALIZAR PEDIDO
-// ==========================
-botaoFinalizar.addEventListener("click", () => {
-    if (carrinho.length === 0) {
-        mostrarToast("Carrinho vazio");
-        return;
-    }
+finalizarBtn.onclick = () => {
+  if (!carrinho.length) return showToast("Carrinho vazio");
+  modal.style.display = "flex";
+};
 
-    carrinho = [];
-    total = 0;
+modal.querySelector("#cancelar").onclick = () => {
+  modal.style.display = "none";
+};
 
-    carrinhoTexto.textContent = "Pedido enviado com sucesso";
-    totalTexto.innerHTML = `<strong>Total:</strong> R$ 0,00`;
+modal.querySelector("#confirmar").onclick = () => {
+  const nome = modal.querySelector("#nome").value.trim();
+  const whats = modal.querySelector("#whats").value.trim();
+  const endereco = modal.querySelector("#endereco").value.trim();
+  const numero = modal.querySelector("#numero").value.trim();
 
-    mostrarToast("Pedido enviado com sucesso");
-});
+  if (!nome || !whats || !endereco || !numero)
+    return showToast("Preencha os campos obrigatórios");
+
+  console.log({
+    cliente: { nome, whats, endereco, numero },
+    carrinho,
+    total
+  });
+
+  carrinho = [];
+  total = 0;
+  atualizarCarrinho();
+  modal.style.display = "none";
+  showToast("Pedido confirmado com sucesso");
+};
