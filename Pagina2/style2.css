@@ -31,7 +31,7 @@ body {
 ========================= */
 .pagina2 .titulo-bg {
     position: relative;
-    background-image: url("/imagenspagina2/imagem5.jpg"); /* NÃO ALTERADO */
+    background-image: url("/imagensdapagina2/imagem5.jpg"); /* NÃO ALTERADO */
     background-size: cover;
     background-position: center;
     min-height: 300px;
