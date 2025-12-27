@@ -50,7 +50,6 @@ const produtosPorEscola = {
   ]
 };
 
-
 /* =========================
    SEÇÃO PRODUTOS
 ========================= */
@@ -64,6 +63,14 @@ produtosSec.innerHTML = `
 `;
 container.insertBefore(produtosSec, document.querySelector(".carrinho"));
 const produtosGrid = produtosSec.querySelector(".produtos-grid");
+
+// Lightbox
+const lightbox = document.createElement("div");
+lightbox.id = "lightbox";
+lightbox.className = "lightbox-overlay";
+lightbox.innerHTML = `<img src="" alt="Uniforme em tela cheia">`;
+document.body.appendChild(lightbox);
+const lightboxImg = lightbox.querySelector("img");
 
 function mostrarProdutos(escola) {
   produtosGrid.innerHTML = "";
@@ -86,6 +93,14 @@ function mostrarProdutos(escola) {
       <button class="botao-primario">Adicionar</button>
     `;
 
+    // Clique na imagem abre em tela cheia
+    const img = card.querySelector(".produto-img");
+    img.onclick = () => {
+      lightboxImg.src = img.src;
+      lightbox.style.display = "flex";
+    };
+
+    // Adicionar ao carrinho
     card.querySelector("button").onclick = () => {
       const tamanho = card.querySelector("select").value;
       if (!tamanho) return showToast("Selecione um tamanho");
@@ -143,7 +158,7 @@ document.body.appendChild(modal);
 ========================= */
 botoesEscola.forEach(btn => {
   btn.onclick = () => {
-    const escola = btn.dataset.escola; // pega diretamente do data-escola
+    const escola = btn.dataset.escola;
     mostrarProdutos(escola);
   };
 });
@@ -196,4 +211,14 @@ Total: R$ ${total.toFixed(2)}
   modal.style.display = "none";
 
   window.open(url, "_blank");
+};
+
+/* =========================
+   LIGHTBOX
+========================= */
+lightbox.onclick = (e) => {
+  if (e.target !== lightboxImg) {
+    lightbox.style.display = "none";
+    lightboxImg.src = "";
+  }
 };
