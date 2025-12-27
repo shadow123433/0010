@@ -1,78 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <title>Compre em nossa plataforma</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style2.css">
-    
-
 </head>
 
 <body class="pagina2">
 
-    <div class="container">
+<div class="container">
+    <!--LOGO MARTINS-->
+    <div class="logo-container">
+<img src="/LOGOMARTINS/logo.jpg" alt="UNIFORMES MARTINS" class="logo">
+    <div class="titulo-bg">
+        <h3>Garanta já o seu uniforme escolar</h3>
+    </div>
+    </div>
+    <hr>
 
-        <!-- Banner / Título -->
-        <div class="titulo-bg">
-            <h3>Garanta já o seu uniforme escolar</h3>
+    <!-- ESCOLAS -->
+    <section class="escolas">
+        <h2>Escolha a escola</h2>
+
+        <div class="escolas-grid">
+
+            <div class="escola-card">
+                <h3>SESI LINHARES</h3>
+                <button data-escola="SESI">Ver uniformes</button>
+            </div>
+
+            <div class="escola-card">
+                <h3>IFES CAMPUS LINHARES</h3>
+                <button data-escola="IFES">Ver uniformes</button>
+            </div>
+
+            <div class="escola-card">
+                <h3>CRISTO REI</h3>
+                <button data-escola="CRISTO REI">Ver uniformes</button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CARRINHO -->
+    <section class="carrinho">
+        <h2>Carrinho</h2>
+        <p>Nenhum item adicionado.</p>
+
+        <div class="total">
+            <strong>Total:</strong> R$ 0,00
         </div>
 
-        <hr>
+        <button class="finalizar">Finalizar pedido via WhatsApp</button>
+    </section>
 
-        <!-- ===================== -->
-        <!-- ESCOLHA DA ESCOLA -->
-        <!-- ===================== -->
-        <section class="escolas">
-            <!-- ===================== -->
+</div>
 
-
-            <h2>Escolha a escola</h2>
-
-            <div class="escolas-grid">
-
-                <div class="escola-card">
-                    <h3>EMIR DE MACEDO GOMES</h3>
-                    <button>Ver uniformes</button>
-                </div>
-
-                <div class="escola-card">
-                    <h3>SESI LINHARES</h3>
-                    <button>Ver uniformes</button>
-                </div>
-
-                <div class="escola-card">
-                    <h3>IFES CAMPUS LINHARES</h3>
-                    <button>Ver uniformes</button>
-                </div>
-
-                <!-- Nova escola adicionada -->
-                <div class="escola-card">
-                    <h3>CRISTO REI</h3>
-                    <button>Ver uniformes</button>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ===================== -->
-        <!-- CARRINHO -->
-        <!-- ===================== -->
-        <section class="carrinho">
-            <h2>Carrinho</h2>
-
-            <p>Nenhum item adicionado.</p>
-
-            <div class="total">
-                <strong>Total:</strong> R$ 0,00
-            </div>
-
-            <button class="finalizar">Finalizar pedido</button>
-        </section>
-
-    </div>
-
-
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

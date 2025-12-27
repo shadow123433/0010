@@ -335,3 +335,46 @@ h3 {
         font-size: 20px;
     }
 }
+
+
+
+
+
+.botao-voltar {
+    margin-top: 40px;
+    padding: 14px 28px;
+    border-radius: 999px;
+    background: transparent;
+    border: 2px solid #000;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.botao-voltar:hover {
+    background: #000;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+
+.produto-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.logo-container {
+  text-align: center;      /* centraliza horizontalmente */
+  margin: 15px 0;          /* espaço pequeno acima e abaixo */
+}
+
+.logo {
+  width: 80px;             /* largura pequena e proporcional */
+  height: auto;            /* mantém proporção correta */
+  display: block;          /* evita espaços indesejados */
+  margin: 0 auto;          /* centraliza no container */
+}
