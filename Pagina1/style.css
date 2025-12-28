@@ -119,14 +119,28 @@ img {
 
 
 
-.logo-container {
-  text-align: center;      /* centraliza horizontalmente */
-  margin: 15px 0;          /* espaço pequeno acima e abaixo */
+/* =========================
+   HEADER PROFISSIONAL
+========================= */
+.header {
+    width: 100%;
+    background-color: #E6F2FF;
 }
 
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* =========================
+   LOGO
+========================= */
 .logo {
-  width: 80px;             /* largura pequena e proporcional */
-  height: auto;            /* mantém proporção correta */
-  display: block;          /* evita espaços indesejados */
-  margin: 0 auto;          /* centraliza no container */
+    width: 110px;   /* tamanho profissional */
+    height: auto;
+    display: block;
 }
