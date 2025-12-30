@@ -706,7 +706,5 @@ h3 {
 
 
 html, body {
-    touch-action: manipulation;
-    overscroll-behavior: none;
-    overflow: hidden;
+    touch-action: pan-y; /* permite scroll vertical */
 }
