@@ -705,6 +705,7 @@ h3 {
 
 
 
-html, body {
-    touch-action: pan-y; /* permite scroll vertical */
+body {
+    overflow-y: auto; /* garante scroll vertical */
+    -webkit-overflow-scrolling: touch; /* suaviza scroll no iOS */
 }
