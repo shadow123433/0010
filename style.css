@@ -8,7 +8,9 @@ p {
     color: #333333; /* cor do texto */
 }
 
-
+h3 {
+  font-size: 18px;
+}
 
 
 /* centralizar o titulo uniformes martins */
@@ -273,4 +275,13 @@ img {
     font-size: 20px;
     padding: 0 12px;
   }
+}
+
+
+
+/*bloqueia o zoom 2 dedos*/
+html, body {
+    touch-action: pan-y;             /* permite apenas scroll vertical */
+    -ms-touch-action: pan-y;         /* compatibilidade com IE */
+    overscroll-behavior-y: contain;  /* evita efeitos indesejados no scroll */
 }
