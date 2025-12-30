@@ -144,3 +144,133 @@ img {
     height: auto;
     display: block;
 }
+
+
+
+
+/* =========================
+   AJUSTES MOBILE PROFISSIONAIS
+========================= */
+@media (max-width: 768px) {
+
+  /* Layout geral */
+  body {
+    padding: 0 12px;
+  }
+
+  /* Banner */
+  .titulo-bg {
+    min-height: 220px;
+    padding: 20px;
+  }
+
+  .titulo-bg h1 {
+    font-size: 26px;
+    line-height: 1.2;
+  }
+
+  /* Seção imagem + texto */
+  .secao {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .lado-esquerdo,
+  .lado-direito {
+    width: 100%;
+  }
+
+  /* Imagens */
+  .secao img {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Textos */
+  h1, h2, h3 {
+    text-align: center;
+  }
+
+  p {
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* Container */
+  .container {
+    padding: 12px;
+  }
+
+  /* Botão */
+  .botao-pagina {
+    float: none;
+    display: block;
+    margin: 20px auto 0;
+    text-align: center;
+  }
+
+  /* Logo */
+  .logo {
+    width: 90px;
+  }
+
+}
+
+
+
+
+
+
+/* =========================
+   IMAGEM COM TÍTULO SOBREPOSTO
+========================= */
+.objetivo-img {
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.objetivo-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* overlay escuro */
+.objetivo-img::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+
+/* texto sobre a imagem */
+.objetivo-texto {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: bold;
+  text-align: center;
+  padding: 0 16px;
+}
+
+/* =========================
+   AJUSTE MOBILE
+========================= */
+@media (max-width: 768px) {
+  .objetivo-texto {
+    font-size: 20px;
+    padding: 0 12px;
+  }
+}
