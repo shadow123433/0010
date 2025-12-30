@@ -110,11 +110,12 @@ function mostrarProdutos(escola) {
 
   secaoEscolas.style.display = "none";
   produtosSec.style.display = "block";
-  produtosSec.scrollIntoView({ behavior: "smooth" });
+  produtosSec.scrollIntoView({ behavior: "smooth", block: "start" });
+
 
   // PASSO 3 – FEEDBACK VISUAL
-  produtosSec.classList.add("destaque-sec");
-  setTimeout(() => produtosSec.classList.remove("destaque-sec"), 1200);
+  produtosSec.classList.add("destaque");
+setTimeout(() => produtosSec.classList.remove("destaque"), 1200);
 }
 
 /* =========================

@@ -621,5 +621,73 @@ h3 {
 
 
 
+/* ====== UNIFORMES ====== */
+.uniformes {
+  margin-top: 40px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.uniformes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+/* ESCONDER */
+.oculto {
+  display: none;
+}
+
+/* DESTAQUE PROFISSIONAL */
+.destaque {
+  animation: destaque 1s ease;
+}
+
+@keyframes destaque {
+  0% {
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+    transform: scale(0.97);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(0,123,255,0.35);
+    transform: scale(1);
+  }
+}
 
 
+/* =========================
+   PASSO 2 — FOCO VISUAL NOS PRODUTOS
+========================= */
+
+/* garante espaço ao chegar na seção */
+#secao-produtos {
+  scroll-margin-top: 120px;
+}
+
+/* efeito de destaque quando aparece */
+#secao-produtos.destaque {
+  animation: focoProdutos 1s ease;
+}
+
+@keyframes focoProdutos {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 0 40px rgba(0,123,255,0.25);
+  }
+}
+
+/* melhora leitura no mobile */
+@media (max-width: 768px) {
+  #secao-produtos {
+    padding-top: 30px;
+  }
+}

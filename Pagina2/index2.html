@@ -31,32 +31,25 @@
 
             <div class="escola-card">
                 <h3>SESI LINHARES</h3>
-                <button onclick="verUniformes('SESI')">Ver uniformes</button>
+                <button data-escola="SESI">Ver uniformes</button>
             </div>
 
             <div class="escola-card">
                 <h3>IFES CAMPUS LINHARES</h3>
-                <button onclick="verUniformes('IFES')">Ver uniformes</button>
+                <button data-escola="IFES">Ver uniformes</button>
             </div>
 
             <div class="escola-card">
                 <h3>CRISTO REI</h3>
-                <button onclick="verUniformes('CRISTO REI')">Ver uniformes</button>
+                <button data-escola="CRISTO REI">Ver uniformes</button>
             </div>
 
         </div>
     </section>
     <!-- FIM ESCOLAS -->
 
-    <!-- UNIFORMES / PRODUTOS -->
-    <!-- 🔥 PASSO 1 APLICADO AQUI -->
-    <section class="produtos oculto" id="secao-produtos">
-        <h2 id="titulo-produtos"></h2>
-
-        <div class="produtos-grid" id="lista-produtos">
-            <!-- produtos entram via JS -->
-        </div>
-    </section>
+    <!-- ⚠️ NÃO CRIAR OUTRA SEÇÃO DE PRODUTOS NO HTML
+         O JS JÁ CRIA ESSA SEÇÃO DINAMICAMENTE -->
 
     <!-- CARRINHO -->
     <section class="carrinho">
@@ -72,7 +65,7 @@
 
 </div>
 
-<!-- LIGHTBOX -->
+<!-- LIGHTBOX (JS USA ESSE ELEMENTO) -->
 <div class="lightbox-overlay" id="lightbox"></div>
 
 <!-- VOLTAR -->
