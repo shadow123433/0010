@@ -21,7 +21,7 @@ h1 {
 
  .titulo-bg {                           /* Container do banner/título */
     position: relative;               /* Base para posicionar o overlay (::before) */
-    background-image: url("/imagensdapagina1/imagem3.jpeg"); /* Imagem de fundo do banner */
+    background-image: url("imagensdapagina1/imagem3.jpeg"); /* Imagem de fundo do banner */
     background-size: cover;           /* Faz a imagem cobrir todo o container (pode cortar) */
     background-position: center 10%;  /* Ajusta a posição vertical da imagem (desce um pouco) */
     min-height: 300px;                /* Define altura mínima do banner */
