@@ -10,22 +10,18 @@
 <body class="pagina2">
 
 <div class="container">
-      
-    
-    <!--LOGO MARTINS-->
-        <header class="header">
+
+    <!-- LOGO -->
+    <header class="header">
         <img src="../LOGOMARTINS/logo.jpg" class="logo" alt="Uniformes Martins">
-        </header>
+    </header>
 
-
-
-        <div class="container">
+    <!-- BANNER -->
     <div class="titulo-bg">
         <h3>Garanta já o seu uniforme escolar</h3>
     </div>
-    </div>
+
     <hr>
-    
 
     <!-- ESCOLAS -->
     <section class="escolas">
@@ -35,19 +31,30 @@
 
             <div class="escola-card">
                 <h3>SESI LINHARES</h3>
-                <button data-escola="SESI">Ver uniformes</button>
+                <button onclick="verUniformes('SESI')">Ver uniformes</button>
             </div>
 
             <div class="escola-card">
                 <h3>IFES CAMPUS LINHARES</h3>
-                <button data-escola="IFES">Ver uniformes</button>
+                <button onclick="verUniformes('IFES')">Ver uniformes</button>
             </div>
 
             <div class="escola-card">
                 <h3>CRISTO REI</h3>
-                <button data-escola="CRISTO REI">Ver uniformes</button>
+                <button onclick="verUniformes('CRISTO REI')">Ver uniformes</button>
             </div>
 
+        </div>
+    </section>
+    <!-- FIM ESCOLAS -->
+
+    <!-- UNIFORMES / PRODUTOS -->
+    <!-- 🔥 PASSO 1 APLICADO AQUI -->
+    <section class="produtos oculto" id="secao-produtos">
+        <h2 id="titulo-produtos"></h2>
+
+        <div class="produtos-grid" id="lista-produtos">
+            <!-- produtos entram via JS -->
         </div>
     </section>
 
@@ -65,13 +72,16 @@
 
 </div>
 
-<script src="script.js"></script>
-
-
+<!-- LIGHTBOX -->
 <div class="lightbox-overlay" id="lightbox"></div>
 
+<!-- VOLTAR -->
+<a href="../index.html" class="botao-voltar-inicio">
+    Voltar para página inicial
+</a>
 
-    <a href="../index.html" class="botao-voltar-inicio">Voltar para página inicial</a>
+<!-- JS -->
+<script src="script.js"></script>
 
 </body>
 </html>
