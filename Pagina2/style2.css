@@ -364,9 +364,9 @@ h3 {
    HEADER PROFISSIONAL
 ========================= */
 .header {
-    border-bottom: none;
+    width: 100%;
+    background-color: #E6F2FF;
 }
-
 
 .header-inner {
     max-width: 1100px;
@@ -376,7 +376,6 @@ h3 {
     align-items: center;
     justify-content: flex-start;
 }
-
 /* =========================
    LOGO
 ========================= */
@@ -384,7 +383,18 @@ h3 {
     width: 110px;   /* tamanho profissional */
     height: auto;
     display: block;
+    border-radius: 12px;
 }
+
+
+.pagina2 .container {
+    padding-top: 0;
+}
+
+.header {
+    padding: 10px 0;
+}
+
 
 
 .produto-img {
