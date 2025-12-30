@@ -112,14 +112,12 @@ function mostrarProdutos(escola) {
   produtosSec.style.display = "block";
   produtosSec.scrollIntoView({ behavior: "smooth", block: "start" });
 
-
-  // PASSO 3 – FEEDBACK VISUAL
   produtosSec.classList.add("destaque");
-setTimeout(() => produtosSec.classList.remove("destaque"), 1200);
+  setTimeout(() => produtosSec.classList.remove("destaque"), 1200);
 }
 
 /* =========================
-   CARRINHO
+   CARRINHO (PASSO 1 APLICADO)
 ========================= */
 function addCarrinho(nome, preco) {
   carrinho.push({ nome, preco });
@@ -129,10 +127,35 @@ function addCarrinho(nome, preco) {
 }
 
 function atualizarCarrinho() {
-  carrinhoTexto.innerHTML = carrinho.length
-    ? carrinho.map(i => `• ${i.nome}`).join("<br>")
-    : "Nenhum item adicionado.";
+  if (!carrinho.length) {
+    carrinhoTexto.innerHTML = "Nenhum item adicionado.";
+    totalTexto.innerHTML = `<strong>Total:</strong> R$ 0,00`;
+    return;
+  }
+
+  carrinhoTexto.innerHTML = carrinho
+    .map((item, index) => `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span>• ${item.nome}</span>
+        <span
+          style="color:red; cursor:pointer; font-weight:bold;"
+          onclick="removerItem(${index})"
+        >✖</span>
+      </div>
+    `)
+    .join("");
+
   totalTexto.innerHTML = `<strong>Total:</strong> R$ ${total.toFixed(2)}`;
+}
+
+/* =========================
+   REMOVER ITEM (PASSO 2)
+========================= */
+function removerItem(index) {
+  total -= carrinho[index].preco;
+  carrinho.splice(index, 1);
+  atualizarCarrinho();
+  showToast("Item removido");
 }
 
 /* =========================
