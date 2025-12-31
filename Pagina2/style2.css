@@ -712,7 +712,6 @@ html, body {
 
 
 
-
 /* =========================
    LIGHTBOX PROFISSIONAL
 ========================= */
@@ -722,68 +721,36 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.9); /* fundo escuro */
+  background: rgba(0,0,0,0.9);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  overflow: hidden; /* impede scroll do body */
-  touch-action: none; /* gestos controlados via JS */
+  overflow: hidden; /* bloqueia scroll */
 }
 
-/* =========================
-   IMAGEM LIGHTBOX
-========================= */
 .lightbox-overlay img {
   max-width: 90%;
   max-height: 90%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  cursor: grab; /* indica arraste quando zoom > 1 */
+  object-fit: contain; /* mantém proporção e não deixa estourar */
   user-select: none;
   -webkit-user-drag: none;
-  transition: transform 0.2s ease; /* zoom suave */
-  will-change: transform; /* otimiza performance */
-  touch-action: none; /* necessário para pinch e arraste */
+  touch-action: none; /* necessário para pinch zoom */
+  transition: transform 0.2s ease;
+  cursor: zoom-in;
 }
 
-/* =========================
-   BOTÃO FECHAR
-========================= */
 .lightbox-overlay .fechar-lightbox {
   position: absolute;
   top: 20px;
   right: 20px;
-  font-size: 36px; /* maior para mobile */
-  color: #fff;
+  font-size: 36px;
+  color: red; /* sempre vermelho no celular e desktop */
   font-weight: bold;
   cursor: pointer;
   user-select: none;
   z-index: 10000;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.lightbox-overlay .fechar-lightbox:hover {
-  transform: scale(1.3);
-  color: #ff4c4c;
-}
-
-/* =========================
-   ZOOM ATIVO (ADICIONADO PELO JS)
-========================= */
-.lightbox-overlay img.zoom {
-  cursor: grab; /* indica que a imagem pode ser arrastada */
-}
-
-/* =========================
-   LIMITES VISUAIS PROFISSIONAIS
-========================= */
-.lightbox-overlay img {
-  max-width: none;  /* permite zoom maior que 100% */
-  max-height: none; /* permite zoom maior que 100% */
-  /* centraliza a imagem inicialmente */
-  transform: translate(0px, 0px) scale(1);
+  transition: transform 0.2s;
 }
 
 /* Botão fechar sempre vermelho em telas pequenas (celular) */

@@ -262,13 +262,34 @@ fecharLightbox.onclick = () => {
 
 
 /* =========================
-   ZOOM PROFISSIONAL FIXO (SEM ARRASTE)
+   ZOOM FIXO SEM ARRASTE
 ========================= */
 let scale = 1;
 const MIN_SCALE = 1;
 const MAX_SCALE = 2.5;
 
 lightboxImg.style.transition = "transform 0.2s ease";
+
+/* Resetar ao abrir */
+function resetLightbox() {
+  scale = 1;
+  lightboxImg.style.transform = `scale(1)`;
+  lightboxImg.style.transformOrigin = `center center`;
+}
+lightboxImg.addEventListener("load", resetLightbox);
+
+/* Limita scale para caber no overlay */
+function clampScale() {
+  const parentRect = lightbox.getBoundingClientRect();
+  const imgRect = lightboxImg.getBoundingClientRect();
+
+  // calcula max scale para não ultrapassar overlay
+  const maxScaleX = (parentRect.width * 0.9) / imgRect.width;
+  const maxScaleY = (parentRect.height * 0.9) / imgRect.height;
+  const maxAllowed = Math.min(MAX_SCALE, maxScaleX, maxScaleY);
+
+  scale = Math.min(scale, maxAllowed);
+}
 
 /* -------------------------
    DESKTOP - Zoom com roda
@@ -283,8 +304,9 @@ lightboxImg.addEventListener("wheel", (e) => {
   const originX = (offsetX / rect.width) * 100;
   const originY = (offsetY / rect.height) * 100;
 
-  scale += e.deltaY * -0.005; // zoom mais rápido
-  scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
+  scale += e.deltaY * -0.005; // zoom rápido
+  scale = Math.max(MIN_SCALE, scale);
+  clampScale();
 
   lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
   lightboxImg.style.transform = `scale(${scale})`;
@@ -312,11 +334,11 @@ lightboxImg.addEventListener("touchmove", (e) => {
     const dy = e.touches[0].clientY - e.touches[1].clientY;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    let delta = (distance - lastDistance) * 0.05; // zoom mais rápido
+    let delta = (distance - lastDistance) * 0.05;
     scale += delta;
-    scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
+    scale = Math.max(MIN_SCALE, scale);
+    clampScale();
 
-    // centraliza zoom no meio entre os dedos
     const rect = lightboxImg.getBoundingClientRect();
     const originX = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left) / rect.width * 100;
     const originY = ((e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top) / rect.height * 100;
