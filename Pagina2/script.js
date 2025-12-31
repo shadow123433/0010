@@ -262,15 +262,9 @@ fecharLightbox.onclick = () => {
 
 
 /* =========================
-   ZOOM PROFISSIONAL NA IMAGEM
+   ZOOM PROFISSIONAL FIXO (SEM ARRASTE)
 ========================= */
 let scale = 1;
-let currentX = 0, currentY = 0;
-let originX = 0, originY = 0;
-let isDragging = false;
-let startX = 0, startY = 0;
-let lastTouchDistance = null;
-
 const MIN_SCALE = 1;
 const MAX_SCALE = 2.5;
 
@@ -281,102 +275,59 @@ lightboxImg.style.transition = "transform 0.2s ease";
 ------------------------- */
 lightboxImg.addEventListener("wheel", (e) => {
   e.preventDefault();
+
   const rect = lightboxImg.getBoundingClientRect();
   const offsetX = e.clientX - rect.left;
   const offsetY = e.clientY - rect.top;
 
-  originX = (offsetX / rect.width) * 100;
-  originY = (offsetY / rect.height) * 100;
+  const originX = (offsetX / rect.width) * 100;
+  const originY = (offsetY / rect.height) * 100;
 
-  scale += e.deltaY * -0.0025; // zoom mais responsivo
+  scale += e.deltaY * -0.005; // zoom mais rápido
   scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
   lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
-  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+  lightboxImg.style.transform = `scale(${scale})`;
 });
 
 /* -------------------------
-   DESKTOP - Arrastar imagem
+   MOBILE - Pinch Zoom
 ------------------------- */
-lightboxImg.addEventListener("mousedown", (e) => {
-  if (scale <= 1) return;
-  isDragging = true;
-  startX = e.clientX - currentX;
-  startY = e.clientY - currentY;
-});
-document.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
-  e.preventDefault();
+let lastDistance = null;
 
-  currentX = e.clientX - startX;
-  currentY = e.clientY - startY;
-
-  // limite de arraste
-  const rect = lightboxImg.getBoundingClientRect();
-  const parentRect = lightbox.getBoundingClientRect();
-  const maxX = Math.max((rect.width * scale - parentRect.width) / 2, 0);
-  const maxY = Math.max((rect.height * scale - parentRect.height) / 2, 0);
-
-  currentX = Math.min(Math.max(currentX, -maxX), maxX);
-  currentY = Math.min(Math.max(currentY, -maxY), maxY);
-
-  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
-});
-document.addEventListener("mouseup", () => isDragging = false);
-
-/* -------------------------
-   MOBILE - Pinch Zoom e Arraste
-------------------------- */
 lightboxImg.addEventListener("touchstart", (e) => {
   if (e.touches.length === 2) {
     e.preventDefault();
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
-    lastTouchDistance = Math.sqrt(dx*dx + dy*dy);
-  } else if (e.touches.length === 1 && scale > 1) {
-    isDragging = true;
-    startX = e.touches[0].clientX - currentX;
-    startY = e.touches[0].clientY - currentY;
+    lastDistance = Math.sqrt(dx * dx + dy * dy);
   }
 });
 
 lightboxImg.addEventListener("touchmove", (e) => {
-  if (e.touches.length === 2 && lastTouchDistance) {
+  if (e.touches.length === 2 && lastDistance) {
     e.preventDefault();
+
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const distance = Math.sqrt(dx*dx + dy*dy);
-    const delta = (distance - lastTouchDistance) * 0.03; // mais responsivo
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    let delta = (distance - lastDistance) * 0.05; // zoom mais rápido
     scale += delta;
     scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
-    // atualiza transform com limite de arraste
+    // centraliza zoom no meio entre os dedos
     const rect = lightboxImg.getBoundingClientRect();
-    const parentRect = lightbox.getBoundingClientRect();
-    const maxX = Math.max((rect.width * scale - parentRect.width) / 2, 0);
-    const maxY = Math.max((rect.height * scale - parentRect.height) / 2, 0);
-    currentX = Math.min(Math.max(currentX, -maxX), maxX);
-    currentY = Math.min(Math.max(currentY, -maxY), maxY);
+    const originX = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left) / rect.width * 100;
+    const originY = ((e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top) / rect.height * 100;
 
-    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
-    lastTouchDistance = distance;
-  } else if (e.touches.length === 1 && isDragging) {
-    e.preventDefault();
-    currentX = e.touches[0].clientX - startX;
-    currentY = e.touches[0].clientY - startY;
+    lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
+    lightboxImg.style.transform = `scale(${scale})`;
 
-    const rect = lightboxImg.getBoundingClientRect();
-    const parentRect = lightbox.getBoundingClientRect();
-    const maxX = Math.max((rect.width * scale - parentRect.width) / 2, 0);
-    const maxY = Math.max((rect.height * scale - parentRect.height) / 2, 0);
-    currentX = Math.min(Math.max(currentX, -maxX), maxX);
-    currentY = Math.min(Math.max(currentY, -maxY), maxY);
-
-    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+    lastDistance = distance;
   }
 }, { passive: false });
 
 lightboxImg.addEventListener("touchend", (e) => {
-  if (e.touches.length < 2) lastTouchDistance = null;
-  if (e.touches.length === 0) isDragging = false;
+  if (e.touches.length < 2) lastDistance = null;
 });
