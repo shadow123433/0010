@@ -250,37 +250,61 @@ fecharLightbox.onclick = () => {
 
 
 /* =========================
-   ZOOM NA IMAGEM (CELULAR)
+   ZOOM PROFISSIONAL NA IMAGEM DOS UNIFORMES
 ========================= */
 let scale = 1;
-let startDist = 0;
+let startX = 0;
+let startY = 0;
+let originX = 0;
+let originY = 0;
 
-lightboxImg.addEventListener('touchstart', (e) => {
-  if (e.touches.length === 2) {
-    e.preventDefault(); // evita rolagem
-    startDist = Math.hypot(
-      e.touches[0].pageX - e.touches[1].pageX,
-      e.touches[0].pageY - e.touches[1].pageY
-    );
-  }
-}, { passive: false });
+lightboxImg.style.transition = "transform 0.2s ease";
 
-lightboxImg.addEventListener('touchmove', (e) => {
-  if (e.touches.length === 2) {
-    e.preventDefault(); // evita rolagem
-    const newDist = Math.hypot(
-      e.touches[0].pageX - e.touches[1].pageX,
-      e.touches[0].pageY - e.touches[1].pageY
-    );
-    const diff = newDist - startDist;
-    scale += diff / 200; // controla sensibilidade
-    scale = Math.max(1, Math.min(scale, 3)); // limita zoom entre 1x e 3x
-    lightboxImg.style.transform = `scale(${scale})`;
-    startDist = newDist;
-  }
-}, { passive: false });
+lightboxImg.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const rect = lightboxImg.getBoundingClientRect();
+  const offsetX = e.clientX - rect.left;
+  const offsetY = e.clientY - rect.top;
 
-lightboxImg.addEventListener('touchend', () => {
-  if (scale < 1) scale = 1;
+  originX = (offsetX / rect.width) * 100;
+  originY = (offsetY / rect.height) * 100;
+
+  scale += e.deltaY * -0.0015;
+  scale = Math.min(Math.max(1, scale), 3);
+
+  lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
   lightboxImg.style.transform = `scale(${scale})`;
 });
+
+let lastTouch = null;
+
+lightboxImg.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    lastTouch = Math.sqrt(dx*dx + dy*dy);
+  }
+});
+
+lightboxImg.addEventListener("touchmove", (e) => {
+  if (e.touches.length === 2 && lastTouch) {
+    e.preventDefault();
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const distance = Math.sqrt(dx*dx + dy*dy);
+    let delta = (distance - lastTouch) * 0.01;
+
+    scale += delta;
+    scale = Math.min(Math.max(1, scale), 3);
+    lightboxImg.style.transform = `scale(${scale})`;
+    lastTouch = distance;
+  }
+});
+
+lightbox.onclick = () => {
+  lightbox.style.display = "none";
+  document.body.style.overflow = "auto";
+  scale = 1;
+  lightboxImg.style.transform = `scale(1)`;
+};
