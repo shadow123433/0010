@@ -371,7 +371,7 @@ lightboxImg.addEventListener("touchmove", (e) => {
     const dy = e.touches[0].clientY - e.touches[1].clientY;
     const distance = Math.hypot(dx, dy);
 
-    scale += (distance - lastDistance) * 0.02; // um pouco lento 
+    scale += (distance - lastDistance) * 0.01; // um pouco lento 
     scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
     lightboxImg.style.transform = `scale(${scale})`;
