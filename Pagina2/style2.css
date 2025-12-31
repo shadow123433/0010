@@ -709,3 +709,52 @@ html, body {
     -ms-touch-action: pan-y;         /* compatibilidade com IE */
     overscroll-behavior-y: contain;  /* evita efeitos indesejados no scroll */
 }
+
+
+/* =========================
+   LIGHTBOX
+========================= */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.lightbox-overlay img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  cursor: zoom-in; /* dá a sensação de zoom */
+}
+
+/* BOTÃO FECHAR */
+.lightbox-overlay .fechar-lightbox {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 28px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  z-index: 10000;
+  transition: transform 0.2s;
+}
+
+.lightbox-overlay .fechar-lightbox:hover {
+  transform: scale(1.2);
+  color: #ff4c4c;
+}
+
+/* Permitir zoom no celular apenas na imagem */
+.lightbox-overlay img {
+  touch-action: pinch-zoom; /* ativa zoom com gesto de pinça no mobile */
+  -ms-touch-action: pinch-zoom; /* compatibilidade com alguns navegadores antigos */
+}

@@ -70,9 +70,10 @@ const produtosGrid = produtosSec.querySelector(".produtos-grid");
 ========================= */
 const lightbox = document.createElement("div");
 lightbox.className = "lightbox-overlay";
-lightbox.innerHTML = `<img src="">`;
+lightbox.innerHTML = `<span class="fechar-lightbox">✖</span><img src="">`;
 document.body.appendChild(lightbox);
 const lightboxImg = lightbox.querySelector("img");
+const fecharLightbox = lightbox.querySelector(".fechar-lightbox");
 
 /* =========================
    MOSTRAR PRODUTOS
@@ -97,6 +98,7 @@ function mostrarProdutos(escola) {
     card.querySelector("img").onclick = () => {
       lightboxImg.src = produto.imagem;
       lightbox.style.display = "flex";
+      document.body.style.overflow = "hidden"; // bloqueia scroll
     };
 
     card.querySelector("button").onclick = () => {
@@ -241,6 +243,7 @@ Total: R$ ${total.toFixed(2)}
 /* =========================
    FECHAR LIGHTBOX
 ========================= */
-lightbox.onclick = () => {
+fecharLightbox.onclick = () => {
   lightbox.style.display = "none";
+  document.body.style.overflow = "auto"; // libera scroll
 };
