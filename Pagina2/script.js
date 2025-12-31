@@ -259,6 +259,8 @@ fecharLightbox.onclick = () => {
   lastTouchDistance = null;
 };
 
+
+
 /* =========================
    ZOOM PROFISSIONAL NA IMAGEM
 ========================= */
@@ -269,7 +271,14 @@ let isDragging = false;
 let startX = 0, startY = 0;
 let lastTouchDistance = null;
 
-/* DESKTOP - roda do mouse */
+const MIN_SCALE = 1;
+const MAX_SCALE = 2.5;
+
+lightboxImg.style.transition = "transform 0.2s ease";
+
+/* -------------------------
+   DESKTOP - Zoom com roda
+------------------------- */
 lightboxImg.addEventListener("wheel", (e) => {
   e.preventDefault();
   const rect = lightboxImg.getBoundingClientRect();
@@ -279,16 +288,18 @@ lightboxImg.addEventListener("wheel", (e) => {
   originX = (offsetX / rect.width) * 100;
   originY = (offsetY / rect.height) * 100;
 
-  scale += e.deltaY * -0.0015;
-  scale = Math.min(Math.max(1, scale), 3);
+  scale += e.deltaY * -0.0025; // zoom mais responsivo
+  scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
   lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
-  lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
+  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
 });
 
-/* DESKTOP - arrastar imagem */
+/* -------------------------
+   DESKTOP - Arrastar imagem
+------------------------- */
 lightboxImg.addEventListener("mousedown", (e) => {
-  if (scale === 1) return;
+  if (scale <= 1) return;
   isDragging = true;
   startX = e.clientX - currentX;
   startY = e.clientY - currentY;
@@ -296,13 +307,26 @@ lightboxImg.addEventListener("mousedown", (e) => {
 document.addEventListener("mousemove", (e) => {
   if (!isDragging) return;
   e.preventDefault();
+
   currentX = e.clientX - startX;
   currentY = e.clientY - startY;
-  lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
+
+  // limite de arraste
+  const rect = lightboxImg.getBoundingClientRect();
+  const parentRect = lightbox.getBoundingClientRect();
+  const maxX = Math.max((rect.width * scale - parentRect.width) / 2, 0);
+  const maxY = Math.max((rect.height * scale - parentRect.height) / 2, 0);
+
+  currentX = Math.min(Math.max(currentX, -maxX), maxX);
+  currentY = Math.min(Math.max(currentY, -maxY), maxY);
+
+  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
 });
 document.addEventListener("mouseup", () => isDragging = false);
 
-/* MOBILE - pinch zoom e arrastar */
+/* -------------------------
+   MOBILE - Pinch Zoom e Arraste
+------------------------- */
 lightboxImg.addEventListener("touchstart", (e) => {
   if (e.touches.length === 2) {
     e.preventDefault();
@@ -322,26 +346,33 @@ lightboxImg.addEventListener("touchmove", (e) => {
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
     const distance = Math.sqrt(dx*dx + dy*dy);
-    const delta = (distance - lastTouchDistance) * 0.01;
+    const delta = (distance - lastTouchDistance) * 0.03; // mais responsivo
     scale += delta;
-    scale = Math.min(Math.max(1, scale), 3);
-    lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
+    scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
+
+    // atualiza transform com limite de arraste
+    const rect = lightboxImg.getBoundingClientRect();
+    const parentRect = lightbox.getBoundingClientRect();
+    const maxX = Math.max((rect.width * scale - parentRect.width) / 2, 0);
+    const maxY = Math.max((rect.height * scale - parentRect.height) / 2, 0);
+    currentX = Math.min(Math.max(currentX, -maxX), maxX);
+    currentY = Math.min(Math.max(currentY, -maxY), maxY);
+
+    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
     lastTouchDistance = distance;
   } else if (e.touches.length === 1 && isDragging) {
     e.preventDefault();
     currentX = e.touches[0].clientX - startX;
     currentY = e.touches[0].clientY - startY;
 
-    // limite de arraste para não sair do overlay
     const rect = lightboxImg.getBoundingClientRect();
     const parentRect = lightbox.getBoundingClientRect();
-    const maxX = Math.max((rect.width*scale - parentRect.width)/2,0);
-    const maxY = Math.max((rect.height*scale - parentRect.height)/2,0);
-
+    const maxX = Math.max((rect.width * scale - parentRect.width) / 2, 0);
+    const maxY = Math.max((rect.height * scale - parentRect.height) / 2, 0);
     currentX = Math.min(Math.max(currentX, -maxX), maxX);
     currentY = Math.min(Math.max(currentY, -maxY), maxY);
 
-    lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
+    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
   }
 }, { passive: false });
 

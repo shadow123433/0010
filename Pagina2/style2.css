@@ -728,7 +728,7 @@ html, body {
   align-items: center;
   z-index: 9999;
   overflow: hidden; /* impede scroll do body */
-  touch-action: none; /* captura gestos via JS */
+  touch-action: none; /* gestos controlados via JS */
 }
 
 /* =========================
@@ -737,11 +737,14 @@ html, body {
 .lightbox-overlay img {
   max-width: 90%;
   max-height: 90%;
+  width: auto;
+  height: auto;
   object-fit: contain;
   cursor: grab; /* indica arraste quando zoom > 1 */
   user-select: none;
   -webkit-user-drag: none;
-  transition: transform 0.3s ease; /* zoom suave */
+  transition: transform 0.2s ease; /* zoom suave */
+  will-change: transform; /* otimiza performance */
   touch-action: none; /* necessário para pinch e arraste */
 }
 
@@ -758,7 +761,7 @@ html, body {
   cursor: pointer;
   user-select: none;
   z-index: 10000;
-  transition: transform 0.2s, color 0.2s;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .lightbox-overlay .fechar-lightbox:hover {
@@ -771,16 +774,21 @@ html, body {
 ========================= */
 .lightbox-overlay img.zoom {
   cursor: grab; /* indica que a imagem pode ser arrastada */
-  touch-action: none; /* arraste e pinch sempre funcionam quando zoom ativo */
 }
 
 /* =========================
-   LIMITES VISUAIS
+   LIMITES VISUAIS PROFISSIONAIS
 ========================= */
-/* Isso impede que a imagem saia do overlay no mobile e desktop */
 .lightbox-overlay img {
-  will-change: transform;
-  max-width: none; /* permite zoom maior que 100% */
+  max-width: none;  /* permite zoom maior que 100% */
   max-height: none; /* permite zoom maior que 100% */
+  /* centraliza a imagem inicialmente */
+  transform: translate(0px, 0px) scale(1);
 }
 
+/* Botão fechar sempre vermelho em telas pequenas (celular) */
+@media (max-width: 768px) {
+  .lightbox-overlay .fechar-lightbox {
+    color: #ff4c4c;
+  }
+}
