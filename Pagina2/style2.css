@@ -755,8 +755,17 @@ html, body {
 
 
 
-/* Permitir zoom no celular apenas na imagem */
+/* Permitir zoom na imagem no celular via scroll e gesto de pinça */
+.lightbox-overlay {
+  touch-action: none; /* bloqueia o scroll da página */
+  overflow: hidden;
+}
+
 .lightbox-overlay img {
-  touch-action: pinch-zoom; /* ativa zoom com gesto de pinça no mobile */
-  -ms-touch-action: pinch-zoom; /* compatibilidade com alguns navegadores antigos */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  cursor: zoom-in;
+  /* Faz a imagem aceitar gesto de pinça e scroll interno */
+  touch-action: none;
 }
