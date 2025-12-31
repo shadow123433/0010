@@ -4,6 +4,10 @@
 let carrinho = [];
 let total = 0;
 
+function gerarPedidoID() {
+  return "PED-" + Date.now().toString().slice(-6);
+}
+
 /* =========================
    ELEMENTOS FIXOS
 ========================= */
@@ -32,22 +36,19 @@ function showToast(msg) {
 ========================= */
 const produtosPorEscola = {
   IFES: [
-    { nome: "Camisa masculina IFES", preco: 49.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/camisa.avif" },
-    { nome: "Short masculino IFES", preco: 79.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/bermuda.avif" },
-    { nome: "Camisa feminina IFES", preco: 129.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/camisaF.webp" },
-    { nome: "Calça feminina IFES", preco: 89.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/calça.png" }
+    { nome: "Camisa masculina e feminina IFES", preco: 49.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/camisa.png" },
+    { nome: "Short masculino IFES", preco: 79.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/bermuda.png" },
+    { nome: "Calça feminina IFES", preco: 89.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/calçaa.png" }
   ],
   SESI: [
-    { nome: "Camisa masculina SESI", preco: 59.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/camisa.jpg" },
-    { nome: "Bermuda SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/bermuda.jpg" },
-    { nome: "Camisa feminina SESI", preco: 59.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/camisaF.jpg" },
-    { nome: "Calça feminina SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calça.webp" }
+    { nome: "Camisa masculina e feminina SESI", preco: 59.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/camisa.png" },
+    { nome: "Bermuda SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calção.png" },
+    { nome: "Calça feminina SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calça.png" }
   ],
   "CRISTO REI": [
-    { nome: "Camisa masculina CRISTO REI", preco: 54.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.jpg" },
-    { nome: "Bermuda masculina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.jpg" },
-    { nome: "Camisa feminina CRISTO REI", preco: 54.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.jpg" },
-    { nome: "Calça feminina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/calça.webp" }
+    { nome: "Camisa masculina e feminina CRISTO REI", preco: 54.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.png" },
+    { nome: "Bermuda masculina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.png" },
+    { nome: "Calça feminina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/calça.png" }
   ]
 };
 
@@ -109,7 +110,8 @@ function mostrarProdutos(escola) {
     card.querySelector("button").onclick = () => {
       const tamanho = card.querySelector("select").value;
       if (!tamanho) return showToast("Selecione um tamanho");
-      addCarrinho(`${produto.nome} - Tam: ${tamanho}`, produto.preco);
+     addCarrinho(produto.nome, tamanho, produto.preco);
+
     };
 
     produtosGrid.appendChild(card);
@@ -126,12 +128,26 @@ function mostrarProdutos(escola) {
 /* =========================
    CARRINHO
 ========================= */
-function addCarrinho(nome, preco) {
-  carrinho.push({ nome, preco });
+function addCarrinho(produto, tamanho, preco) {
+  let item = carrinho.find(i => i.produto === produto);
+
+  if (!item) {
+    item = {
+      produto,
+      tamanhos: {},
+      precoUnitario: preco
+    };
+    carrinho.push(item);
+  }
+
+  item.tamanhos[tamanho] = (item.tamanhos[tamanho] || 0) + 1;
   total += preco;
+
   atualizarCarrinho();
   showToast("Item adicionado");
 }
+
+
 
 function atualizarCarrinho() {
   if (!carrinho.length) {
@@ -140,30 +156,45 @@ function atualizarCarrinho() {
     return;
   }
 
-  carrinhoTexto.innerHTML = carrinho
-    .map((item, index) => `
+  carrinhoTexto.innerHTML = carrinho.map(item => {
+    const tamanhos = Object.entries(item.tamanhos)
+      .map(([tam, qtd]) => `${tam} × ${qtd}`)
+      .join(" | ");
+
+    return `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <span>• ${item.nome}</span>
+        <span>• ${item.produto} - Tam: ${tamanhos}</span>
         <span
           style="color:red; cursor:pointer; font-weight:bold;"
-          onclick="removerItem(${index})"
+          onclick="removerItem('${item.produto}')"
         >✖</span>
       </div>
-    `)
-    .join("");
+    `;
+  }).join("");
 
   totalTexto.innerHTML = `<strong>Total:</strong> R$ ${total.toFixed(2)}`;
 }
 
+
+
 /* =========================
    REMOVER ITEM
 ========================= */
-function removerItem(index) {
-  total -= carrinho[index].preco;
+function removerItem(produto) {
+  const index = carrinho.findIndex(i => i.produto === produto);
+  if (index === -1) return;
+
+  const item = carrinho[index];
+  const qtdTotal = Object.values(item.tamanhos).reduce((a, b) => a + b, 0);
+
+  total -= qtdTotal * item.precoUnitario;
   carrinho.splice(index, 1);
+
   atualizarCarrinho();
   showToast("Item removido");
 }
+
+
 
 /* =========================
    MODAL
@@ -212,14 +243,18 @@ modal.querySelector("#confirmar").onclick = () => {
   const endereco = modal.querySelector("#endereco").value;
   const numero = modal.querySelector("#numero").value;
   const referencia = modal.querySelector("#referencia").value;
+  const pedidoID = gerarPedidoID(); 
+
 
   if (!nome || !whats || !endereco || !numero)
     return showToast("Preencha os campos obrigatórios");
 
-  const itens = carrinho.map(i => `- ${i.nome}`).join("\n");
+  const itens = carrinho.map(i => `- ${i.nome} × ${i.quantidade}`).join("\n");
+
 
   const mensagem = `
 *NOVO PEDIDO DE UNIFORME*
+Pedido: ${pedidoID}
 
 Nome: ${nome}
 WhatsApp: ${whats}
@@ -231,7 +266,7 @@ ${referencia ? "Ref: " + referencia : ""}
 Itens:
 ${itens}
 
-Total: R$ ${total.toFixed(2)}
+ ⚠️O valor será confirmado pela loja
 `.trim();
 
   window.open(
@@ -251,80 +286,82 @@ Total: R$ ${total.toFixed(2)}
 fecharLightbox.onclick = () => {
   lightbox.style.display = "none";
   document.body.style.overflow = "auto";
-  lightboxImg.classList.remove("zoom");
-  lightboxImg.style.transform = "translate(0px,0px) scale(1)";
+  lightboxImg.style.transform = "scale(1)";
   scale = 1;
-  currentX = 0;
-  currentY = 0;
   lastTouchDistance = null;
 };
 
 
 
 /* =========================
-   ZOOM FIXO SEM ARRASTE
+   ZOOM POR REGIÃO (IMAGEM FIXA)
 ========================= */
-let scale = 1;
+
 const MIN_SCALE = 1;
-const MAX_SCALE = 2.5;
+const MAX_SCALE = 4;
 
-lightboxImg.style.transition = "transform 0.2s ease";
+let originLocked = false;
 
-/* Resetar ao abrir */
+lightboxImg.style.transition = "transform 0.12s linear";
+lightboxImg.style.transformOrigin = "center center";
+lightboxImg.style.touchAction = "none";
+
+/* Reset ao abrir */
 function resetLightbox() {
   scale = 1;
-  lightboxImg.style.transform = `scale(1)`;
-  lightboxImg.style.transformOrigin = `center center`;
+  originLocked = false;
+  lightboxImg.style.transformOrigin = "center center";
+  lightboxImg.style.transform = "scale(1)";
 }
 lightboxImg.addEventListener("load", resetLightbox);
 
-/* Limita scale para caber no overlay */
-function clampScale() {
-  const parentRect = lightbox.getBoundingClientRect();
-  const imgRect = lightboxImg.getBoundingClientRect();
-
-  // calcula max scale para não ultrapassar overlay
-  const maxScaleX = (parentRect.width * 0.9) / imgRect.width;
-  const maxScaleY = (parentRect.height * 0.9) / imgRect.height;
-  const maxAllowed = Math.min(MAX_SCALE, maxScaleX, maxScaleY);
-
-  scale = Math.min(scale, maxAllowed);
-}
-
 /* -------------------------
-   DESKTOP - Zoom com roda
+   DESKTOP — Scroll com ponto fixo
 ------------------------- */
 lightboxImg.addEventListener("wheel", (e) => {
   e.preventDefault();
 
-  const rect = lightboxImg.getBoundingClientRect();
-  const offsetX = e.clientX - rect.left;
-  const offsetY = e.clientY - rect.top;
+  // define o ponto SOMENTE no primeiro zoom
+  if (!originLocked) {
+    const rect = lightboxImg.getBoundingClientRect();
+    const originX = ((e.clientX - rect.left) / rect.width) * 100;
+    const originY = ((e.clientY - rect.top) / rect.height) * 100;
 
-  const originX = (offsetX / rect.width) * 100;
-  const originY = (offsetY / rect.height) * 100;
+    lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
+    originLocked = true;
+  }
 
-  scale += e.deltaY * -0.005; // zoom rápido
-  scale = Math.max(MIN_SCALE, scale);
-  clampScale();
+  scale += e.deltaY * -0.01; // rápido
+  scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
-  lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
   lightboxImg.style.transform = `scale(${scale})`;
-});
+}, { passive: false });
 
 /* -------------------------
-   MOBILE - Pinch Zoom
+   MOBILE — Pinch com ponto fixo
 ------------------------- */
 let lastDistance = null;
 
 lightboxImg.addEventListener("touchstart", (e) => {
   if (e.touches.length === 2) {
-    e.preventDefault();
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
-    lastDistance = Math.sqrt(dx * dx + dy * dy);
+    lastDistance = Math.hypot(dx, dy);
+
+    // trava o ponto do zoom UMA VEZ
+    if (!originLocked) {
+      const rect = lightboxImg.getBoundingClientRect();
+      const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+      const originX = ((centerX - rect.left) / rect.width) * 100;
+      const originY = ((centerY - rect.top) / rect.height) * 100;
+
+      lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
+      originLocked = true;
+    }
   }
-});
+}, { passive: false });
 
 lightboxImg.addEventListener("touchmove", (e) => {
   if (e.touches.length === 2 && lastDistance) {
@@ -332,24 +369,16 @@ lightboxImg.addEventListener("touchmove", (e) => {
 
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distance = Math.hypot(dx, dy);
 
-    let delta = (distance - lastDistance) * 0.05;
-    scale += delta;
-    scale = Math.max(MIN_SCALE, scale);
-    clampScale();
+    scale += (distance - lastDistance) * 0.08; // MUITO rápido
+    scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
-    const rect = lightboxImg.getBoundingClientRect();
-    const originX = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left) / rect.width * 100;
-    const originY = ((e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top) / rect.height * 100;
-
-    lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
     lightboxImg.style.transform = `scale(${scale})`;
-
     lastDistance = distance;
   }
 }, { passive: false });
 
-lightboxImg.addEventListener("touchend", (e) => {
-  if (e.touches.length < 2) lastDistance = null;
+lightboxImg.addEventListener("touchend", () => {
+  lastDistance = null;
 });

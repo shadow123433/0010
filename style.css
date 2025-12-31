@@ -21,6 +21,7 @@ h1 {
 
 
 
+
  .titulo-bg {                           /* Container do banner/título */
     position: relative;               /* Base para posicionar o overlay (::before) */
     background-image: url("imagensdapagina1/imagem3.jpeg"); /* Imagem de fundo do banner */
