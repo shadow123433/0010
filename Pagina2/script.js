@@ -247,3 +247,40 @@ fecharLightbox.onclick = () => {
   lightbox.style.display = "none";
   document.body.style.overflow = "auto"; // libera scroll
 };
+
+
+/* =========================
+   ZOOM NA IMAGEM (CELULAR)
+========================= */
+let scale = 1;
+let startDist = 0;
+
+lightboxImg.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 2) {
+    e.preventDefault(); // evita rolagem
+    startDist = Math.hypot(
+      e.touches[0].pageX - e.touches[1].pageX,
+      e.touches[0].pageY - e.touches[1].pageY
+    );
+  }
+}, { passive: false });
+
+lightboxImg.addEventListener('touchmove', (e) => {
+  if (e.touches.length === 2) {
+    e.preventDefault(); // evita rolagem
+    const newDist = Math.hypot(
+      e.touches[0].pageX - e.touches[1].pageX,
+      e.touches[0].pageY - e.touches[1].pageY
+    );
+    const diff = newDist - startDist;
+    scale += diff / 200; // controla sensibilidade
+    scale = Math.max(1, Math.min(scale, 3)); // limita zoom entre 1x e 3x
+    lightboxImg.style.transform = `scale(${scale})`;
+    startDist = newDist;
+  }
+}, { passive: false });
+
+lightboxImg.addEventListener('touchend', () => {
+  if (scale < 1) scale = 1;
+  lightboxImg.style.transform = `scale(${scale})`;
+});
