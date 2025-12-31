@@ -99,6 +99,11 @@ function mostrarProdutos(escola) {
       lightboxImg.src = produto.imagem;
       lightbox.style.display = "flex";
       document.body.style.overflow = "hidden"; // bloqueia scroll
+      lightboxImg.classList.add("zoom");
+      lightboxImg.style.transform = "translate(0px, 0px) scale(1)";
+      scale = 1;
+      currentX = 0;
+      currentY = 0;
     };
 
     card.querySelector("button").onclick = () => {
@@ -119,7 +124,7 @@ function mostrarProdutos(escola) {
 }
 
 /* =========================
-   CARRINHO (PASSO 1 APLICADO)
+   CARRINHO
 ========================= */
 function addCarrinho(nome, preco) {
   carrinho.push({ nome, preco });
@@ -151,7 +156,7 @@ function atualizarCarrinho() {
 }
 
 /* =========================
-   REMOVER ITEM (PASSO 2)
+   REMOVER ITEM
 ========================= */
 function removerItem(index) {
   total -= carrinho[index].preco;
@@ -246,20 +251,26 @@ Total: R$ ${total.toFixed(2)}
 fecharLightbox.onclick = () => {
   lightbox.style.display = "none";
   document.body.style.overflow = "auto"; // libera scroll
+  lightboxImg.classList.remove("zoom");
+  lightboxImg.style.transform = "translate(0px, 0px) scale(1)";
+  scale = 1;
+  currentX = 0;
+  currentY = 0;
 };
-
 
 /* =========================
    ZOOM PROFISSIONAL NA IMAGEM DOS UNIFORMES
 ========================= */
 let scale = 1;
-let startX = 0;
-let startY = 0;
-let originX = 0;
-let originY = 0;
+let currentX = 0, currentY = 0;
+let originX = 0, originY = 0;
+let isDragging = false;
+let startX = 0, startY = 0;
+let lastTouchDistance = null;
 
 lightboxImg.style.transition = "transform 0.2s ease";
 
+/* DESKTOP - roda mouse para zoom */
 lightboxImg.addEventListener("wheel", (e) => {
   e.preventDefault();
   const rect = lightboxImg.getBoundingClientRect();
@@ -273,32 +284,59 @@ lightboxImg.addEventListener("wheel", (e) => {
   scale = Math.min(Math.max(1, scale), 3);
 
   lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
-  lightboxImg.style.transform = `scale(${scale})`;
+  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
 });
 
-let lastTouch = null;
+/* DESKTOP - arrastar imagem */
+lightboxImg.addEventListener("mousedown", (e) => {
+  if (scale === 1) return;
+  isDragging = true;
+  startX = e.clientX - currentX;
+  startY = e.clientY - currentY;
+});
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  e.preventDefault();
+  currentX = e.clientX - startX;
+  currentY = e.clientY - startY;
+  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+});
+document.addEventListener("mouseup", () => isDragging = false);
 
+/* MOBILE - pinch para zoom */
 lightboxImg.addEventListener("touchstart", (e) => {
   if (e.touches.length === 2) {
     e.preventDefault();
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
-    lastTouch = Math.sqrt(dx*dx + dy*dy);
+    lastTouchDistance = Math.sqrt(dx*dx + dy*dy);
+  } else if (e.touches.length === 1 && scale > 1) {
+    isDragging = true;
+    startX = e.touches[0].clientX - currentX;
+    startY = e.touches[0].clientY - currentY;
   }
 });
 
 lightboxImg.addEventListener("touchmove", (e) => {
-  if (e.touches.length === 2 && lastTouch) {
+  if (e.touches.length === 2 && lastTouchDistance) {
     e.preventDefault();
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
     const distance = Math.sqrt(dx*dx + dy*dy);
-    let delta = (distance - lastTouch) * 0.01;
-
+    const delta = (distance - lastTouchDistance) * 0.01;
     scale += delta;
     scale = Math.min(Math.max(1, scale), 3);
-    lightboxImg.style.transform = `scale(${scale})`;
-    lastTouch = distance;
+    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+    lastTouchDistance = distance;
+  } else if (e.touches.length === 1 && isDragging) {
+    e.preventDefault();
+    currentX = e.touches[0].clientX - startX;
+    currentY = e.touches[0].clientY - startY;
+    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
   }
-});
+}, { passive: false });
 
+lightboxImg.addEventListener("touchend", (e) => {
+  if (e.touches.length < 2) lastTouchDistance = null;
+  if (e.touches.length === 0) isDragging = false;
+});
