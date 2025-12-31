@@ -331,7 +331,7 @@ lightboxImg.addEventListener("wheel", (e) => {
     originLocked = true;
   }
 
-  scale += e.deltaY * -0.01; // rápido
+  scale += e.deltaY * -0.004; // um pouco lento hehe
   scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
   lightboxImg.style.transform = `scale(${scale})`;
@@ -371,7 +371,7 @@ lightboxImg.addEventListener("touchmove", (e) => {
     const dy = e.touches[0].clientY - e.touches[1].clientY;
     const distance = Math.hypot(dx, dy);
 
-    scale += (distance - lastDistance) * 0.08; // MUITO rápido
+    scale += (distance - lastDistance) * 0.03; // um pouco lento 
     scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
     lightboxImg.style.transform = `scale(${scale})`;
