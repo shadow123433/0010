@@ -711,47 +711,6 @@ html, body {
 }
 
 
-/* =========================
-   LIGHTBOX
-========================= */
-.lightbox-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.lightbox-overlay img {
-  max-width: 90%;
-  max-height: 90%;
-  object-fit: contain;
-  cursor: zoom-in; /* dá a sensação de zoom */
-}
-
-/* BOTÃO FECHAR */
-.lightbox-overlay .fechar-lightbox {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 28px;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  user-select: none;
-  z-index: 10000;
-  transition: transform 0.2s;
-}
-
-.lightbox-overlay .fechar-lightbox:hover {
-  transform: scale(1.2);
-  color: #ff4c4c;
-}
 
 
 
@@ -777,12 +736,13 @@ html, body {
   max-width: 90%;
   max-height: 90%;
   object-fit: contain;
-  cursor: zoom-in;
+  cursor: grab; /* indica que pode arrastar */
   user-select: none;
   -webkit-user-drag: none;
   transition: transform 0.3s ease; /* zoom suave */
-  touch-action: none; /* pinch e scroll interno da imagem */
+  touch-action: pan-x pan-y pinch-zoom; /* permite pinch e arraste no celular */
 }
+
 
 .lightbox-overlay .fechar-lightbox {
   position: absolute;

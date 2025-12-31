@@ -302,9 +302,3 @@ lightboxImg.addEventListener("touchmove", (e) => {
   }
 });
 
-lightbox.onclick = () => {
-  lightbox.style.display = "none";
-  document.body.style.overflow = "auto";
-  scale = 1;
-  lightboxImg.style.transform = `scale(1)`;
-};
