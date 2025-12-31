@@ -753,6 +753,8 @@ html, body {
   color: #ff4c4c;
 }
 
+
+
 /* Permitir zoom no celular apenas na imagem */
 .lightbox-overlay img {
   touch-action: pinch-zoom; /* ativa zoom com gesto de pinça no mobile */
