@@ -100,7 +100,7 @@ function mostrarProdutos(escola) {
       lightbox.style.display = "flex";
       document.body.style.overflow = "hidden"; // bloqueia scroll
       lightboxImg.classList.add("zoom");
-      lightboxImg.style.transform = "translate(0px, 0px) scale(1)";
+      lightboxImg.style.transform = "translate(0px,0px) scale(1)";
       scale = 1;
       currentX = 0;
       currentY = 0;
@@ -250,16 +250,17 @@ Total: R$ ${total.toFixed(2)}
 ========================= */
 fecharLightbox.onclick = () => {
   lightbox.style.display = "none";
-  document.body.style.overflow = "auto"; // libera scroll
+  document.body.style.overflow = "auto";
   lightboxImg.classList.remove("zoom");
-  lightboxImg.style.transform = "translate(0px, 0px) scale(1)";
+  lightboxImg.style.transform = "translate(0px,0px) scale(1)";
   scale = 1;
   currentX = 0;
   currentY = 0;
+  lastTouchDistance = null;
 };
 
 /* =========================
-   ZOOM PROFISSIONAL NA IMAGEM DOS UNIFORMES
+   ZOOM PROFISSIONAL NA IMAGEM
 ========================= */
 let scale = 1;
 let currentX = 0, currentY = 0;
@@ -268,9 +269,7 @@ let isDragging = false;
 let startX = 0, startY = 0;
 let lastTouchDistance = null;
 
-lightboxImg.style.transition = "transform 0.2s ease";
-
-/* DESKTOP - roda mouse para zoom */
+/* DESKTOP - roda do mouse */
 lightboxImg.addEventListener("wheel", (e) => {
   e.preventDefault();
   const rect = lightboxImg.getBoundingClientRect();
@@ -284,7 +283,7 @@ lightboxImg.addEventListener("wheel", (e) => {
   scale = Math.min(Math.max(1, scale), 3);
 
   lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
-  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+  lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
 });
 
 /* DESKTOP - arrastar imagem */
@@ -299,11 +298,11 @@ document.addEventListener("mousemove", (e) => {
   e.preventDefault();
   currentX = e.clientX - startX;
   currentY = e.clientY - startY;
-  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+  lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
 });
 document.addEventListener("mouseup", () => isDragging = false);
 
-/* MOBILE - pinch para zoom */
+/* MOBILE - pinch zoom e arrastar */
 lightboxImg.addEventListener("touchstart", (e) => {
   if (e.touches.length === 2) {
     e.preventDefault();
@@ -326,13 +325,23 @@ lightboxImg.addEventListener("touchmove", (e) => {
     const delta = (distance - lastTouchDistance) * 0.01;
     scale += delta;
     scale = Math.min(Math.max(1, scale), 3);
-    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+    lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
     lastTouchDistance = distance;
   } else if (e.touches.length === 1 && isDragging) {
     e.preventDefault();
     currentX = e.touches[0].clientX - startX;
     currentY = e.touches[0].clientY - startY;
-    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
+
+    // limite de arraste para não sair do overlay
+    const rect = lightboxImg.getBoundingClientRect();
+    const parentRect = lightbox.getBoundingClientRect();
+    const maxX = Math.max((rect.width*scale - parentRect.width)/2,0);
+    const maxY = Math.max((rect.height*scale - parentRect.height)/2,0);
+
+    currentX = Math.min(Math.max(currentX, -maxX), maxX);
+    currentY = Math.min(Math.max(currentY, -maxY), maxY);
+
+    lightboxImg.style.transform = `translate(${currentX}px,${currentY}px) scale(${scale})`;
   }
 }, { passive: false });
 
