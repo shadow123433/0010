@@ -263,7 +263,12 @@ modal.querySelector("#confirmar").onclick = () => {
   if (!nome || !whats || !endereco || !numero)
     return showToast("Preencha os campos obrigatórios");
 
-  const itens = carrinho.map(i => `- ${i.nome} × ${i.quantidade}`).join("\n");
+ const itens = carrinho.map(i => {
+  return Object.entries(i.tamanhos)
+    .map(([tamanho, qtd]) => `- ${i.produto} (${tamanho} × ${qtd})`)
+    .join("\n");
+}).join("\n");
+
 
   const mensagem = `
 *NOVO PEDIDO DE UNIFORME*
