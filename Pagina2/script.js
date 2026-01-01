@@ -19,6 +19,12 @@ const botoesEscola = document.querySelectorAll(".escola-card button");
 const secaoEscolas = document.querySelector(".escolas");
 
 /* =========================
+   VARIÁVEIS DO CARRINHO
+========================= */
+const carrinhoContainer = document.getElementById("carrinhoContainer");
+const totalValor = document.getElementById("totalValor");
+
+/* =========================
    TOAST
 ========================= */
 const toast = document.createElement("div");
@@ -99,7 +105,7 @@ function mostrarProdutos(escola) {
     card.querySelector("img").onclick = () => {
       lightboxImg.src = produto.imagem;
       lightbox.style.display = "flex";
-      document.body.style.overflow = "hidden"; // bloqueia scroll
+      document.body.style.overflow = "hidden";
       lightboxImg.classList.add("zoom");
       lightboxImg.style.transform = "translate(0px,0px) scale(1)";
       scale = 1;
@@ -110,8 +116,7 @@ function mostrarProdutos(escola) {
     card.querySelector("button").onclick = () => {
       const tamanho = card.querySelector("select").value;
       if (!tamanho) return showToast("Selecione um tamanho");
-     addCarrinho(produto.nome, tamanho, produto.preco);
-
+      addCarrinho(produto.nome, tamanho, produto.preco);
     };
 
     produtosGrid.appendChild(card);
@@ -147,54 +152,64 @@ function addCarrinho(produto, tamanho, preco) {
   showToast("Item adicionado");
 }
 
-
-
 function atualizarCarrinho() {
-  if (!carrinho.length) {
-    carrinhoTexto.innerHTML = "Nenhum item adicionado.";
-    totalTexto.innerHTML = `<strong>Total:</strong> R$ 0,00`;
-    return;
-  }
+  carrinhoContainer.innerHTML = "";
 
-  carrinhoTexto.innerHTML = carrinho.map(item => {
-    const tamanhos = Object.entries(item.tamanhos)
-      .map(([tam, qtd]) => `${tam} × ${qtd}`)
-      .join(" | ");
+  carrinho.forEach(item => {
+    Object.entries(item.tamanhos).forEach(([tamanho, qtd]) => {
+      const linha = document.createElement("div");
+      linha.className = "linha-carrinho";
 
-    return `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <span>• ${item.produto} - Tam: ${tamanhos}</span>
-        <span
-          style="color:red; cursor:pointer; font-weight:bold;"
-          onclick="removerItem('${item.produto}')"
-        >✖</span>
-      </div>
-    `;
-  }).join("");
+      linha.innerHTML = `
+        <span>• ${item.produto} (${tamanho} × ${qtd})</span>
+        <button 
+          class="btn-remover" 
+          data-produto="${item.produto}" 
+          data-tamanho="${tamanho}"
+        >✖</button>
+      `;
 
-  totalTexto.innerHTML = `<strong>Total:</strong> R$ ${total.toFixed(2)}`;
+      carrinhoContainer.appendChild(linha);
+    });
+  });
+
+  document.querySelectorAll(".btn-remover").forEach(btn => {
+    btn.onclick = e => {
+      removerItem(
+        e.target.dataset.produto,
+        e.target.dataset.tamanho
+      );
+    };
+  });
+
+  totalValor.textContent = total.toFixed(2);
 }
-
-
 
 /* =========================
    REMOVER ITEM
 ========================= */
-function removerItem(produto) {
-  const index = carrinho.findIndex(i => i.produto === produto);
-  if (index === -1) return;
+function removerItem(produto, tamanho) {
+  const itemIndex = carrinho.findIndex(i => i.produto === produto);
+  if (itemIndex === -1) return;
 
-  const item = carrinho[index];
-  const qtdTotal = Object.values(item.tamanhos).reduce((a, b) => a + b, 0);
+  const item = carrinho[itemIndex];
 
-  total -= qtdTotal * item.precoUnitario;
-  carrinho.splice(index, 1);
+  if (!item.tamanhos[tamanho]) return;
+
+  item.tamanhos[tamanho]--;
+  total -= item.precoUnitario;
+
+  if (item.tamanhos[tamanho] === 0) {
+    delete item.tamanhos[tamanho];
+  }
+
+  if (Object.keys(item.tamanhos).length === 0) {
+    carrinho.splice(itemIndex, 1);
+  }
 
   atualizarCarrinho();
   showToast("Item removido");
 }
-
-
 
 /* =========================
    MODAL
@@ -245,12 +260,10 @@ modal.querySelector("#confirmar").onclick = () => {
   const referencia = modal.querySelector("#referencia").value;
   const pedidoID = gerarPedidoID(); 
 
-
   if (!nome || !whats || !endereco || !numero)
     return showToast("Preencha os campos obrigatórios");
 
   const itens = carrinho.map(i => `- ${i.nome} × ${i.quantidade}`).join("\n");
-
 
   const mensagem = `
 *NOVO PEDIDO DE UNIFORME*
@@ -291,12 +304,9 @@ fecharLightbox.onclick = () => {
   lastTouchDistance = null;
 };
 
-
-
 /* =========================
    ZOOM POR REGIÃO (IMAGEM FIXA)
 ========================= */
-
 const MIN_SCALE = 1;
 const MAX_SCALE = 4;
 
@@ -306,7 +316,6 @@ lightboxImg.style.transition = "transform 0.12s linear";
 lightboxImg.style.transformOrigin = "center center";
 lightboxImg.style.touchAction = "none";
 
-/* Reset ao abrir */
 function resetLightbox() {
   scale = 1;
   originLocked = false;
@@ -315,13 +324,9 @@ function resetLightbox() {
 }
 lightboxImg.addEventListener("load", resetLightbox);
 
-/* -------------------------
-   DESKTOP — Scroll com ponto fixo
-------------------------- */
 lightboxImg.addEventListener("wheel", (e) => {
   e.preventDefault();
 
-  // define o ponto SOMENTE no primeiro zoom
   if (!originLocked) {
     const rect = lightboxImg.getBoundingClientRect();
     const originX = ((e.clientX - rect.left) / rect.width) * 100;
@@ -331,15 +336,12 @@ lightboxImg.addEventListener("wheel", (e) => {
     originLocked = true;
   }
 
-  scale += e.deltaY * -0.004; // um pouco lento hehe
+  scale += e.deltaY * -0.004;
   scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
   lightboxImg.style.transform = `scale(${scale})`;
 }, { passive: false });
 
-/* -------------------------
-   MOBILE — Pinch com ponto fixo
-------------------------- */
 let lastDistance = null;
 
 lightboxImg.addEventListener("touchstart", (e) => {
@@ -348,7 +350,6 @@ lightboxImg.addEventListener("touchstart", (e) => {
     const dy = e.touches[0].clientY - e.touches[1].clientY;
     lastDistance = Math.hypot(dx, dy);
 
-    // trava o ponto do zoom UMA VEZ
     if (!originLocked) {
       const rect = lightboxImg.getBoundingClientRect();
       const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
@@ -371,7 +372,7 @@ lightboxImg.addEventListener("touchmove", (e) => {
     const dy = e.touches[0].clientY - e.touches[1].clientY;
     const distance = Math.hypot(dx, dy);
 
-    scale += (distance - lastDistance) * 0.01; // um pouco lento 
+    scale += (distance - lastDistance) * 0.01;
     scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
 
     lightboxImg.style.transform = `scale(${scale})`;
