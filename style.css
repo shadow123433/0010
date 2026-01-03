@@ -153,9 +153,9 @@ img {
     width: 110px;   /* tamanho profissional */
     height: auto;
     display: block;
+    border-radius: 12px;
+    margin-left: 10px;
 }
-
-
 
 
 /* =========================
