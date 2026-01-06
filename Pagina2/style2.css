@@ -40,27 +40,23 @@ body {
 .pagina2 .titulo-bg {
     position: relative;
     background-image: url("../imagensdapagina2/imagem5.jpg");
-    background-size: cover;
-    background-position: center;
-    min-height: 300px;
+    background-size: cover;        /* preenche todo o banner */
+    background-repeat: no-repeat;  /* evita repetição */
+    background-position: center 5%;   /* centraliza a imagem */
+    min-height: 400px;             /* mantém altura original */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+/* Overlay escuro suave para destacar o texto */
 .pagina2 .titulo-bg::before {
     content: "";
     position: absolute;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.25); /* overlay mais leve */
 }
 
-.pagina2 .titulo-bg h3 {
-    position: relative;
-    color: #fff;
-    font-size: 40px;
-    z-index: 1;
-}
 
 /* =========================
    TÍTULOS GERAIS
@@ -998,4 +994,42 @@ html, body {
     font-size: 15px;
     font-weight: 700;
   }
+}
+
+
+
+
+.grid-escolas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  padding: 24px;
+}
+
+.card-escola {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-escola h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.card-escola button {
+  border: none;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4f8cff, #3b6fe0);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
 }
