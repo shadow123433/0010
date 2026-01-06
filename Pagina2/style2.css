@@ -39,7 +39,7 @@ body {
 ========================= */
  .titulo-bg {                           /* Container do banner/título */
     position: relative;               /* Base para posicionar o overlay (::before) */
-    background-image: url("../imagensdapagina2/imagem6.png"); /* Imagem de fundo do banner */
+    background-image: url("../imagensdapagina2/imagem5.png"); /* Imagem de fundo do banner */
     background-size: cover;           /* Faz a imagem cobrir todo o container (pode cortar) */
     background-position: center 30%;  /* Ajusta a posição vertical da imagem (desce um pouco) */
     min-height: 350px;                /* Define altura mínima do banner */
