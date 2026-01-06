@@ -962,28 +962,42 @@ html, body {
 
 
 
-.escolas-grid {
+/* =========================
+   GRID DOS UNIFORMES
+========================= */
+.produtos-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* desktop */
+  grid-template-columns: repeat(3, 1fr); /* DESKTOP */
   gap: 28px;
 }
 
-/* MOBILE – visual premium */
+/* =========================
+   MOBILE – IGUAL DESKTOP
+========================= */
 @media (max-width: 768px) {
-  .escolas-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px; /* respiro sem apertar */
-    padding: 0 12px; /* margem lateral elegante */
+  .produtos-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 lado a lado */
+    gap: 16px;
+    padding: 0 12px;
   }
 
-  .escola-card {
-    border-radius: 18px;
+  .produto-card {
     padding: 14px;
+    border-radius: 18px;
   }
 
-  .escola-card img {
+  .produto-card img {
     width: 100%;
-    aspect-ratio: 4 / 3; /* mantém proporção bonita */
+    aspect-ratio: 1 / 1; /* produto grande e bonito */
     object-fit: contain;
+  }
+
+  .produto-card strong {
+    font-size: 14px;
+  }
+
+  .produto-card .preco {
+    font-size: 15px;
+    font-weight: 700;
   }
 }
