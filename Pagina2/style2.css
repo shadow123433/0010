@@ -958,6 +958,32 @@ html, body {
 
 
 
+.escolas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* desktop */
+  gap: 28px;
+}
+
+/* MOBILE – visual premium */
+@media (max-width: 768px) {
+  .escolas-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px; /* respiro sem apertar */
+    padding: 0 12px; /* margem lateral elegante */
+  }
+
+  .escola-card {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .escola-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3; /* mantém proporção bonita */
+    object-fit: contain;
+  }
+}
+
 
 
 
