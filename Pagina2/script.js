@@ -95,7 +95,7 @@ function mostrarProdutos(escola) {
       <img src="${produto.imagem}" class="produto-img">
       <strong>${produto.nome}</strong>
       <select>
-        <option value="">Selecione o tamanho</option>
+        <option value="">Tamanhos</option>
         ${produto.tamanhos.map(t => `<option>${t}</option>`).join("")}
       </select>
       <div class="preco">R$ ${produto.preco.toFixed(2)}</div>
