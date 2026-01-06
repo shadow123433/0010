@@ -72,12 +72,13 @@ h2 {
     margin-bottom: 30px;
 }
 
-h3 {
-    text-align: center;
-    font-size: 30px;
-    margin-top: 40px;
-    color: #111;
+.pagina2 .titulo-bg h3 {
+    position: relative;
+    color: #fff;
+    font-size: 22px;
+    z-index: 1;
 }
+
 
 /* =========================
    SEÇÃO ESCOLAS
