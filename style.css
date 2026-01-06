@@ -293,3 +293,169 @@ html, body {
     -ms-touch-action: pan-y;         /* compatibilidade com IE */
     overscroll-behavior-y: contain;  /* evita efeitos indesejados no scroll */
 }
+
+
+
+
+.botao-pagina {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px auto;
+  padding: 18px 42px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 18px;
+
+  /* AZUL (substitui o verde) */
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb,
+    #1d4ed8
+  );
+  background-size: 220% 220%;
+
+  position: relative;
+  overflow: hidden;
+
+  box-shadow:
+    0 16px 36px rgba(37, 99, 235, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.35);
+
+  animation: azul-equilibrado 6s ease infinite;
+}
+
+/* borda premium animada */
+.botao-pagina::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    #60a5fa,
+    #93c5fd,
+    #60a5fa,
+    transparent 70%
+  );
+  animation: borda-premium 2.8s linear infinite;
+  z-index: -1;
+}
+
+.botao-pagina::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: inherit;
+  border-radius: 16px;
+  z-index: -1;
+}
+
+@keyframes borda-premium {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes azul-equilibrado {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.botao-pagina:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px rgba(37, 99, 235, 0.6);
+}
+
+.botao-pagina:active {
+  transform: scale(0.96);
+}
+
+.botao-pagina i,
+.botao-pagina svg {
+  margin-right: 8px;
+}
+
+/* Container exclusivo do botão */
+.botao-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 20px 0;
+}
+
+/* =====================
+   MOBILE (CORREÇÃO REAL)
+===================== */
+@media (max-width: 768px) {
+  .botao-pagina {
+    display: flex;
+    justify-content: center;
+    width: 85%;
+    max-width: 280px;
+    padding: 14px 0;
+    font-size: 18px;
+  }
+}
+
+/* animação suave */
+@keyframes verde-equilibrado {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .botao-pagina {
+    font-size: 18px;
+    padding: 14px 0;
+  }
+}
+
+/* Ícones dentro do botão */
+.botao-pagina i,
+.botao-pagina svg {
+  margin-right: 8px;
+}
+
+/* Animação borda premium */
+.botao-pagina::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 30%, #00d4ff, #00ffe0, #00d4ff, transparent 70%);
+  animation: borda-premium 2.8s linear infinite;
+  z-index: -1;
+}
+
+.botao-pagina::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: inherit;
+  border-radius: 16px;
+  z-index: -1;
+}
+
+@keyframes borda-premium {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.botao-pagina:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.5);
+}
+
+.botao-pagina:active {
+  transform: scale(0.96);
+}
+

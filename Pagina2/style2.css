@@ -767,3 +767,223 @@ html, body {
     color: #ff4c4c;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+.botao-voltar-inicio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px auto 20px;
+  padding: 15px 38px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 18px;
+
+  /* AZUL PROFISSIONAL */
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb,
+    #1d4ed8
+  );
+
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+}
+
+/* linha de energia */
+.botao-voltar-inicio::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    #93c5fd,
+    #3b82f6,
+    #93c5fd,
+    transparent 70%
+  );
+  opacity: 0.75;
+  z-index: -1;
+}
+
+/* máscara interna */
+.botao-voltar-inicio::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: inherit;
+  border-radius: 16px;
+  z-index: -1;
+}
+
+.botao-voltar-inicio:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(37, 99, 235, 0.6);
+}
+
+
+.botao-voltar-inicio:active {
+  transform: scale(0.96);
+}
+@media (max-width: 768px) {
+  .botao-voltar-inicio {
+    width: 90%;
+    max-width: 340px;
+    margin: 28px auto 16px;
+    padding: 14px 24px;
+    font-size: 14px;
+    border-radius: 16px;
+  }
+
+  /* reduz energia visual no mobile */
+  .botao-voltar-inicio::before {
+    opacity: 0.6;
+  }
+}
+
+
+@media (max-width: 768px) {
+    .marcas {
+        margin-top: 30px;
+    }
+
+    .produtos {
+        margin-top: 40px;
+    }
+}
+
+
+
+
+/* BOTÃO ESCOLAS — AZUL COM LINHA CIRCULANDO */
+.escola-card button {
+  position: relative;
+  width: 100%;
+  padding: 14px 0;
+
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb,
+    #1d4ed8
+  );
+
+  box-shadow:
+    0 10px 26px rgba(37, 99, 235, 0.45),
+    inset 0 2px 4px rgba(255,255,255,0.35);
+
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* LINHA AZUL GIRANDO */
+.escola-card button::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+
+  background: conic-gradient(
+  from 0deg,
+  transparent 20%,
+  #93c5fd,   /* azul claro bem visível */
+  #60a5fa,   /* azul claro forte */
+  #93c5fd,   /* volta suave */
+  transparent 80%
+);
+
+
+  animation: girar-borda 3s linear infinite;
+  z-index: -1;
+}
+/* MÁSCARA INTERNA (AZUL CLARO) */
+.escola-card button::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 12px;
+
+  background: linear-gradient(
+  135deg,
+  #4f8cff,  /* azul real, porém suave */
+  #3b82f6,  /* azul padrão profissional */
+  #2563eb   /* azul real levemente mais forte */
+);
+
+
+  z-index: -1;
+}
+
+/* ANIMAÇÃO */
+@keyframes girar-borda {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* HOVER SUAVE */
+.escola-card button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 34px rgba(37, 99, 235, 0.6);
+}
+
+/* CLICK */
+.escola-card button:active {
+  transform: scale(0.96);
+}
+
+
+
+
+
+
+
+.escolas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* desktop */
+  gap: 28px;
+}
+
+/* MOBILE – visual premium */
+@media (max-width: 768px) {
+  .escolas-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px; /* respiro sem apertar */
+    padding: 0 12px; /* margem lateral elegante */
+  }
+
+  .escola-card {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .escola-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3; /* mantém proporção bonita */
+    object-fit: contain;
+  }
+}
