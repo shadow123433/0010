@@ -17,8 +17,7 @@
     </header>
 
     <!-- BANNER -->
-    <div class="titulo-bg">
-    </div>
+    <div class="titulo-bg"></div>
 
     <hr>
 
@@ -47,10 +46,10 @@
     </section>
     <!-- FIM ESCOLAS -->
 
-   
     <!-- CARRINHO -->
     <section class="carrinho">
         <h2>Carrinho</h2>
+
         <div id="carrinhoContainer">
             <p>Nenhum item adicionado.</p>
         </div>
@@ -60,12 +59,37 @@
         </div>
 
         <button class="finalizar">Finalizar pedido via WhatsApp</button>
+
+        <button class="reservar">
+            Reservar para retirada (WhatsApp)
+        </button>
     </section>
 
 </div>
 
-<!-- LIGHTBOX (meu jS vai usar esse elemento) -->
+<!-- LIGHTBOX (JS usa esse elemento) -->
 <div class="lightbox-overlay" id="lightbox"></div>
+
+<!-- MODAL RESERVA -->
+<div class="modal-overlay" id="modalReserva" style="display:none;">
+    <div class="modal">
+        <h2>Reserva para retirada</h2>
+
+        <input id="nomeReserva" placeholder="Nome completo">
+        <input id="whatsReserva" placeholder="WhatsApp">
+
+        <p class="aviso">
+            ⚠️ Esta é uma reserva, não um pedido<br>
+            ⚠️ Sujeita à confirmação da loja<br>
+            ⚠️ Validade: 24h
+        </p>
+
+        <div>
+            <button id="cancelarReserva">Cancelar</button>
+            <button id="confirmarReserva">Confirmar reserva</button>
+        </div>
+    </div>
+</div>
 
 <!-- VOLTAR -->
 <a href="../index.html" class="botao-voltar-inicio">
@@ -74,6 +98,7 @@
 
 <!-- JS -->
 <script src="script.js"></script>
+<script src="reserva.js"></script>
 
 </body>
 </html>

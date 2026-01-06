@@ -43,17 +43,17 @@ function showToast(msg) {
 const produtosPorEscola = {
   IFES: [
     { nome: "Camisa masculina e feminina IFES", preco: 49.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/camisa.png" },
-    { nome: "Short masculino IFES", preco: 79.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/bermuda.png" },
+    { nome: "Bermuda masculina IFES", preco: 79.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/bermuda.png" },
     { nome: "Calça feminina IFES", preco: 89.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/calçaa.png" }
   ],
   SESI: [
     { nome: "Camisa masculina e feminina SESI", preco: 59.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/camisa.png" },
-    { nome: "Bermuda SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calção.png" },
+    { nome: "Bermuda masculina SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calção.png" },
     { nome: "Calça feminina SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calça.png" }
   ],
   "CRISTO REI": [
     { nome: "Camisa masculina e feminina CRISTO REI", preco: 54.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.png" },
-    { nome: "Bermuda masculina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.png" },
+    { nome: "Bermuda masculina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/bermuda.png" },
     { nome: "Calça feminina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/calça.png" }
   ]
 };
@@ -113,11 +113,25 @@ function mostrarProdutos(escola) {
       currentY = 0;
     };
 
-    card.querySelector("button").onclick = () => {
-      const tamanho = card.querySelector("select").value;
-      if (!tamanho) return showToast("Selecione um tamanho");
-      addCarrinho(produto.nome, tamanho, produto.preco);
-    };
+  card.querySelector("button").onclick = () => {
+  const select = card.querySelector("select");
+  const tamanho = select.value;
+
+  if (!tamanho) {
+    showToast("Selecione um tamanho");
+
+    select.classList.add("tamanho-destaque");
+
+    setTimeout(() => {
+      select.classList.remove("tamanho-destaque");
+    }, 3000);
+
+    return;
+  }
+
+  addCarrinho(produto.nome, tamanho, produto.preco);
+};
+
 
     produtosGrid.appendChild(card);
   });
@@ -149,7 +163,7 @@ function addCarrinho(produto, tamanho, preco) {
   total += preco;
 
   atualizarCarrinho();
-  showToast("Item adicionado");
+  showToast("Este item foi adicionado ao carrinho");
 }
 
 function atualizarCarrinho() {
@@ -208,7 +222,7 @@ function removerItem(produto, tamanho) {
   }
 
   atualizarCarrinho();
-  showToast("Item removido");
+  showToast("Este item foi removido do carrinho");
 }
 
 /* =========================
@@ -221,17 +235,22 @@ modal.innerHTML = `
   <div class="modal">
     <h2>Confirmação de entrega</h2>
     <input id="nome" placeholder="Nome completo">
-    <input id="whats" placeholder="WhatsApp">
     <input id="endereco" placeholder="Rua / Avenida">
     <input id="numero" placeholder="Número da casa">
     <input id="referencia" placeholder="Ponto de referência">
     <div>
-      <button id="cancelar">Cancelar</button>
-      <button id="confirmar">Confirmar pedido</button>
+      <button id="cancelar">Cancelar pedido</button>
+      <button id="confirmar">Enviar pedido</button>
     </div>
   </div>
 `;
 document.body.appendChild(modal);
+const inputNumero = modal.querySelector("#numero");
+
+inputNumero.addEventListener("input", () => {
+  inputNumero.value = inputNumero.value.replace(/\D/g, "");
+});
+
 
 /* =========================
    EVENTOS
@@ -246,7 +265,11 @@ document.getElementById("fecharProdutos").onclick = () => {
 };
 
 finalizarBtn.onclick = () => {
-  if (!carrinho.length) return showToast("Carrinho vazio");
+  if (!carrinho.length) {
+    alert("Carrinho vazio. Adicione itens antes de finalizar o pedido.");
+    return;
+  }
+
   modal.style.display = "flex";
 };
 
@@ -254,13 +277,12 @@ modal.querySelector("#cancelar").onclick = () => modal.style.display = "none";
 
 modal.querySelector("#confirmar").onclick = () => {
   const nome = modal.querySelector("#nome").value;
-  const whats = modal.querySelector("#whats").value;
   const endereco = modal.querySelector("#endereco").value;
   const numero = modal.querySelector("#numero").value;
   const referencia = modal.querySelector("#referencia").value;
   const pedidoID = gerarPedidoID(); 
 
-  if (!nome || !whats || !endereco || !numero)
+  if (!nome || !endereco || !numero)
     return showToast("Preencha os campos obrigatórios");
 
  const itens = carrinho.map(i => {
@@ -275,11 +297,16 @@ modal.querySelector("#confirmar").onclick = () => {
 Pedido: ${pedidoID}
 
 Nome: ${nome}
-WhatsApp: ${whats}
 
-Endereço:
-${endereco}, Nº ${numero}
-${referencia ? "Ref: " + referencia : ""}
+
+Endereço: ${endereco},
+
+
+
+Numero da casaº ${numero}
+
+
+${referencia ? "Referência: " + referencia : ""}
 
 Itens:
 ${itens}
