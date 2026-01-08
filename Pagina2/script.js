@@ -299,7 +299,7 @@ Pedido: ${pedidoID}
 Nome: ${nome}
 
 
-Endereço: ${endereco},
+Endereço: ${endereco}
 
 
 
