@@ -34,16 +34,16 @@ confirmarReserva.onclick = () => {
   const mensagem = `
 *NOVA RESERVA DE UNIFORMES*
 
-Nome: ${nome}
+Nome: ${nome}.
 
 
 Itens reservados:
 ${itensTexto}
 
 
-⚠️ Reserva válida por 24h
-⚠️ Retirada na loja
-⚠️ O valor será confirmado no momento da retirada
+⚠️ Reserva válida por 24h.
+⚠️ Retirada na loja.
+⚠️ O valor será confirmado pela loja.
 ⚠️ Não é necessário escrever nada.
 Basta enviar esta mensagem e aguardar a confirmação da loja.
 `.trim();

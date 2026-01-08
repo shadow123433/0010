@@ -294,24 +294,24 @@ modal.querySelector("#confirmar").onclick = () => {
 
   const mensagem = `
 *NOVO PEDIDO DE UNIFORME*
-Pedido: ${pedidoID}
+Pedido: ${pedidoID}.
 
-Nome: ${nome}
-
-
-Endereço: ${endereco}
+Nome: ${nome}.
 
 
+Endereço: ${endereco}.
 
-Numero da casaº ${numero}
 
 
-${referencia ? "Referência: " + referencia : ""}
+Numero da casaº ${numero}.
+
+
+${referencia ? "Referência: " + referencia : ""}.
 
 Itens:
 ${itens}
 
- ⚠️O valor será confirmado pela loja
+ ⚠️O valor será confirmado pela loja.
  ⚠️ Não é necessário escrever nada.
 Basta enviar esta mensagem e aguardar a confirmação da loja.
 `.trim();
