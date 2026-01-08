@@ -39,7 +39,7 @@ body {
 ========================= */
  .titulo-bg {                           /* Container do banner/título */
     position: relative;               /* Base para posicionar o overlay (::before) */
-    background-image: url("../imagensdapagina2/imagem5.png"); /* Imagem de fundo do banner */
+    background-image: url("../imagensdapagina2/imagem6.png"); /* Imagem de fundo do banner */
     background-size: cover;           /* Faz a imagem cobrir todo o container (pode cortar) */
     background-position: center 30%;  /* Ajusta a posição vertical da imagem (desce um pouco) */
     min-height: 350px;                /* Define altura mínima do banner */
@@ -47,7 +47,9 @@ body {
     align-items: center;              /* Centraliza o conteúdo verticalmente */
     justify-content: center;          /* Centraliza o conteúdo horizontalmente */
     text-align: center;               /* Centraliza o texto */
-}
+    border-radius: 20px;   /* ⬅ arredondamento */
+    overflow: hidden;     /* ⬅ ESSENCIAL */
+  }
 
 /* overlay escuro */
 .titulo-bg::before {                 /* Pseudo-elemento usado como camada escura */
@@ -56,9 +58,8 @@ body {
     inset: 0;                         /* Ocupa 100% da largura e altura do container */
     background-color: rgba(0, 0, 0, 0.55); /* Escurece a imagem sem escondê-la */
     z-index: 1;                       /* Fica acima da imagem e abaixo do texto */
-}
-
-
+    border-radius: 20px;
+  }
 
 
 /* =========================

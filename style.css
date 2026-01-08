@@ -39,7 +39,9 @@ hr {
     align-items: center;              /* Centraliza o conteúdo verticalmente */
     justify-content: center;          /* Centraliza o conteúdo horizontalmente */
     text-align: center;               /* Centraliza o texto */
-}
+    border-radius: 20px;   
+    overflow: hidden;
+  }   
 
 /* overlay escuro */
 .titulo-bg::before {                 /* Pseudo-elemento usado como camada escura */
@@ -48,7 +50,8 @@ hr {
     inset: 0;                         /* Ocupa 100% da largura e altura do container */
     background-color: rgba(0, 0, 0, 0.55); /* Escurece a imagem sem escondê-la */
     z-index: 1;                       /* Fica acima da imagem e abaixo do texto */
-}
+    border-radius: 20px;
+  }
 
 /* texto do banner */
 .titulo-bg h1 {                      /* Título dentro do banner */

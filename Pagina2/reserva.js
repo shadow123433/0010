@@ -17,10 +17,9 @@ cancelarReserva.onclick = () => {
 
 confirmarReserva.onclick = () => {
   const nome = document.getElementById('nomeReserva').value.trim();
-  const whats = document.getElementById('whatsReserva').value.trim();
 
-  if (!nome || !whats) {
-    alert('Preencha nome e WhatsApp');
+  if (!nome) {
+    alert('Por favor preencha o seu nome completo para continuar com a reserva.');
     return;
   }
 
@@ -33,22 +32,23 @@ confirmarReserva.onclick = () => {
   });
 
   const mensagem = `
-*RESERVA DE UNIFORMES*
+*NOVA RESERVA DE UNIFORMES*
 
 Nome: ${nome}
-WhatsApp: ${whats}
+
 
 Itens reservados:
 ${itensTexto}
 
-Total estimado: R$ ${total.toFixed(2)}
 
 ⚠️ Reserva válida por 24h
 ⚠️ Retirada na loja
-⚠️ Valor sujeito à confirmação
+⚠️ O valor será confirmado no momento da retirada
+⚠️ Não é necessário escrever nada.
+Basta enviar esta mensagem e aguardar a confirmação da loja.
 `.trim();
 
-  const numeroLoja = '27998040952'; // seu número
+  const numeroLoja = '27998040952'; 
   const url = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(mensagem)}`;
 
  window.open(url, '_blank');

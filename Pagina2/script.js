@@ -312,6 +312,8 @@ Itens:
 ${itens}
 
  ⚠️O valor será confirmado pela loja
+ ⚠️ Não é necessário escrever nada.
+Basta enviar esta mensagem e aguardar a confirmação da loja.
 `.trim();
 
   window.open(
