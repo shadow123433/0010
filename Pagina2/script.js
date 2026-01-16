@@ -1,8 +1,8 @@
 /* =========================
    ESTADO GLOBAL
 ========================= */
-let carrinho = [];
-let total = 0;
+window.carrinho = [];
+window.total = 0;
 
 function gerarPedidoID() {
   return "PED-" + Date.now().toString().slice(-6);
@@ -12,11 +12,13 @@ function gerarPedidoID() {
    ELEMENTOS FIXOS
 ========================= */
 const container = document.querySelector(".container");
-const carrinhoTexto = document.querySelector(".carrinho p");
-const totalTexto = document.querySelector(".total");
 const finalizarBtn = document.querySelector(".finalizar");
 const botoesEscola = document.querySelectorAll(".escola-card button");
 const secaoEscolas = document.querySelector(".escolas");
+const pedidoForm = document.getElementById("pedido-form");
+const pedidoLoading = document.getElementById("pedido-loading");
+const pedidoConfirmado = document.getElementById("pedido-confirmado");
+const pedidoIdSpan = document.getElementById("pedidoId");
 
 /* =========================
    VARIÁVEIS DO CARRINHO
@@ -106,32 +108,22 @@ function mostrarProdutos(escola) {
       lightboxImg.src = produto.imagem;
       lightbox.style.display = "flex";
       document.body.style.overflow = "hidden";
-      lightboxImg.classList.add("zoom");
-      lightboxImg.style.transform = "translate(0px,0px) scale(1)";
-      scale = 1;
-      currentX = 0;
-      currentY = 0;
+      resetLightbox();
     };
 
-  card.querySelector("button").onclick = () => {
-  const select = card.querySelector("select");
-  const tamanho = select.value;
+    card.querySelector("button").onclick = () => {
+      const select = card.querySelector("select");
+      const tamanho = select.value;
 
-  if (!tamanho) {
-    showToast("Selecione um tamanho");
+      if (!tamanho) {
+        showToast("Selecione um tamanho");
+        select.classList.add("tamanho-destaque");
+        setTimeout(() => select.classList.remove("tamanho-destaque"), 3000);
+        return;
+      }
 
-    select.classList.add("tamanho-destaque");
-
-    setTimeout(() => {
-      select.classList.remove("tamanho-destaque");
-    }, 3000);
-
-    return;
-  }
-
-  addCarrinho(produto.nome, tamanho, produto.preco);
-};
-
+      addCarrinho(produto.nome, tamanho, produto.preco);
+    };
 
     produtosGrid.appendChild(card);
   });
@@ -139,28 +131,21 @@ function mostrarProdutos(escola) {
   secaoEscolas.style.display = "none";
   produtosSec.style.display = "block";
   produtosSec.scrollIntoView({ behavior: "smooth", block: "start" });
-
-  produtosSec.classList.add("destaque");
-  setTimeout(() => produtosSec.classList.remove("destaque"), 1200);
 }
 
 /* =========================
    CARRINHO
 ========================= */
 function addCarrinho(produto, tamanho, preco) {
-  let item = carrinho.find(i => i.produto === produto);
+  let item = window.carrinho.find(i => i.produto === produto);
 
   if (!item) {
-    item = {
-      produto,
-      tamanhos: {},
-      precoUnitario: preco
-    };
-    carrinho.push(item);
+    item = { produto, tamanhos: {}, precoUnitario: preco };
+    window.carrinho.push(item);
   }
 
   item.tamanhos[tamanho] = (item.tamanhos[tamanho] || 0) + 1;
-  total += preco;
+  window.total += preco;
 
   atualizarCarrinho();
   showToast("Este item foi adicionado ao carrinho");
@@ -169,64 +154,47 @@ function addCarrinho(produto, tamanho, preco) {
 function atualizarCarrinho() {
   carrinhoContainer.innerHTML = "";
 
-  carrinho.forEach(item => {
+  window.carrinho.forEach(item => {
     Object.entries(item.tamanhos).forEach(([tamanho, qtd]) => {
       const linha = document.createElement("div");
       linha.className = "linha-carrinho";
-
       linha.innerHTML = `
         <span>• ${item.produto} (${tamanho} × ${qtd})</span>
-        <button 
-          class="btn-remover" 
-          data-produto="${item.produto}" 
-          data-tamanho="${tamanho}"
-        >✖</button>
+        <button class="btn-remover" data-produto="${item.produto}" data-tamanho="${tamanho}">✖</button>
       `;
-
       carrinhoContainer.appendChild(linha);
     });
   });
 
   document.querySelectorAll(".btn-remover").forEach(btn => {
-    btn.onclick = e => {
-      removerItem(
-        e.target.dataset.produto,
-        e.target.dataset.tamanho
-      );
-    };
+    btn.onclick = e => removerItem(e.target.dataset.produto, e.target.dataset.tamanho);
   });
 
-  totalValor.textContent = total.toFixed(2);
+  totalValor.textContent = window.total.toFixed(2);
 }
 
 /* =========================
    REMOVER ITEM
 ========================= */
 function removerItem(produto, tamanho) {
-  const itemIndex = carrinho.findIndex(i => i.produto === produto);
+  const itemIndex = window.carrinho.findIndex(i => i.produto === produto);
   if (itemIndex === -1) return;
 
-  const item = carrinho[itemIndex];
-
+  const item = window.carrinho[itemIndex];
   if (!item.tamanhos[tamanho]) return;
 
   item.tamanhos[tamanho]--;
-  total -= item.precoUnitario;
+  window.total -= item.precoUnitario;
 
-  if (item.tamanhos[tamanho] === 0) {
-    delete item.tamanhos[tamanho];
-  }
-
-  if (Object.keys(item.tamanhos).length === 0) {
-    carrinho.splice(itemIndex, 1);
-  }
+  if (item.tamanhos[tamanho] === 0) delete item.tamanhos[tamanho];
+  if (!Object.keys(item.tamanhos).length) window.carrinho.splice(itemIndex, 1);
 
   atualizarCarrinho();
   showToast("Este item foi removido do carrinho");
 }
 
 /* =========================
-   MODAL
+   MODAL PEDIDO
 ========================= */
 const modal = document.createElement("div");
 modal.className = "modal-overlay";
@@ -245,106 +213,86 @@ modal.innerHTML = `
   </div>
 `;
 document.body.appendChild(modal);
-const inputNumero = modal.querySelector("#numero");
-
-inputNumero.addEventListener("input", () => {
-  inputNumero.value = inputNumero.value.replace(/\D/g, "");
-});
-
 
 /* =========================
-   EVENTOS
+   FINALIZAR PEDIDO
 ========================= */
-botoesEscola.forEach(btn => {
-  btn.onclick = () => mostrarProdutos(btn.dataset.escola);
-});
-
-document.getElementById("fecharProdutos").onclick = () => {
-  produtosSec.style.display = "none";
-  secaoEscolas.style.display = "block";
-};
-
 finalizarBtn.onclick = () => {
-  if (!carrinho.length) {
-    alert("Carrinho vazio. Adicione itens antes de finalizar o pedido.");
-    return;
-  }
-
+  if (!window.carrinho.length) return alert("Carrinho vazio");
   modal.style.display = "flex";
 };
 
 modal.querySelector("#cancelar").onclick = () => modal.style.display = "none";
 
 modal.querySelector("#confirmar").onclick = () => {
-  const nome = modal.querySelector("#nome").value;
-  const endereco = modal.querySelector("#endereco").value;
-  const numero = modal.querySelector("#numero").value;
-  const referencia = modal.querySelector("#referencia").value;
-  const pedidoID = gerarPedidoID(); 
+const nome = document.getElementById("nome").value.trim();
+const endereco = document.getElementById("endereco").value.trim();
+const numero = document.getElementById("numero").value.trim();
+const referencia = document.getElementById("referencia").value.trim();
+const pedidoID = gerarPedidoID();
 
-  if (!nome || !endereco || !numero)
-    return showToast("Preencha os campos obrigatórios");
+  if (!nome || !endereco || !numero) return showToast("Preencha os campos obrigatórios");
 
- const itens = carrinho.map(i => {
-  return Object.entries(i.tamanhos)
-    .map(([tamanho, qtd]) => `- ${i.produto} (${tamanho} × ${qtd})`)
-    .join("\n");
-}).join("\n");
+const totalCalculado = window.carrinho.reduce((acc, item) => {
+  return acc + Object.values(item.tamanhos).reduce((sum, qtd) => sum + qtd * item.precoUnitario, 0);
+}, 0);
 
-
-  const mensagem = `
-*NOVO PEDIDO DE UNIFORME*
-Pedido: ${pedidoID}.
-
-Nome: ${nome}.
-
-
-Endereço: ${endereco}.
-
+const pedido = {
+  tipo: "PEDIDO",
+  pedidoID,
+  nome,
+  endereco,
+  numeroCasa: numero,
+  referencia,
+  itens: window.carrinho,
+  total: totalCalculado,
+  data: new Date().toISOString()
+};
 
 
-Numero da casaº ${numero}.
-
-
-${referencia ? "Referência: " + referencia : ""}.
-
-Itens:
-${itens}
-
- ⚠️O valor será confirmado pela loja.
- ⚠️ Não é necessário escrever nada.
-Basta enviar esta mensagem e aguardar a confirmação da loja.
-`.trim();
-
-  window.open(
-    `https://wa.me/27998040952?text=${encodeURIComponent(mensagem)}`,
-    "_blank"
-  );
-
-  carrinho = [];
-  total = 0;
-  atualizarCarrinho();
   modal.style.display = "none";
+  pedidoForm.style.display = "none";
+  pedidoLoading.style.display = "block";
+
+  fetch("http://localhost:3000/pedidos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(pedido)
+  })
+    .then(res => res.json())
+    .then(() => {
+      pedidoLoading.style.display = "none";
+      pedidoConfirmado.style.display = "block";
+      pedidoIdSpan.textContent = pedidoID;
+
+      window.carrinho = [];
+      window.total = 0;
+      atualizarCarrinho();
+    })
+    .catch(() => alert("Erro ao conectar com o servidor"));
 };
 
 /* =========================
-   FECHAR LIGHTBOX
+   EVENTOS FINAIS
 ========================= */
+botoesEscola.forEach(btn => btn.onclick = () => mostrarProdutos(btn.dataset.escola));
+document.getElementById("fecharProdutos").onclick = () => {
+  produtosSec.style.display = "none";
+  secaoEscolas.style.display = "block";
+};
 fecharLightbox.onclick = () => {
   lightbox.style.display = "none";
   document.body.style.overflow = "auto";
-  lightboxImg.style.transform = "scale(1)";
-  scale = 1;
-  lastTouchDistance = null;
 };
 
 /* =========================
    ZOOM POR REGIÃO (IMAGEM FIXA)
 ========================= */
-const MIN_SCALE = 1;
-const MAX_SCALE = 4;
-
+let scale = 1;
+let lastDistance = null;
 let originLocked = false;
+let currentX = 0;
+let currentY = 0;
 
 lightboxImg.style.transition = "transform 0.12s linear";
 lightboxImg.style.transformOrigin = "center center";
@@ -353,11 +301,15 @@ lightboxImg.style.touchAction = "none";
 function resetLightbox() {
   scale = 1;
   originLocked = false;
+  currentX = 0;
+  currentY = 0;
   lightboxImg.style.transformOrigin = "center center";
-  lightboxImg.style.transform = "scale(1)";
+  lightboxImg.style.transform = "translate(0px,0px) scale(1)";
 }
+
 lightboxImg.addEventListener("load", resetLightbox);
 
+// Zoom com scroll (mouse)
 lightboxImg.addEventListener("wheel", (e) => {
   e.preventDefault();
 
@@ -365,19 +317,16 @@ lightboxImg.addEventListener("wheel", (e) => {
     const rect = lightboxImg.getBoundingClientRect();
     const originX = ((e.clientX - rect.left) / rect.width) * 100;
     const originY = ((e.clientY - rect.top) / rect.height) * 100;
-
     lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
     originLocked = true;
   }
 
   scale += e.deltaY * -0.004;
-  scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
-
-  lightboxImg.style.transform = `scale(${scale})`;
+  scale = Math.min(Math.max(1, scale), 4);
+  lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
 }, { passive: false });
 
-let lastDistance = null;
-
+// Zoom com toque (pinch)
 lightboxImg.addEventListener("touchstart", (e) => {
   if (e.touches.length === 2) {
     const dx = e.touches[0].clientX - e.touches[1].clientX;
@@ -388,10 +337,8 @@ lightboxImg.addEventListener("touchstart", (e) => {
       const rect = lightboxImg.getBoundingClientRect();
       const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
       const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-
       const originX = ((centerX - rect.left) / rect.width) * 100;
       const originY = ((centerY - rect.top) / rect.height) * 100;
-
       lightboxImg.style.transformOrigin = `${originX}% ${originY}%`;
       originLocked = true;
     }
@@ -407,9 +354,9 @@ lightboxImg.addEventListener("touchmove", (e) => {
     const distance = Math.hypot(dx, dy);
 
     scale += (distance - lastDistance) * 0.01;
-    scale = Math.min(Math.max(MIN_SCALE, scale), MAX_SCALE);
+    scale = Math.min(Math.max(1, scale), 4);
+    lightboxImg.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
 
-    lightboxImg.style.transform = `scale(${scale})`;
     lastDistance = distance;
   }
 }, { passive: false });

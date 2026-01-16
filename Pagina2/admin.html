@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Administrativo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .pedido {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .pedido strong {
+      display: block;
+      margin-top: 5px;
+    }
+
+    .itens {
+      margin-top: 10px;
+      padding-left: 15px;
+    }
+
+    .pedido span {
+      font-weight: normal;
+    }
+
+    .pedido.reserva {
+      border-left: 4px solid #007bff;
+      padding-left: 10px;
+    }
+
+    .pedido.pedido {
+      border-left: 4px solid #28a745;
+      padding-left: 10px;
+    }
+
+    button {
+      padding: 10px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📦 Pedidos Recebidos</h1>
+
+<button onclick="carregarPedidos()">🔄 Atualizar</button>
+
+<div id="listaPedidos">Carregando pedidos...</div>
+
+<script>
+function carregarPedidos() {
+  const lista = document.getElementById("listaPedidos");
+  lista.innerHTML = "Carregando pedidos...";
+
+  fetch("http://localhost:3000/pedidos")
+    .then(res => res.json())
+    .then(pedidos => {
+      if (!pedidos.length) {
+        lista.innerHTML = "<p>Nenhum pedido recebido.</p>";
+        return;
+      }
+
+      lista.innerHTML = "";
+
+      pedidos.forEach(pedido => {
+        const div = document.createElement("div");
+        div.className = "pedido " + (pedido.tipo === "RESERVA" || pedido.pedidoID.startsWith("RES-") ? "reserva" : "pedido");
+
+        // Monta lista de itens com segurança
+        let itensHTML = "";
+        if (pedido.itens && pedido.itens.length) {
+          pedido.itens.forEach(item => {
+            if (item.tamanhos) {
+              Object.entries(item.tamanhos).forEach(([tam, qtd]) => {
+                if (qtd > 0) {
+                  itensHTML += `<li>${item.produto} - ${tam} × ${qtd}</li>`;
+                }
+              });
+            }
+          });
+        } else {
+          itensHTML = "<li>—</li>";
+        }
+
+        // Mostra total e data de forma segura
+        const total = pedido.total !== undefined ? `R$ ${pedido.total}` : "—";
+        const data = pedido.data ? new Date(pedido.data).toLocaleString() : "—";
+
+        if (pedido.tipo === "RESERVA") {
+          // HTML simplificado para reservas
+          div.innerHTML = `
+            <strong>Tipo:</strong> <span>${pedido.tipo}</span>
+            <strong>ID:</strong> <span>${pedido.pedidoID}</span>
+            <strong>Nome:</strong> <span>${pedido.nome}</span>
+            <strong>Total:</strong> <span>${total}</span>
+            <strong>Data:</strong> <span>${data}</span>
+            <div class="itens">
+              <strong>Itens:</strong>
+              <ul>${itensHTML}</ul>
+            </div>
+          `;
+        } else {
+          // HTML completo para pedidos normais
+          div.innerHTML = `
+            <strong>Tipo:</strong> <span>${pedido.tipo || "PEDIDO"}</span>
+            <strong>ID:</strong> <span>${pedido.pedidoID || "—"}</span>
+            <strong>Nome:</strong> <span>${pedido.nome || "—"}</span>
+            <strong>Endereço:</strong> <span>${pedido.endereco || "—"}</span>
+            <strong>Número da casa:</strong> <span>${pedido.numeroCasa || "—"}</span>
+            <strong>Referência:</strong> <span>${pedido.referencia || "—"}</span>
+            <strong>Total:</strong> <span>${total}</span>
+            <strong>Data:</strong> <span>${data}</span>
+            <div class="itens">
+              <strong>Itens:</strong>
+              <ul>${itensHTML}</ul>
+            </div>
+          `;
+        }
+
+        lista.appendChild(div);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      lista.innerHTML = "Erro ao carregar pedidos.";
+    });
+}
+
+// Carrega ao abrir a página
+carregarPedidos();
+</script>
+
+</body>
+</html>

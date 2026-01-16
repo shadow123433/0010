@@ -1,11 +1,15 @@
+/* =========================
+   BOTÃO RESERVAR (BACK-END)
+========================= */
+
 const btnReserva = document.querySelector('.reservar');
 const modalReserva = document.getElementById('modalReserva');
 const cancelarReserva = document.getElementById('cancelarReserva');
 const confirmarReserva = document.getElementById('confirmarReserva');
 
 btnReserva.onclick = () => {
-  if (!carrinho.length) {
-    alert('Carrinho vazio. Não é possível reservar.');
+  if (!window.carrinho || window.carrinho.length === 0) {
+    alert("Carrinho vazio. Não é possível reservar.");
     return;
   }
   modalReserva.style.display = 'flex';
@@ -19,45 +23,45 @@ confirmarReserva.onclick = () => {
   const nome = document.getElementById('nomeReserva').value.trim();
 
   if (!nome) {
-    alert('Por favor preencha o seu nome completo para continuar com a reserva.');
+    alert("Informe seu nome para concluir a reserva.");
     return;
   }
 
-  let itensTexto = '';
+  const pedidoReserva = {
+  tipo: "RESERVA",
+  pedidoID: "RES-" + Date.now(),
+  nome,
+  itens: JSON.parse(JSON.stringify(window.carrinho)),
+  total: window.total
+};
 
-  carrinho.forEach(item => {
-    Object.entries(item.tamanhos).forEach(([tamanho, qtd]) => {
-      itensTexto += `- ${item.produto} (${tamanho} × ${qtd})\n`;
+
+  fetch("http://localhost:3000/pedidos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(pedidoReserva)
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        alert("Erro ao registrar reserva: " + data.error);
+        return;
+      }
+
+      alert("Reserva registrada com sucesso! Aguarde confirmação da loja.");
+
+      // limpa carrinho
+      window.carrinho = [];
+      window.total = 0;
+
+      if (typeof atualizarCarrinho === "function") {
+        atualizarCarrinho();
+      }
+
+      modalReserva.style.display = 'none';
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Erro ao conectar com o servidor.");
     });
-  });
-
-  const mensagem = `
-*NOVA RESERVA DE UNIFORMES*
-
-Nome: ${nome}.
-
-
-Itens reservados:
-${itensTexto}
-
-
-⚠️ Reserva válida por 24h.
-⚠️ Retirada na loja.
-⚠️ O valor será confirmado pela loja.
-⚠️ Não é necessário escrever nada.
-Basta enviar esta mensagem e aguardar a confirmação da loja.
-`.trim();
-
-  const numeroLoja = '27998040952'; 
-  const url = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(mensagem)}`;
-
- window.open(url, '_blank');
-
-// LIMPA O CARRINHO APÓS RESERVA
-carrinho = [];
-total = 0;
-atualizarCarrinho();
-
-modalReserva.style.display = 'none';
-
 };

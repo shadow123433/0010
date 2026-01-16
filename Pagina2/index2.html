@@ -47,7 +47,7 @@
     <!-- FIM ESCOLAS -->
 
     <!-- CARRINHO -->
-    <section class="carrinho">
+    <section class="carrinho" id="pedido-form">
         <h2>Carrinho</h2>
 
         <div id="carrinhoContainer">
@@ -58,16 +58,43 @@
             <strong>Total:</strong> R$ <span id="totalValor">0,00</span>
         </div>
 
-        <button class="finalizar">Finalizar pedido via WhatsApp</button>
+        <button class="finalizar" id="btnFinalizarPedido">
+            Finalizar pedido
+        </button>
 
         <button class="reservar">
-            Reservar para retirada (WhatsApp)
+            Reservar para retirada na loja
         </button>
+    </section>
+
+    <!-- ESTADO: ENVIANDO PEDIDO -->
+    <section id="pedido-loading" style="display:none; text-align:center;">
+        <h2>Enviando pedido...</h2>
+        <p>Aguarde alguns segundos.</p>
+    </section>
+
+    <!-- ESTADO: PEDIDO CONFIRMADO -->
+    <section id="pedido-confirmado" style="display:none; text-align:center;">
+        <h2>Pedido confirmado ✅</h2>
+
+        <p>
+            Número do pedido:
+            <strong>#<span id="pedidoId"></span></strong>
+        </p>
+
+        <p>
+            Status:
+            <strong>Recebido</strong>
+        </p>
+
+        <p>
+            A loja já recebeu seu pedido e irá processá-lo.
+        </p>
     </section>
 
 </div>
 
-<!-- LIGHTBOX (JS usa esse elemento) -->
+<!-- LIGHTBOX -->
 <div class="lightbox-overlay" id="lightbox"></div>
 
 <!-- MODAL RESERVA -->
