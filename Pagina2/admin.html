@@ -101,40 +101,27 @@ function carregarPedidos() {
           itensHTML = "<li>—</li>";
         }
 
-        // Mostra total e data de forma segura
+        // Mostra total, status e data de forma segura
         const total = pedido.total !== undefined ? `R$ ${pedido.total}` : "—";
+        const status = pedido.status || "pendente";
         const data = pedido.data ? new Date(pedido.data).toLocaleString() : "—";
 
-        if (pedido.tipo === "RESERVA") {
-          // HTML simplificado para reservas
-          div.innerHTML = `
-            <strong>Tipo:</strong> <span>${pedido.tipo}</span>
-            <strong>ID:</strong> <span>${pedido.pedidoID}</span>
-            <strong>Nome:</strong> <span>${pedido.nome}</span>
-            <strong>Total:</strong> <span>${total}</span>
-            <strong>Data:</strong> <span>${data}</span>
-            <div class="itens">
-              <strong>Itens:</strong>
-              <ul>${itensHTML}</ul>
-            </div>
-          `;
-        } else {
-          // HTML completo para pedidos normais
-          div.innerHTML = `
-            <strong>Tipo:</strong> <span>${pedido.tipo || "PEDIDO"}</span>
-            <strong>ID:</strong> <span>${pedido.pedidoID || "—"}</span>
-            <strong>Nome:</strong> <span>${pedido.nome || "—"}</span>
-            <strong>Endereço:</strong> <span>${pedido.endereco || "—"}</span>
-            <strong>Número da casa:</strong> <span>${pedido.numeroCasa || "—"}</span>
-            <strong>Referência:</strong> <span>${pedido.referencia || "—"}</span>
-            <strong>Total:</strong> <span>${total}</span>
-            <strong>Data:</strong> <span>${data}</span>
-            <div class="itens">
-              <strong>Itens:</strong>
-              <ul>${itensHTML}</ul>
-            </div>
-          `;
-        }
+        div.innerHTML = `
+          <strong>Tipo:</strong> <span>${pedido.tipo || "PEDIDO"}</span>
+          <strong>ID:</strong> <span>${pedido.pedidoID || "—"}</span>
+          <strong>Nome:</strong> <span>${pedido.nome || "—"}</span>
+          <strong>Endereço:</strong> <span>${pedido.endereco || "—"}</span>
+          <strong>Número da casa:</strong> <span>${pedido.numeroCasa || "—"}</span>
+          <strong>Referência:</strong> <span>${pedido.referencia || "—"}</span>
+          <strong>Total:</strong> <span>${total}</span>
+          <strong>Status:</strong> <span>${status}</span>
+          <button onclick="marcarPago('${pedido.pedidoID}')">💰 Marcar como pago</button>
+          <strong>Data:</strong> <span>${data}</span>
+          <div class="itens">
+            <strong>Itens:</strong>
+            <ul>${itensHTML}</ul>
+          </div>
+        `;
 
         lista.appendChild(div);
       });
@@ -143,6 +130,26 @@ function carregarPedidos() {
       console.error(err);
       lista.innerHTML = "Erro ao carregar pedidos.";
     });
+}
+
+// Função para marcar pedido como pago
+function marcarPago(pedidoID) {
+  fetch(`http://localhost:3000/pedidos/${pedidoID}/pagar`, {
+    method: 'PUT'
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success) {
+      alert(`Pedido ${pedidoID} marcado como pago!`);
+      carregarPedidos(); // Atualiza a lista para refletir a mudança
+    } else {
+      alert('Erro ao marcar como pago.');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Erro ao conectar com o backend.');
+  });
 }
 
 // Carrega ao abrir a página

@@ -20,7 +20,6 @@ const db = new sqlite3.Database(__dirname + "/pedidos.db", (err) => {
 });
 
 db.serialize(() => {
-  // Cria tabela com todas as colunas necessárias
   db.run(`
     CREATE TABLE IF NOT EXISTS pedidos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,16 +31,18 @@ db.serialize(() => {
       referencia TEXT,
       itens TEXT NOT NULL,
       total REAL NOT NULL,
-      data TEXT NOT NULL
+      data TEXT NOT NULL,
+      status TEXT DEFAULT 'pendente'
     )
   `, (err) => {
     if (err) {
       console.error("❌ Erro ao criar tabela:", err.message);
       process.exit(1);
     }
-    console.log("✅ Tabela 'pedidos' pronta");
+    console.log("✅ Tabela 'pedidos' pronta com coluna 'status'");
   });
 });
+
 
 /* =========================
    FUNÇÃO DE NORMALIZAÇÃO
@@ -120,33 +121,36 @@ app.post("/pedidos", (req, res) => {
 
   const data = new Date().toISOString();
 
-  db.run(
-    `INSERT INTO pedidos (tipo, pedidoID, nome, endereco, numeroCasa, referencia, itens, total, data)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      tipo,
-      pedidoID,
-      nome,
-      endereco,
-      numeroCasa,
-      referencia,
-      JSON.stringify(itens),
-      totalCalculado,
-      data
-    ],
-    function (err) {
-      if (err) {
-        console.error("❌ Erro ao salvar pedido:", err.message);
-        return res.status(500).json({ error: "Erro ao salvar pedido" });
-      }
-
-      return res.status(201).json({
-        success: true,
-        pedidoID,
-        total: totalCalculado.toFixed(2)
-      });
+ db.run(
+  `INSERT INTO pedidos 
+    (tipo, pedidoID, nome, endereco, numeroCasa, referencia, itens, total, data, status)
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  [
+    tipo,
+    pedidoID,
+    nome,
+    endereco,
+    numeroCasa,
+    referencia,
+    JSON.stringify(itens),
+    totalCalculado,
+    data,
+    'pendente' // <- adiciona status inicial
+  ],
+  function (err) {
+    if (err) {
+      console.error("❌ Erro ao salvar pedido:", err.message);
+      return res.status(500).json({ error: "Erro ao salvar pedido" });
     }
-  );
+
+    return res.status(201).json({
+      success: true,
+      pedidoID,
+      total: totalCalculado.toFixed(2),
+      status: 'pendente' // <- retorna o status
+    });
+  }
+);
 });
 
 /* =========================
@@ -184,4 +188,20 @@ app.get("/pedidos", (req, res) => {
 ========================= */
 app.listen(3000, () => {
   console.log("🚀 Servidor rodando em http://localhost:3000");
+});
+
+// Atualizar status do pedido para "pago"
+app.put("/pedidos/:pedidoID/pagar", (req, res) => {
+  const pedidoID = req.params.pedidoID;
+
+  db.run(
+    `UPDATE pedidos SET status = 'pago' WHERE pedidoID = ?`,
+    [pedidoID],
+    function(err) {
+      if(err) {
+        return res.status(500).json({ error: "Erro ao atualizar status" });
+      }
+      res.json({ success: true, pedidoID, status: 'pago' });
+    }
+  );
 });
