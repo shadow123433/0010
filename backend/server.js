@@ -11,7 +11,7 @@ app.use(express.json());
 /* =========================
    BANCO DE DADOS
 ========================= */
-const db = new sqlite3.Database("./pedidos.db", (err) => {
+const db = new sqlite3.Database(__dirname + "/pedidos.db", (err) => {
   if (err) {
     console.error("❌ Erro ao abrir banco de dados:", err.message);
     process.exit(1);
