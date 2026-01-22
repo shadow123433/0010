@@ -566,18 +566,26 @@ html, body {
     display: block;
   }
 
-  /* Estilo do botão COMPRAR no celular */
+  /* Botão COMPRAR – versão limpa e profissional (mobile) */
   .menu ul li:last-child a {
-    border: 2px solid #ffffff;
-    border-radius: 999px; /* formato circular */
-    padding: 10px 26px;
+    border: none;                /* REMOVE a linha branca */
+    border-radius: 999px;
+    padding: 12px 30px;
     font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.4px;
     text-align: center;
+    display: inline-block;
+    min-width: 220px;
+    transition:
+      background-color 0.2s ease,
+      transform 0.15s ease;
   }
 
-  /* Efeito ao tocar */
-  .menu ul li:last-child a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  /* Feedback ao toque */
+  .menu ul li:last-child a:active {
+    transform: scale(0.97);
+    background-color: rgba(255, 255, 255, 0.15);
   }
 
   /* Texto menor no celular */
@@ -587,4 +595,5 @@ html, body {
   }
 
 }
+
 
