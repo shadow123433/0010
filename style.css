@@ -551,12 +551,12 @@ html, body {
 ========================= */
 @media (max-width: 767px) {
 
-  /* Mantém layout */
+  /* Mantém o menu centralizado */
   .menu ul {
     justify-content: center;
   }
 
-  /* Esconde todos os itens */
+  /* Esconde todos os itens do menu */
   .menu ul li {
     display: none;
   }
@@ -566,7 +566,22 @@ html, body {
     display: block;
   }
 
+  /* Estilo do botão COMPRAR no celular */
+  .menu ul li:last-child a {
+    border: 2px solid #ffffff;
+    border-radius: 999px; /* formato circular */
+    padding: 10px 26px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* Efeito ao tocar */
+  .menu ul li:last-child a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
 }
+
 
 
 
