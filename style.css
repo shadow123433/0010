@@ -545,21 +545,28 @@ html, body {
    DESKTOP
 ========================= */
 
-@media (min-width: 768px) {
+/* =========================
+   MENU – CELULAR
+   (mesmo estilo do desktop)
+========================= */
+@media (max-width: 767px) {
 
+  /* Mantém layout */
   .menu ul {
     justify-content: center;
-    gap: 40px;
   }
 
+  /* Esconde todos os itens */
   .menu ul li {
-    flex: unset;
+    display: none;
   }
 
-  .menu ul li a {
-    font-size: 15px;
-    padding: 14px 10px;
+  /* Mostra somente o botão COMPRAR */
+  .menu ul li:last-child {
+    display: block;
   }
 
 }
+
+
 
