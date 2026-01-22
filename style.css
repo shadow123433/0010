@@ -493,3 +493,73 @@ html, body {
 .botao-pagina:active {
   transform: scale(0.96);
 }
+
+
+
+
+
+
+
+
+/* =========================
+   NAVEGAÇÃO (MOBILE FIRST)
+========================= */
+
+.menu {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #0b0b0b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 6px;
+}
+
+.menu ul li {
+  flex: 1;
+  text-align: center;
+}
+
+.menu ul li a {
+  display: block;
+  padding: 12px 6px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Efeito hover */
+.menu ul li a:hover {
+  background-color: #1a1a1a;
+  border-radius: 6px;
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 768px) {
+
+  .menu ul {
+    justify-content: center;
+    gap: 40px;
+  }
+
+  .menu ul li {
+    flex: unset;
+  }
+
+  .menu ul li a {
+    font-size: 15px;
+    padding: 14px 10px;
+  }
+
+}
+
