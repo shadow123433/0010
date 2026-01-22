@@ -580,8 +580,11 @@ html, body {
     background-color: rgba(255, 255, 255, 0.1);
   }
 
+  /* Texto menor no celular */
+  h3 {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
 }
-
-
-
 
