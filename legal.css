@@ -1,0 +1,117 @@
+/* =========================
+   BASE
+========================= */
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #f7f8fa;
+  color: #1f2933;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+/* =========================
+   CONTAINER PRINCIPAL
+========================= */
+.legal-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px 30px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   TÍTULOS
+========================= */
+.legal-container h1 {
+  font-size: 28px;
+  color: #111827;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.legal-container h2 {
+  font-size: 20px;
+  color: #2563eb;
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+/* =========================
+   TEXTO
+========================= */
+.legal-container p {
+  font-size: 15px;
+  margin-bottom: 12px;
+  color: #374151;
+}
+
+/* =========================
+   LISTAS
+========================= */
+.legal-container ul {
+  margin: 12px 0 12px 20px;
+}
+
+.legal-container li {
+  margin-bottom: 8px;
+}
+
+/* =========================
+   LINK VOLTAR
+========================= */
+.legal-voltar {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 12px 28px;
+  border-radius: 10px;
+  background-color: #2563eb;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.legal-voltar:hover {
+  background-color: #1d4ed8;
+}
+
+/* =========================
+   RODAPÉ LEVE
+========================= */
+footer {
+  text-align: center;
+  margin-top: 60px;
+  padding: 20px 10px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+@media (max-width: 768px) {
+  .legal-container {
+    margin: 30px 14px;
+    padding: 28px 20px;
+  }
+
+  .legal-container h1 {
+    font-size: 22px;
+  }
+
+  .legal-container h2 {
+    font-size: 18px;
+  }
+
+  .legal-container p {
+    font-size: 14px;
+  }
+
+  .legal-voltar {
+    padding: 10px 22px;
+    font-size: 14px;
+  }
+}

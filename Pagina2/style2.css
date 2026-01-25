@@ -487,30 +487,6 @@ h2 {
 
 
 
-.botao-voltar-inicio {
-    display: inline-block;
-    float: left;           /* botão fica à esquerda */
-    margin: 20px;          /* espaço ao redor */
-    padding: 12px 20px;    /* tamanho do botão */
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;       /* mesmo tamanho da página 1 */
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -767,105 +743,6 @@ html, body {
   .lightbox-overlay .fechar-lightbox {
     color: #ff4c4c;
   }
-}
-
-
-
-
-
-
-
-
-
-
-
-.botao-voltar-inicio {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 40px auto 20px;
-  padding: 15px 38px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #ffffff;
-  text-decoration: none;
-  border-radius: 18px;
-
-  /* AZUL PROFISSIONAL */
-  background: linear-gradient(
-    135deg,
-    #3b82f6,
-    #2563eb,
-    #1d4ed8
-  );
-
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
-}
-
-/* linha de energia */
-.botao-voltar-inicio::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: linear-gradient(
-    120deg,
-    transparent 30%,
-    #93c5fd,
-    #3b82f6,
-    #93c5fd,
-    transparent 70%
-  );
-  opacity: 0.75;
-  z-index: -1;
-}
-
-/* máscara interna */
-.botao-voltar-inicio::after {
-  content: "";
-  position: absolute;
-  inset: 2px;
-  background: inherit;
-  border-radius: 16px;
-  z-index: -1;
-}
-
-.botao-voltar-inicio:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 38px rgba(37, 99, 235, 0.6);
-}
-
-
-.botao-voltar-inicio:active {
-  transform: scale(0.96);
-}
-@media (max-width: 768px) {
-  .botao-voltar-inicio {
-    width: 90%;
-    max-width: 340px;
-    margin: 28px auto 16px;
-    padding: 14px 24px;
-    font-size: 14px;
-    border-radius: 16px;
-  }
-
-  /* reduz energia visual no mobile */
-  .botao-voltar-inicio::before {
-    opacity: 0.6;
-  }
-}
-
-
-@media (max-width: 768px) {
-    .marcas {
-        margin-top: 30px;
-    }
-
-    .produtos {
-        margin-top: 40px;
-    }
 }
 
 
@@ -1143,3 +1020,80 @@ html, body {
   animation: destaqueTamanho 0.8s ease-in-out infinite;
 }
 
+
+
+/* =========================
+   NAVEGAÇÃO (IGUAL À 1ª PÁGINA)
+========================= */
+
+.menu-topo {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #0b0b0b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-topo ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 6px;
+  margin: 0;
+}
+
+.menu-topo ul li {
+  flex: 1;
+  text-align: center;
+}
+
+.menu-topo ul li a {
+  display: block;
+  padding: 12px 6px;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+
+.menu-topo ul li a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;   /* distância da linha pro texto */
+  text-decoration-thickness: 2px;
+}
+
+
+/* Hover */
+.menu-topo ul li a:hover {
+  background-color: #1a1a1a;
+  border-radius: 6px;
+}
+
+/* =========================
+   MOBILE (mesmo comportamento)
+========================= */
+
+@media (max-width: 767px) {
+
+  .menu-topo ul {
+    justify-content: space-between;
+  }
+
+  .menu-topo ul li {
+    display: block;
+    flex: 1;
+  }
+
+  .menu-topo ul li a {
+    font-size: 13px;
+    padding: 10px 6px;
+  }
+
+}
+
+
+#secao-produtos {
+  scroll-margin-top: 90px;
+}

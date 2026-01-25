@@ -65,6 +65,7 @@ const produtosPorEscola = {
 ========================= */
 const produtosSec = document.createElement("section");
 produtosSec.className = "produtos";
+produtosSec.id = "secao-produtos";
 produtosSec.style.display = "none";
 produtosSec.innerHTML = `
   <h2>Uniformes disponíveis</h2>
@@ -204,7 +205,11 @@ modal.innerHTML = `
     <h2>Confirmação de entrega</h2>
     <input id="nome" placeholder="Nome completo">
     <input id="endereco" placeholder="Rua / Avenida">
-    <input id="numero" placeholder="Número da casa">
+    <input
+  id="numero"
+  placeholder="Número da casa"
+  oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+
     <input id="referencia" placeholder="Ponto de referência">
     <div>
       <button id="cancelar">Cancelar pedido</button>
@@ -249,28 +254,48 @@ const pedido = {
   data: new Date().toISOString()
 };
 
+modal.style.display = "none";
+pedidoForm.style.display = "none";
+pedidoLoading.style.display = "block";
 
-  modal.style.display = "none";
-  pedidoForm.style.display = "none";
-  pedidoLoading.style.display = "block";
+fetch("http://localhost:3000/pedidos", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(pedido)
+})
+  .then(res => res.json())
+  .then(() => {
+    pedidoLoading.style.display = "none";
+    pedidoConfirmado.style.display = "block";
+    pedidoIdSpan.textContent = pedidoID;
 
-  fetch("http://localhost:3000/pedidos", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(pedido)
+    // salva confirmação até o usuário atualizar a página
+    sessionStorage.setItem(
+      "pedidoConfirmado",
+      JSON.stringify({ pedidoID })
+    );
+
+    //  NÃO limpa o carrinho aqui
   })
-    .then(res => res.json())
-    .then(() => {
-      pedidoLoading.style.display = "none";
-      pedidoConfirmado.style.display = "block";
-      pedidoIdSpan.textContent = pedidoID;
-
-      window.carrinho = [];
-      window.total = 0;
-      atualizarCarrinho();
-    })
-    .catch(() => alert("Erro ao conectar com o servidor"));
+  .catch(() => alert("Erro ao conectar com o servidor"));
 };
+document.addEventListener("DOMContentLoaded", () => {
+  const pedidoSalvo = sessionStorage.getItem("pedidoConfirmado");
+
+  // limpa imediatamente ao recarregar a página
+  sessionStorage.removeItem("pedidoConfirmado");
+
+  if (pedidoSalvo) {
+    const { pedidoID } = JSON.parse(pedidoSalvo);
+
+    pedidoForm.style.display = "none";
+    pedidoLoading.style.display = "none";
+    pedidoConfirmado.style.display = "block";
+    pedidoIdSpan.textContent = pedidoID;
+  }
+});
+
+
 
 /* =========================
    EVENTOS FINAIS
