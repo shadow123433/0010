@@ -258,6 +258,28 @@ modal.style.display = "none";
 pedidoForm.style.display = "none";
 pedidoLoading.style.display = "block";
 
+// Cria modal de confirmação se ainda não existir
+let pedidoModalConfirmacao = document.getElementById("pedido-modal-confirmacao");
+if (!pedidoModalConfirmacao) {
+  pedidoModalConfirmacao = document.createElement("div");
+  pedidoModalConfirmacao.id = "pedido-modal-confirmacao";
+  pedidoModalConfirmacao.className = "modal-overlay";
+  pedidoModalConfirmacao.style.display = "none";
+  pedidoModalConfirmacao.innerHTML = `
+    <div class="modal">
+      <h2>Pedido confirmado ✅</h2>
+      <p>Número do pedido: <strong id="pedidoIdModal"></strong></p>
+      <p>Status: <strong>Recebido</strong></p>
+      <p>Seu pedido foi recebido pela loja e está sendo processado.</p>
+      <button id="fecharPedidoModal">Fechar</button>
+    </div>
+  `;
+  container.insertBefore(pedidoModalConfirmacao, pedidoForm);
+}
+
+const pedidoIdModal = document.getElementById("pedidoIdModal");
+const fecharPedidoModal = document.getElementById("fecharPedidoModal");
+
 fetch("http://localhost:3000/pedidos", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -266,34 +288,57 @@ fetch("http://localhost:3000/pedidos", {
   .then(res => res.json())
   .then(() => {
     pedidoLoading.style.display = "none";
-    pedidoConfirmado.style.display = "block";
-    pedidoIdSpan.textContent = pedidoID;
 
-    // salva confirmação até o usuário atualizar a página
+    // Mostra modal de confirmação
+    pedidoIdModal.textContent = pedidoID;
+    pedidoModalConfirmacao.style.display = "flex";
+
+    // salva confirmação temporária
     sessionStorage.setItem(
       "pedidoConfirmado",
       JSON.stringify({ pedidoID })
     );
-
-    //  NÃO limpa o carrinho aqui
   })
   .catch(() => alert("Erro ao conectar com o servidor"));
+
+fecharPedidoModal.onclick = () => {
+  // Fecha modal
+  pedidoModalConfirmacao.style.display = "none";
+
+  // Zera carrinho e total
+  window.carrinho = [];
+  window.total = 0;
+
+  atualizarCarrinho();
+
+  // Restaura tela inicial
+  pedidoForm.style.display = "block";
+  pedidoLoading.style.display = "none";
+
+  // REMOVE DEFINITIVAMENTE O PEDIDO SALVO
+  sessionStorage.removeItem("pedidoConfirmado");
+
+  // Limpa inputs
+  document.getElementById("nome").value = "";
+  document.getElementById("endereco").value = "";
+  document.getElementById("numero").value = "";
+  document.getElementById("referencia").value = "";
+};
+
+
 };
 document.addEventListener("DOMContentLoaded", () => {
   const pedidoSalvo = sessionStorage.getItem("pedidoConfirmado");
+  if (!pedidoSalvo) return;
 
-  // limpa imediatamente ao recarregar a página
-  sessionStorage.removeItem("pedidoConfirmado");
+  const { pedidoID } = JSON.parse(pedidoSalvo);
 
-  if (pedidoSalvo) {
-    const { pedidoID } = JSON.parse(pedidoSalvo);
-
-    pedidoForm.style.display = "none";
-    pedidoLoading.style.display = "none";
-    pedidoConfirmado.style.display = "block";
-    pedidoIdSpan.textContent = pedidoID;
-  }
+  pedidoForm.style.display = "none";
+  pedidoLoading.style.display = "none";
+  pedidoModalConfirmacao.style.display = "flex";
+  document.getElementById("pedidoIdModal").textContent = pedidoID;
 });
+
 
 
 

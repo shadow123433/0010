@@ -1,89 +1,92 @@
 // Mostra no terminal o caminho completo do arquivo do banco de dados
 console.log("📁 Banco em:", __dirname + "/pedidos.db");
 
-// Importa o SQLite e ativa modo verbose (mensagens de erro mais detalhadas)
+// Importa o SQLite e ativa modo verbose (erros detalhados)
 const sqlite3 = require("sqlite3").verbose();
 
-// Importa o framework Express para criar o servidor HTTP
+// Importa o Express para criar servidor HTTP
 const express = require("express");
 
-// Importa o middleware CORS para permitir acesso do frontend
+// Importa o CORS para liberar acesso do frontend
 const cors = require("cors");
 
 // Cria a aplicação Express
 const app = express();
 
-// Habilita CORS (permite requisições de qualquer origem)
+// Habilita CORS
 app.use(cors());
 
-// Permite que o servidor receba JSON no corpo das requisições
+// Permite receber JSON no body das requisições
 app.use(express.json());
 
 /* =========================
    BANCO DE DADOS
 ========================= */
 
-// Abre ou cria o banco de dados SQLite no diretório atual
-const db = new sqlite3.Database(__dirname + "/pedidos.db", (err) => {
-  // Se der erro ao abrir o banco, exibe mensagem
-  if (err) {
-    console.error("❌ Erro ao abrir banco de dados:", err.message);
-    // Encerra o servidor porque sem banco ele não funciona
-    process.exit(1);
+/* =========================
+   BANCO DE DADOS
+========================= */
+
+const db = new sqlite3.Database(
+  __dirname + "/pedidos.db",
+  sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
+  err => {
+    if (err) {
+      console.error("❌ Erro ao abrir banco:", err.message);
+      process.exit(1);
+    }
+
+    console.log("🗄️ Banco SQLite conectado");
   }
+);
 
-  // Confirma que o banco foi conectado com sucesso
-  console.log("🗄️ Banco de dados SQLite conectado com sucesso");
-});
+// evita travamento em múltiplas escritas
+db.configure("busyTimeout", 10000);
 
-// Garante que os comandos SQL rodem em ordem
 db.serialize(() => {
-  // Cria a tabela de pedidos se ela ainda não existir
+
+  db.run("PRAGMA journal_mode = WAL;");
+  db.run("PRAGMA synchronous = NORMAL;");
+
   db.run(`
     CREATE TABLE IF NOT EXISTS pedidos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT, -- ID interno do banco
-      tipo TEXT NOT NULL,                   -- Tipo do pedido (PEDIDO ou RESERVA)
-      pedidoID TEXT NOT NULL,               -- ID visível do pedido
-      nome TEXT NOT NULL,                   -- Nome do cliente
-      endereco TEXT,                        -- Endereço (opcional)
-      numeroCasa TEXT,                      -- Número da casa (opcional)
-      referencia TEXT,                      -- Referência (opcional)
-      itens TEXT NOT NULL,                  -- Itens do pedido em JSON (string)
-      total REAL NOT NULL,                  -- Valor total do pedido
-      data TEXT NOT NULL,                   -- Data do pedido
-      status TEXT DEFAULT 'pendente'        -- Status do pagamento
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tipo TEXT NOT NULL,
+      pedidoID TEXT NOT NULL,
+      nome TEXT NOT NULL,
+      endereco TEXT,
+      numeroCasa TEXT,
+      referencia TEXT,
+      itens TEXT NOT NULL,
+      total REAL NOT NULL,
+      data TEXT NOT NULL,
+      status TEXT DEFAULT 'pendente'
     )
-  `, (err) => {
-    // Caso dê erro na criação da tabela
+  `, err => {
+
     if (err) {
       console.error("❌ Erro ao criar tabela:", err.message);
       process.exit(1);
     }
 
-    // Confirma que a tabela está pronta
-    console.log("✅ Tabela 'pedidos' pronta com coluna 'status'");
+    console.log("✅ Tabela 'pedidos' pronta");
   });
+
 });
-
-/* =========================
-   FUNÇÃO DE NORMALIZAÇÃO
-========================= */
-
-// Função para padronizar textos (nomes de produtos)
 function normalizar(str) {
   return str
-    .normalize("NFD")                     // Separa letras de acentos
-    .replace(/[\u0300-\u036f]/g, "")     // Remove os acentos
-    .trim()                              // Remove espaços extras
-    .toLowerCase();                      // Converte para minúsculo
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase();
 }
 
 /* =========================
-   TABELA DE PREÇOS
+   PREÇOS DOS PRODUTOS
 ========================= */
 
-// Objeto que define os preços de cada produto
 const PRECOS = {
+
   "camisa masculina e feminina ifes": 49.9,
   "bermuda masculina ifes": 79.9,
   "calca feminina ifes": 89.9,
@@ -95,13 +98,14 @@ const PRECOS = {
   "camisa masculina e feminina cristo rei": 54.9,
   "bermuda masculina cristo rei": 92.9,
   "calca feminina cristo rei": 92.9
+
 };
 
 /* =========================
    ROTA TESTE
 ========================= */
 
-// Rota simples para verificar se o backend está funcionando
+// Apenas para validar se o backend está vivo
 app.get("/", (req, res) => {
   res.send("✅ Backend funcionando corretamente");
 });
@@ -110,12 +114,11 @@ app.get("/", (req, res) => {
    RECEBER PEDIDOS
 ========================= */
 
-// Rota que recebe pedidos enviados pelo frontend
 app.post("/pedidos", (req, res) => {
-  // Corpo da requisição
+
   const body = req.body;
 
-  // Define valores padrão caso algo não seja enviado
+  // Valores padrão
   const tipo = body.tipo || "PEDIDO";
   const pedidoID = body.pedidoID || "SEM-ID";
   const nome = body.nome || "Não informado";
@@ -123,52 +126,60 @@ app.post("/pedidos", (req, res) => {
   const numeroCasa = body.numeroCasa || "";
   const referencia = body.referencia || "";
 
-  // Garante que os itens sejam um array
+  // Garante que itens seja array
   const itens = Array.isArray(body.itens) ? body.itens : [];
 
-  // Bloqueia pedido sem itens
+  // Bloqueia carrinho vazio
   if (itens.length === 0) {
     return res.status(400).json({ error: "Carrinho vazio" });
   }
 
-  // Variável para somar o valor total
+  // Soma total
   let totalCalculado = 0;
 
-  // Percorre cada item do pedido
   for (const item of itens) {
-    // Valida estrutura do item
+
     if (!item.produto || !item.tamanhos) {
       return res.status(400).json({ error: "Item mal formatado" });
     }
 
-    // Normaliza o nome do produto
+    // Normaliza nome
     const produtoNormalizado = normalizar(item.produto);
 
-    // Busca o preço do produto
+    // Busca preço
     const preco = PRECOS[produtoNormalizado];
 
-    // Se o produto não existir na tabela de preços
     if (!preco) {
-      return res.status(400).json({ error: `Produto inválido: ${item.produto}` });
+      return res.status(400).json({
+        error: `Produto inválido: ${item.produto}`
+      });
     }
 
-    // Soma as quantidades de cada tamanho
+    // Soma quantidades
     for (const qtd of Object.values(item.tamanhos)) {
       const quantidade = Number(qtd);
+
       if (quantidade > 0) {
         totalCalculado += preco * quantidade;
       }
     }
   }
 
-  // Data atual em formato padrão
+  // Data ISO padrão
   const data = new Date().toISOString();
 
-  // Insere o pedido no banco de dados
+  // Define status inicial corretamente
+  const statusInicial = tipo === "RESERVA"
+    ? "aguardando"
+    : "pendente";
+
+  // Insere no banco
   db.run(
-    `INSERT INTO pedidos 
-     (tipo, pedidoID, nome, endereco, numeroCasa, referencia, itens, total, data, status)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `
+    INSERT INTO pedidos
+    (tipo, pedidoID, nome, endereco, numeroCasa, referencia, itens, total, data, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `,
     [
       tipo,
       pedidoID,
@@ -176,92 +187,171 @@ app.post("/pedidos", (req, res) => {
       endereco,
       numeroCasa,
       referencia,
-      JSON.stringify(itens), // Converte itens para string
+      JSON.stringify(itens),
       totalCalculado,
       data,
-      'pendente' // Status inicial do pedido
+      statusInicial
     ],
     function (err) {
-      // Caso ocorra erro ao salvar
+
       if (err) {
         console.error("❌ Erro ao salvar pedido:", err.message);
         return res.status(500).json({ error: "Erro ao salvar pedido" });
       }
 
-      // Retorna sucesso ao frontend
-      return res.status(201).json({
+      // Retorna dados corretos
+      res.status(201).json({
         success: true,
         pedidoID,
         total: totalCalculado.toFixed(2),
-        status: 'pendente'
+        status: statusInicial
       });
+
     }
   );
+
 });
 
 /* =========================
    LISTAR PEDIDOS
 ========================= */
 
-// Rota que retorna todos os pedidos cadastrados
 app.get("/pedidos", (req, res) => {
+
   db.all(
-    "SELECT * FROM pedidos ORDER BY id DESC", // Busca pedidos do mais novo para o mais antigo
+    "SELECT * FROM pedidos ORDER BY id DESC",
     [],
     (err, rows) => {
+
       if (err) {
         console.error("❌ Erro ao buscar pedidos:", err.message);
         return res.status(500).json({ error: "Erro ao buscar pedidos" });
       }
 
-      // Converte os dados do banco para JSON
+      // Converte dados
       const pedidos = rows.map(p => ({
+
         tipo: p.tipo,
         pedidoID: p.pedidoID,
         nome: p.nome,
         endereco: p.endereco || "",
         numeroCasa: p.numeroCasa || "",
         referencia: p.referencia || "",
-        itens: JSON.parse(p.itens), // Converte string para objeto
+        itens: JSON.parse(p.itens),
         total: Number(p.total).toFixed(2),
         data: p.data,
         status: p.status
+
       }));
 
       res.json(pedidos);
     }
   );
+
 });
 
 /* =========================
    START SERVER
 ========================= */
 
-// Inicia o servidor na porta 3000
 app.listen(3000, () => {
   console.log("🚀 Servidor rodando em http://localhost:3000");
 });
 
 /* =========================
-   SIMULAÇÃO DE PAGAMENTO
+   PAGAMENTO / RETIRADA
 ========================= */
 
-// Rota para marcar um pedido como pago
+// Marca pedido como pago
 app.put("/pedidos/:pedidoID/pagar", (req, res) => {
-  // Captura o ID do pedido pela URL
+
   const pedidoID = req.params.pedidoID;
 
-  // Atualiza o status do pedido no banco
-  db.run(
-    `UPDATE pedidos SET status = 'pago' WHERE pedidoID = ?`,
+  db.get(
+    "SELECT tipo FROM pedidos WHERE pedidoID = ?",
     [pedidoID],
-    function(err) {
+    (err, row) => {
+
       if (err) {
-        return res.status(500).json({ error: "Erro ao atualizar status" });
+        return res.status(500).json({ error: "Erro ao buscar pedido" });
       }
 
-      // Retorna confirmação
-      res.json({ success: true, pedidoID, status: 'pago' });
+      if (!row) {
+        return res.status(404).json({ error: "Pedido não encontrado" });
+      }
+
+      if (row.tipo === "RESERVA") {
+        return res.status(400).json({
+          error: "Reserva não pode ser marcada como paga"
+        });
+      }
+
+      db.run(
+        "UPDATE pedidos SET status = 'pago' WHERE pedidoID = ?",
+        [pedidoID],
+        function (err) {
+
+          if (err) {
+            return res.status(500).json({ error: "Erro ao atualizar status" });
+          }
+
+          res.json({
+            success: true,
+            pedidoID,
+            status: "pago"
+          });
+
+        }
+      );
     }
   );
+
+});
+
+// Marca reserva como retirada
+app.put("/pedidos/:pedidoID/retirar", (req, res) => {
+
+  const pedidoID = req.params.pedidoID;
+
+  db.get(
+    "SELECT tipo, status FROM pedidos WHERE pedidoID = ?",
+    [pedidoID],
+    (err, row) => {
+
+      if (err) {
+        return res.status(500).json({ error: "Erro ao buscar pedido" });
+      }
+
+      if (!row) {
+        return res.status(404).json({ error: "Pedido não encontrado" });
+      }
+
+      if (row.tipo !== "RESERVA") {
+        return res.status(400).json({
+          error: "Apenas reservas podem ser retiradas"
+        });
+      }
+
+      db.run(
+        "UPDATE pedidos SET status = 'retirado' WHERE pedidoID = ?",
+        [pedidoID],
+        function (err) {
+
+          if (err) {
+            return res.status(500).json({
+              error: "Erro ao atualizar status"
+            });
+          }
+
+          res.json({
+            success: true,
+            pedidoID,
+            status: "retirado"
+          });
+
+        }
+      );
+    }
+  );
+
 });

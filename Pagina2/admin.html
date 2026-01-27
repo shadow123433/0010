@@ -49,7 +49,7 @@
 
     button {
       padding: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       cursor: pointer;
     }
 
@@ -60,7 +60,7 @@
 </head>
 <body>
 
-<h1>📦 Pedidos Recebidos</h1>
+<h1>📦 Pedidos e Reservas Recebidos</h1>
 
 <button onclick="carregarPedidos()">🔄 Atualizar</button>
 
@@ -85,7 +85,6 @@ function carregarPedidos() {
         const div = document.createElement("div");
         div.className = "pedido " + (pedido.tipo === "RESERVA" || pedido.pedidoID.startsWith("RES-") ? "reserva" : "pedido");
 
-        // Monta lista de itens com segurança
         let itensHTML = "";
         if (pedido.itens && pedido.itens.length) {
           pedido.itens.forEach(item => {
@@ -101,7 +100,6 @@ function carregarPedidos() {
           itensHTML = "<li>—</li>";
         }
 
-        // Mostra total, status e data de forma segura
         const total = pedido.total !== undefined ? `R$ ${pedido.total}` : "—";
         const status = pedido.status || "pendente";
         const data = pedido.data ? new Date(pedido.data).toLocaleString() : "—";
@@ -115,7 +113,11 @@ function carregarPedidos() {
           <strong>Referência:</strong> <span>${pedido.referencia || "—"}</span>
           <strong>Total:</strong> <span>${total}</span>
           <strong>Status:</strong> <span>${status}</span>
-          <button onclick="marcarPago('${pedido.pedidoID}')">💰 Marcar como pago</button>
+
+          ${pedido.tipo === "PEDIDO" ? `<button onclick="marcarPago('${pedido.pedidoID}')">💰 Marcar como pago</button>` : ""}
+
+          ${pedido.tipo === "RESERVA" ? `<button onclick="marcarRetirado('${pedido.pedidoID}')">✅ Marcar como retirado</button>` : ""}
+
           <strong>Data:</strong> <span>${data}</span>
           <div class="itens">
             <strong>Itens:</strong>
@@ -132,7 +134,6 @@ function carregarPedidos() {
     });
 }
 
-// Função para marcar pedido como pago
 function marcarPago(pedidoID) {
   fetch(`http://localhost:3000/pedidos/${pedidoID}/pagar`, {
     method: 'PUT'
@@ -141,7 +142,7 @@ function marcarPago(pedidoID) {
   .then(data => {
     if(data.success) {
       alert(`Pedido ${pedidoID} marcado como pago!`);
-      carregarPedidos(); // Atualiza a lista para refletir a mudança
+      carregarPedidos();
     } else {
       alert('Erro ao marcar como pago.');
     }
@@ -152,7 +153,25 @@ function marcarPago(pedidoID) {
   });
 }
 
-// Carrega ao abrir a página
+function marcarRetirado(pedidoID) {
+  fetch(`http://localhost:3000/pedidos/${pedidoID}/retirar`, {
+    method: 'PUT'
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.success) {
+      alert(`Pedido ${pedidoID} marcado como retirado!`);
+      carregarPedidos();
+    } else {
+      alert('Erro ao marcar como retirado.');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Erro ao conectar com o backend.');
+  });
+}
+
 carregarPedidos();
 </script>
 

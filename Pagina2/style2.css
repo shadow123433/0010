@@ -1097,3 +1097,125 @@ html, body {
 #secao-produtos {
   scroll-margin-top: 90px;
 }
+
+
+
+
+
+#reserva-confirmada {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 30px 40px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  border-radius: 12px;
+  z-index: 9999;
+  max-width: 400px;
+  width: 90%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  text-align: left;
+}
+
+#reserva-confirmada h2 {
+  margin: 0 0 20px 0;
+  font-weight: 700;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#reserva-confirmada p {
+  margin: 8px 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+#reserva-confirmada strong {
+  font-weight: 700;
+  color: #111;
+}
+
+#fecharReservaBtn {
+  margin-top: 25px;
+  padding: 12px 36px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #27ae60, #219150);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(33, 145, 80, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+  display: inline-block;
+}
+
+#fecharReservaBtn:hover {
+  background: linear-gradient(135deg, #219150, #1b7d3d);
+  box-shadow: 0 8px 16px rgba(27, 125, 61, 0.6);
+}
+
+#fecharReservaBtn:active {
+  background: #1b7d3d;
+  box-shadow: none;
+  transform: translateY(1px);
+}
+
+
+
+
+#fecharPedidoModal {
+  margin-top: 20px;
+  padding: 12px 36px;
+
+  background: linear-gradient(135deg, #27ae60, #219150);
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  border: none;
+  border-radius: 10px;
+
+  cursor: pointer;
+  user-select: none;
+
+  box-shadow: 
+    0 8px 18px rgba(33, 145, 80, 0.35),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+
+  transition: 
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+
+/* Hover */
+#fecharPedidoModal:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 12px 22px rgba(33, 145, 80, 0.45),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Clique */
+#fecharPedidoModal:active {
+  transform: translateY(1px);
+  box-shadow: 
+    0 6px 12px rgba(33, 145, 80, 0.3),
+    inset 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Foco (acessibilidade) */
+#fecharPedidoModal:focus {
+  outline: none;
+  box-shadow: 
+    0 0 0 3px rgba(39, 174, 96, 0.35),
+    0 8px 18px rgba(33, 145, 80, 0.35);
+}
