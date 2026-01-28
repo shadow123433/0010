@@ -1,3 +1,24 @@
+const API_URL = "http://localhost:3000";
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+function setToken(token) {
+  localStorage.setItem("token", token);
+}
+
+function logout() {
+  localStorage.removeItem("token");
+  location.reload();
+}
+
+function isLogged() {
+  return !!getToken();
+}
+
+
+
 /* =========================
    ESTADO GLOBAL
 ========================= */
@@ -44,19 +65,75 @@ function showToast(msg) {
 ========================= */
 const produtosPorEscola = {
   IFES: [
-    { nome: "Camisa masculina e feminina IFES", preco: 49.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/camisa.png" },
-    { nome: "Bermuda masculina IFES", preco: 79.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/bermuda.png" },
-    { nome: "Calça feminina IFES", preco: 89.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemIFES/calçaa.png" }
+    {
+      id: "camisa_ifes",
+      nome: "Camisa masculina e feminina IFES",
+      preco: 49.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemIFES/camisa.png"
+    },
+    {
+      id: "bermuda_ifes",
+      nome: "Bermuda masculina IFES",
+      preco: 79.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemIFES/bermuda.png"
+    },
+    {
+      id: "calca_ifes",
+      nome: "Calça feminina IFES",
+      preco: 89.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemIFES/calçaa.png"
+    }
   ],
+
   SESI: [
-    { nome: "Camisa masculina e feminina SESI", preco: 59.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/camisa.png" },
-    { nome: "Bermuda masculina SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calção.png" },
-    { nome: "Calça feminina SESI", preco: 84.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemSESI/calça.png" }
+    {
+      id: "camisa_sesi",
+      nome: "Camisa masculina e feminina SESI",
+      preco: 59.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemSESI/camisa.png"
+    },
+    {
+      id: "bermuda_sesi",
+      nome: "Bermuda masculina SESI",
+      preco: 84.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemSESI/calção.png"
+    },
+    {
+      id: "calca_sesi",
+      nome: "Calça feminina SESI",
+      preco: 84.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemSESI/calça.png"
+    }
   ],
+
   "CRISTO REI": [
-    { nome: "Camisa masculina e feminina CRISTO REI", preco: 54.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/camisa.png" },
-    { nome: "Bermuda masculina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/bermuda.png" },
-    { nome: "Calça feminina CRISTO REI", preco: 92.9, tamanhos: ["P","M","G","GG"], imagem: "../imagemCRISTOREI/calça.png" }
+    {
+      id: "camisa_cristorei",
+      nome: "Camisa masculina e feminina CRISTO REI",
+      preco: 54.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemCRISTOREI/camisa.png"
+    },
+    {
+      id: "bermuda_cristorei",
+      nome: "Bermuda masculina CRISTO REI",
+      preco: 92.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemCRISTOREI/bermuda.png"
+    },
+    {
+      id: "calca_cristorei",
+      nome: "Calça feminina CRISTO REI",
+      preco: 92.9,
+      tamanhos: ["P","M","G","GG"],
+      imagem: "../imagemCRISTOREI/calça.png"
+    }
   ]
 };
 
@@ -122,8 +199,9 @@ function mostrarProdutos(escola) {
         setTimeout(() => select.classList.remove("tamanho-destaque"), 3000);
         return;
       }
+      
+addCarrinho(produto.id, tamanho, produto.preco);
 
-      addCarrinho(produto.nome, tamanho, produto.preco);
     };
 
     produtosGrid.appendChild(card);
@@ -223,9 +301,20 @@ document.body.appendChild(modal);
    FINALIZAR PEDIDO
 ========================= */
 finalizarBtn.onclick = () => {
-  if (!window.carrinho.length) return alert("Carrinho vazio");
+
+  if (!isLogged()) {
+    alert("Faça login para continuar.");
+    return;
+  }
+
+  if (!window.carrinho.length) {
+    alert("Carrinho vazio");
+    return;
+  }
+
   modal.style.display = "flex";
 };
+
 
 modal.querySelector("#cancelar").onclick = () => modal.style.display = "none";
 
@@ -280,12 +369,25 @@ if (!pedidoModalConfirmacao) {
 const pedidoIdModal = document.getElementById("pedidoIdModal");
 const fecharPedidoModal = document.getElementById("fecharPedidoModal");
 
-fetch("http://localhost:3000/pedidos", {
+fetch(API_URL + "/pedidos", {
   method: "POST",
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + getToken()
+  },
   body: JSON.stringify(pedido)
 })
-  .then(res => res.json())
+  .then(res => {
+
+    if (res.status === 401) {
+      alert("Sessão expirada. Faça login novamente.");
+      logout();
+      return;
+    }
+
+    return res.json();
+  })
+
   .then(() => {
     pedidoLoading.style.display = "none";
 
@@ -328,6 +430,9 @@ fecharPedidoModal.onclick = () => {
 
 };
 document.addEventListener("DOMContentLoaded", () => {
+
+  if (!isLogged()) return;
+
   const pedidoSalvo = sessionStorage.getItem("pedidoConfirmado");
   if (!pedidoSalvo) return;
 
@@ -338,6 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
   pedidoModalConfirmacao.style.display = "flex";
   document.getElementById("pedidoIdModal").textContent = pedidoID;
 });
+
 
 
 

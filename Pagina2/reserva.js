@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!reservaConfirmada) {
     reservaConfirmada = document.createElement("section");
     reservaConfirmada.id = "reserva-confirmada";
-    // Estilos para modal centralizado e visual profissional
     Object.assign(reservaConfirmada.style, {
       display: "none",
       position: "fixed",
@@ -43,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <p>
         Número da reserva: <strong>#<span id="reservaId"></span></strong>
       </p>
-      <p>Status: <strong>Recebido</strong></p>
+      <p>Status: <strong><span id="reservaStatus">Aguardando</span></strong></p>
       <p>Sua reserva foi recebida pela loja e está sujeita à confirmação.</p>
       <button id="fecharReservaBtn" style="
         margin-top: 25px;
@@ -63,16 +62,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const reservaIdSpan = document.getElementById("reservaId");
+  const reservaStatusSpan = document.getElementById("reservaStatus");
   const fecharReservaBtn = document.getElementById("fecharReservaBtn");
 
   // =========================
   // FUNÇÕES
   // =========================
   function gerarReservaID() {
-  const timestamp = Date.now().toString().slice(-6);
-  const random = Math.floor(Math.random() * 90 + 10); // 2 dígitos
-  return `RES-${timestamp}${random}`;
-}
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.floor(Math.random() * 90 + 10); // 2 dígitos
+    return `RES-${timestamp}${random}`;
+  }
 
   // Toast simples
   const toast = document.createElement("div");
@@ -88,12 +88,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // ABRIR MODAL RESERVA
   // =========================
   reservarBtn.addEventListener("click", () => {
-    if (!window.carrinho.length) {
-      alert("Adicione itens ao carrinho antes de reservar");
-      return;
-    }
-    modal.style.display = "flex";
-  });
+  // Verifica se o usuário está logado
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Faça login para prosseguir com a reserva");
+    return; // impede que o modal seja aberto
+  }
+
+  // Verifica se o carrinho não está vazio
+  if (!window.carrinho || window.carrinho.length === 0) {
+    alert("Adicione itens ao carrinho antes de reservar");
+    return;
+  }
+
+  // Se passou nas verificações, abre o modal de reserva
+  modal.style.display = "flex";
+});
+
+
 
   // =========================
   // FECHAR MODAL RESERVA
@@ -112,97 +124,95 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-const reservaID = gerarReservaID();
-document.getElementById("reservaId").textContent = reservaID;
+    const reservaID = gerarReservaID();
+    reservaIdSpan.textContent = reservaID;
+    reservaStatusSpan.textContent = "Aguardando";
 
     // Mostrar carregando e esconder formulário modal reserva
     modal.style.display = "none";
     pedidoForm.style.display = "none";
     pedidoLoading.style.display = "block";
 
-    const reserva = {
+   // Calcula total real da reserva a partir do carrinho
+let totalCalculado = 0;
+for (const item of window.carrinho) {
+  const preco = PRECOS[item.produto]; // PRECOS deve estar disponível globalmente
+  if (!preco) continue;
+  for (const qtd of Object.values(item.tamanhos)) {
+    totalCalculado += Number(qtd || 0) * preco;
+  }
+}
+
+const reserva = {
   tipo: "RESERVA",
   pedidoID: reservaID,
   nome,
   itens: window.carrinho,
-  total: window.total,
+  total: totalCalculado,   // <- envia o total real
   data: new Date().toISOString()
 };
 
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Você precisa estar logado para fazer uma reserva.");
+      window.location.href = "login.html";
+      return;
+    }
+
     fetch("http://localhost:3000/pedidos", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(reserva)
-})
-.then(() => {
-  pedidoLoading.style.display = "none";
-  reservaConfirmada.style.display = "block";
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify(reserva)
+    })
+    .then(async res => {
+      if (!res.ok) {
+        const erro = await res.json();
+        alert("Erro ao salvar reserva: " + (erro.error || "Erro desconhecido"));
+        throw new Error(erro.error || "Erro desconhecido");
+      }
+      return res.json();
+    })
+    .then(() => {
+      pedidoLoading.style.display = "none";
+      reservaConfirmada.style.display = "block";
 
-  document.getElementById("reservaId").textContent = reservaID;
-
-  sessionStorage.setItem(
-    "reservaConfirmada",
-    JSON.stringify({ reservaID })
-  );
-})
-.catch(() => {
-  alert("Erro ao conectar com o servidor");
-  pedidoLoading.style.display = "none";
-  pedidoForm.style.display = "block";
-});
+      sessionStorage.setItem(
+        "reservaConfirmada",
+        JSON.stringify({ reservaID })
+      );
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Erro ao conectar com o servidor");
+      pedidoLoading.style.display = "none";
+      pedidoForm.style.display = "block";
+    });
   });
 
   // =========================
   // FUNÇÃO PARA REINICIAR ESTADO E LIMPAR TUDO
   // =========================
   function resetTudo() {
-    // Limpar carrinho e total
     window.carrinho = [];
     window.total = 0;
-
-    // Atualizar UI do carrinho (supondo que tenha essa função global)
     if (typeof atualizarCarrinho === "function") atualizarCarrinho();
-
-    // Esconder modal de confirmação
     reservaConfirmada.style.display = "none";
-
-    // Mostrar formulário reserva novamente
     pedidoForm.style.display = "block";
-
-    // Esconder loading
     pedidoLoading.style.display = "none";
-
-    // Limpar dados da reserva no sessionStorage para não reaparecer modal
     sessionStorage.removeItem("reservaConfirmada");
-
-    // Limpar input nome
     nomeInput.value = "";
   }
 
   // =========================
   // EVENTO FECHAR MODAL CONFIRMAÇÃO
   // =========================
- fecharReservaBtn.addEventListener("click", () => {
-  // Fecha o modal
-  reservaConfirmada.style.display = "none";
-
-  // Esvazia o carrinho e zera total
-  window.carrinho = [];
-  window.total = 0;
-
-  // Atualiza o carrinho para mostrar "Nenhum item adicionado"
-  atualizarCarrinho();
-
-  // Restaura o formulário e esconde loading/confirmacao
-  pedidoForm.style.display = "block";
-  pedidoLoading.style.display = "none";
-
-  // Remove confirmação salva
-  sessionStorage.removeItem("reservaConfirmada");
-
-  // Limpa campos do modal de reserva
-  nomeInput.value = "";
-});
+  fecharReservaBtn.addEventListener("click", () => {
+    resetTudo();
+  });
 
   // =========================
   // RECUPERAR CONFIRMAÇÃO AO RECARREGAR
@@ -210,13 +220,13 @@ document.getElementById("reservaId").textContent = reservaID;
   const reservaSalva = sessionStorage.getItem("reservaConfirmada");
   if (reservaSalva) {
     const { reservaID } = JSON.parse(reservaSalva);
-    // Remove para não mostrar sempre no reload
     sessionStorage.removeItem("reservaConfirmada");
 
     pedidoForm.style.display = "none";
     pedidoLoading.style.display = "none";
     reservaConfirmada.style.display = "block";
-document.getElementById("reservaId").textContent = reservaID;
+    reservaIdSpan.textContent = reservaID;
+    reservaStatusSpan.textContent = "Aguardando";
   }
 
 });

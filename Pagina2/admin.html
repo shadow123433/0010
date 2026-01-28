@@ -5,174 +5,151 @@
   <title>Painel Administrativo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    .pedido {
-      background: #fff;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-
-    .pedido strong {
-      display: block;
-      margin-top: 5px;
-    }
-
-    .itens {
-      margin-top: 10px;
-      padding-left: 15px;
-    }
-
-    .pedido span {
-      font-weight: normal;
-    }
-
-    .pedido.reserva {
-      border-left: 4px solid #007bff;
-      padding-left: 10px;
-    }
-
-    .pedido.pedido {
-      border-left: 4px solid #28a745;
-      padding-left: 10px;
-    }
-
-    button {
-      padding: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-
-    ul {
-      padding-left: 20px;
-    }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    h1 { text-align: center; }
+    .pedido { background: #fff; padding: 15px; margin-bottom: 15px; border-radius: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .pedido strong { display: block; margin-top: 5px; }
+    .itens { margin-top: 10px; padding-left: 15px; }
+    .pedido span { font-weight: normal; }
+    .pedido.reserva { border-left: 4px solid #007bff; padding-left: 10px; }
+    .pedido.pedido { border-left: 4px solid #28a745; padding-left: 10px; }
+    button { padding: 10px; margin-bottom: 10px; cursor: pointer; }
+    ul { padding-left: 20px; }
+    #login { max-width: 400px; margin: 0 auto; text-align: center; }
+    #login input { width: 100%; padding: 10px; margin: 5px 0; }
   </style>
 </head>
 <body>
 
-<h1>📦 Pedidos e Reservas Recebidos</h1>
+<h1>📦 Painel Administrativo</h1>
 
-<button onclick="carregarPedidos()">🔄 Atualizar</button>
+<div id="login">
+  <h2>Login Admin</h2>
+  <input type="email" id="email" placeholder="Email" value="admin@admin.com">
+  <input type="password" id="senha" placeholder="Senha" value="admin123">
+  <button onclick="loginAdmin()">Login</button>
+  <p id="msgLogin"></p>
+</div>
 
-<div id="listaPedidos">Carregando pedidos...</div>
+<div id="painel" style="display:none;">
+  <button onclick="carregarPedidos()">🔄 Atualizar</button>
+  <div id="listaPedidos">Carregando pedidos...</div>
+</div>
 
 <script>
-function carregarPedidos() {
+async function loginAdmin() {
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
+  const msg = document.getElementById("msgLogin");
+
+  try {
+    const res = await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ email, senha })
+    });
+    const data = await res.json();
+
+    if(data.token) {
+      localStorage.setItem("token", data.token);
+      document.getElementById("login").style.display = "none";
+      document.getElementById("painel").style.display = "block";
+      carregarPedidos();
+    } else {
+      msg.textContent = data.error || "Erro no login";
+    }
+  } catch(e) {
+    msg.textContent = "Erro ao conectar com o servidor";
+    console.error(e);
+  }
+}
+
+async function carregarPedidos() {
   const lista = document.getElementById("listaPedidos");
   lista.innerHTML = "Carregando pedidos...";
 
-  fetch("http://localhost:3000/pedidos")
-    .then(res => res.json())
-    .then(pedidos => {
-      if (!pedidos.length) {
-        lista.innerHTML = "<p>Nenhum pedido recebido.</p>";
-        return;
-      }
-
-      lista.innerHTML = "";
-
-      pedidos.forEach(pedido => {
-        const div = document.createElement("div");
-        div.className = "pedido " + (pedido.tipo === "RESERVA" || pedido.pedidoID.startsWith("RES-") ? "reserva" : "pedido");
-
-        let itensHTML = "";
-        if (pedido.itens && pedido.itens.length) {
-          pedido.itens.forEach(item => {
-            if (item.tamanhos) {
-              Object.entries(item.tamanhos).forEach(([tam, qtd]) => {
-                if (qtd > 0) {
-                  itensHTML += `<li>${item.produto} - ${tam} × ${qtd}</li>`;
-                }
-              });
-            }
-          });
-        } else {
-          itensHTML = "<li>—</li>";
-        }
-
-        const total = pedido.total !== undefined ? `R$ ${pedido.total}` : "—";
-        const status = pedido.status || "pendente";
-        const data = pedido.data ? new Date(pedido.data).toLocaleString() : "—";
-
-        div.innerHTML = `
-          <strong>Tipo:</strong> <span>${pedido.tipo || "PEDIDO"}</span>
-          <strong>ID:</strong> <span>${pedido.pedidoID || "—"}</span>
-          <strong>Nome:</strong> <span>${pedido.nome || "—"}</span>
-          <strong>Endereço:</strong> <span>${pedido.endereco || "—"}</span>
-          <strong>Número da casa:</strong> <span>${pedido.numeroCasa || "—"}</span>
-          <strong>Referência:</strong> <span>${pedido.referencia || "—"}</span>
-          <strong>Total:</strong> <span>${total}</span>
-          <strong>Status:</strong> <span>${status}</span>
-
-          ${pedido.tipo === "PEDIDO" ? `<button onclick="marcarPago('${pedido.pedidoID}')">💰 Marcar como pago</button>` : ""}
-
-          ${pedido.tipo === "RESERVA" ? `<button onclick="marcarRetirado('${pedido.pedidoID}')">✅ Marcar como retirado</button>` : ""}
-
-          <strong>Data:</strong> <span>${data}</span>
-          <div class="itens">
-            <strong>Itens:</strong>
-            <ul>${itensHTML}</ul>
-          </div>
-        `;
-
-        lista.appendChild(div);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-      lista.innerHTML = "Erro ao carregar pedidos.";
+  try {
+    const res = await fetch("http://localhost:3000/pedidos", {
+      headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });
-}
+    const pedidos = await res.json();
 
-function marcarPago(pedidoID) {
-  fetch(`http://localhost:3000/pedidos/${pedidoID}/pagar`, {
-    method: 'PUT'
-  })
-  .then(res => res.json())
-  .then(data => {
-    if(data.success) {
-      alert(`Pedido ${pedidoID} marcado como pago!`);
-      carregarPedidos();
-    } else {
-      alert('Erro ao marcar como pago.');
+    if(!pedidos.length) {
+      lista.innerHTML = "<p>Nenhum pedido recebido.</p>";
+      return;
     }
-  })
-  .catch(err => {
-    console.error(err);
-    alert('Erro ao conectar com o backend.');
-  });
+
+    lista.innerHTML = "";
+    pedidos.forEach(pedido => {
+      const div = document.createElement("div");
+      div.className = "pedido " + (pedido.tipo === "RESERVA" ? "reserva" : "pedido");
+
+      let itensHTML = "";
+      if(pedido.itens && pedido.itens.length) {
+        pedido.itens.forEach(item => {
+          if(item.tamanhos) {
+            Object.entries(item.tamanhos).forEach(([tam,qtd]) => {
+              if(qtd>0) itensHTML += `<li>${item.produto} - ${tam} × ${qtd}</li>`;
+            });
+          }
+        });
+      } else itensHTML = "<li>—</li>";
+
+      const total = pedido.total !== undefined ? `R$ ${pedido.total}` : "—";
+      const status = pedido.status || "pendente";
+      const data = pedido.data ? new Date(pedido.data).toLocaleString() : "—";
+
+      div.innerHTML = `
+        <strong>Tipo:</strong> <span>${pedido.tipo || "PEDIDO"}</span>
+        <strong>ID:</strong> <span>${pedido.pedidoID || "—"}</span>
+        <strong>Nome:</strong> <span>${pedido.nome || "—"}</span>
+        <strong>Endereço:</strong> <span>${pedido.endereco || "—"}</span>
+        <strong>Número da casa:</strong> <span>${pedido.numeroCasa || "—"}</span>
+        <strong>Referência:</strong> <span>${pedido.referencia || "—"}</span>
+        <strong>Total:</strong> <span>${total}</span>
+        <strong>Status:</strong> <span>${status}</span>
+
+        ${pedido.tipo === "PEDIDO" ? `<button onclick="marcarPago('${pedido.pedidoID}')">💰 Marcar como pago</button>` : ""}
+        ${pedido.tipo === "RESERVA" ? `<button onclick="marcarRetirado('${pedido.pedidoID}')">✅ Marcar como retirado</button>` : ""}
+
+        <strong>Data:</strong> <span>${data}</span>
+        <div class="itens">
+          <strong>Itens:</strong>
+          <ul>${itensHTML}</ul>
+        </div>
+      `;
+      lista.appendChild(div);
+    });
+
+  } catch(e) {
+    console.error(e);
+    lista.innerHTML = "Erro ao carregar pedidos.";
+  }
 }
 
-function marcarRetirado(pedidoID) {
-  fetch(`http://localhost:3000/pedidos/${pedidoID}/retirar`, {
-    method: 'PUT'
-  })
-  .then(res => res.json())
-  .then(data => {
-    if(data.success) {
-      alert(`Pedido ${pedidoID} marcado como retirado!`);
-      carregarPedidos();
-    } else {
-      alert('Erro ao marcar como retirado.');
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    alert('Erro ao conectar com o backend.');
-  });
+async function marcarPago(pedidoID) {
+  try {
+    const res = await fetch(`http://localhost:3000/pedidos/${pedidoID}/pagar`, {
+      method: "PUT",
+      headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+    });
+    const data = await res.json();
+    if(data.success) carregarPedidos();
+    else alert("Erro ao marcar como pago");
+  } catch(e) { console.error(e); alert("Erro ao conectar com o backend"); }
 }
 
-carregarPedidos();
+async function marcarRetirado(pedidoID) {
+  try {
+    const res = await fetch(`http://localhost:3000/pedidos/${pedidoID}/retirar`, {
+      method: "PUT",
+      headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+    });
+    const data = await res.json();
+    if(data.success) carregarPedidos();
+    else alert("Erro ao marcar como retirado");
+  } catch(e) { console.error(e); alert("Erro ao conectar com o backend"); }
+}
 </script>
 
 </body>

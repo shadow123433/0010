@@ -11,11 +11,13 @@
 
 <div class="container">
     <nav class="menu-topo">
-        <ul>
-            <li><a href="../index.html">Início</a></li>
-            <li><a href="#pedido-form">Carrinho</a></li>
-        </ul>
-    </nav>
+    <ul>
+        <li><a href="../index.html">Início</a></li>
+        <li><a href="#pedido-form">Carrinho</a></li>
+        <li><a href="../login-usuarios/login.html">Login</a></li>
+    </ul>
+</nav>
+
 
     <!-- LOGO -->
     <header class="header">
@@ -119,6 +121,24 @@
             <button id="cancelarReserva">Cancelar</button>
             <button id="confirmarReserva">Confirmar reserva</button>
         </div>
+    </div>
+</div>
+
+
+<!-- MODAL LOGIN -->
+<div class="modal-overlay" id="modalLogin" style="display:none;">
+    <div class="modal">
+        <h2>Login</h2>
+
+        <input type="email" id="loginEmail" placeholder="Email">
+        <input type="password" id="loginSenha" placeholder="Senha">
+
+        <div style="margin-top:10px;">
+            <button id="btnLogin">Entrar</button>
+            <button id="btnFecharLogin">Cancelar</button>
+        </div>
+
+        <p id="loginErro" style="color:red; display:none; margin-top:5px;"></p>
     </div>
 </div>
 
