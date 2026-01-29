@@ -1,103 +1,123 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <title>Compre em nossa plataforma</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="style2.css">
+  <title>Compre em nossa plataforma</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="style2.css">
 </head>
 
 <body class="pagina2">
 
+<!-- ======================
+     USUÁRIO / PEDIDOS
+====================== -->
+<div class="acoes-flutuantes" id="userArea">
+
+  <!-- PERFIL -->
+  <button id="btnPerfil" class="perfil-btn" title="Conta">
+    👤
+  </button>
+
+  <!-- PEDIDOS -->
+  <button id="btnPedidos" class="pedido-btn" title="Meus pedidos" style="display:none;">
+    📦
+  </button>
+
+  <!-- DROPDOWN PERFIL -->
+  <div id="userDropdown" class="user-dropdown" style="display:none;">
+    <div id="userNome"></div>
+    <button id="btnLogout">Sair</button>
+  </div>
+
+</div>
+
 <div class="container">
-    <nav class="menu-topo">
+
+  <nav class="menu-topo">
     <ul>
-        <li><a href="../index.html">Início</a></li>
-        <li><a href="#pedido-form">Carrinho</a></li>
-        <li><a href="../login-usuarios/login.html">Login</a></li>
+      <li><a href="../index.html">Início</a></li>
+      <li><a href="#pedido-form">Carrinho</a></li>
     </ul>
-</nav>
+  </nav>
 
+  <!-- LOGO -->
+  <header class="header">
+    <img src="../LOGOMARTINS/logo.jpg" class="logo" alt="Uniformes Martins">
+  </header>
 
-    <!-- LOGO -->
-    <header class="header">
-        <img src="../LOGOMARTINS/logo.jpg" class="logo" alt="Uniformes Martins">
-    </header>
+  <!-- BANNER -->
+  <div class="titulo-bg"></div>
 
-    <!-- BANNER -->
-    <div class="titulo-bg"></div>
+  <hr>
 
-    <hr>
+  <!-- ESCOLAS -->
+  <section class="escolas">
+    <h2>Escolha a escola do aluno</h2>
 
-    <!-- ESCOLAS -->
-    <section class="escolas">
-        <h2>Escolha a escola do aluno</h2>
+    <div class="escolas-grid">
 
-        <div class="escolas-grid">
+      <div class="escola-card">
+        <h3>SESI LINHARES</h3>
+        <button data-escola="SESI">Ver uniformes</button>
+      </div>
 
-            <div class="escola-card">
-                <h3>SESI LINHARES</h3>
-                <button data-escola="SESI">Ver uniformes</button>
-            </div>
+      <div class="escola-card">
+        <h3>IFES CAMPUS LINHARES</h3>
+        <button data-escola="IFES">Ver uniformes</button>
+      </div>
 
-            <div class="escola-card">
-                <h3>IFES CAMPUS LINHARES</h3>
-                <button data-escola="IFES">Ver uniformes</button>
-            </div>
+      <div class="escola-card">
+        <h3>CRISTO REI</h3>
+        <button data-escola="CRISTO REI">Ver uniformes</button>
+      </div>
 
-            <div class="escola-card">
-                <h3>CRISTO REI</h3>
-                <button data-escola="CRISTO REI">Ver uniformes</button>
-            </div>
+    </div>
+  </section>
 
-        </div>
-    </section>
-    <!-- FIM ESCOLAS -->
+  <!-- CARRINHO -->
+  <section class="carrinho" id="pedido-form">
+    <h2>Carrinho</h2>
 
-    <!-- CARRINHO -->
-    <section class="carrinho" id="pedido-form">
-        <h2>Carrinho</h2>
+    <div id="carrinhoContainer"></div>
 
-        <div id="carrinhoContainer">
-        </div>
+    <div class="total">
+      <strong>Total:</strong> R$ <span id="totalValor">0,00</span>
+    </div>
 
-        <div class="total">
-            <strong>Total:</strong> R$ <span id="totalValor">0,00</span>
-        </div>
+    <button class="finalizar" id="btnFinalizarPedido">
+      Finalizar pedido
+    </button>
 
-        <button class="finalizar" id="btnFinalizarPedido">
-            Finalizar pedido
-        </button>
+    <button class="reservar">
+      Reservar para retirada na loja
+    </button>
+  </section>
 
-        <button class="reservar">
-            Reservar para retirada na loja
-        </button>
-    </section>
+  <!-- LOADING -->
+  <section id="pedido-loading" style="display:none; text-align:center;">
+    <h2>Enviando pedido...</h2>
+    <p>Aguarde alguns segundos.</p>
+  </section>
 
-    <!-- ESTADO: ENVIANDO PEDIDO -->
-    <section id="pedido-loading" style="display:none; text-align:center;">
-        <h2>Enviando pedido...</h2>
-        <p>Aguarde alguns segundos.</p>
-    </section>
+  <!-- CONFIRMADO -->
+  <section id="pedido-confirmado" style="display:none; text-align:center;">
+    <h2>Pedido confirmado ✅</h2>
 
-    <!-- ESTADO: PEDIDO CONFIRMADO -->
-    <section id="pedido-confirmado" style="display:none; text-align:center;">
-        <h2>Pedido confirmado ✅</h2>
+    <p>
+      Número do pedido:
+      <strong>#<span id="pedidoId"></span></strong>
+    </p>
 
-        <p>
-            Número do pedido:
-            <strong>#<span id="pedidoId"></span></strong>
-        </p>
+    <p>
+      Status:
+      <strong>Recebido</strong>
+    </p>
 
-        <p>
-            Status:
-            <strong>Recebido</strong>
-        </p>
-
-        <p>
-            A loja já recebeu seu pedido e irá processá-lo.
-        </p>
-    </section>
+    <p>
+      A loja já recebeu seu pedido e irá processá-lo.
+    </p>
+  </section>
 
 </div>
 
@@ -106,44 +126,43 @@
 
 <!-- MODAL RESERVA -->
 <div class="modal-overlay" id="modalReserva" style="display:none;">
-    <div class="modal">
-        <h2>Reserva para retirada</h2>
+  <div class="modal">
+    <h2>Reserva para retirada</h2>
 
-        <input id="nomeReserva" placeholder="Nome completo">
+    <input id="nomeReserva" placeholder="Nome completo">
 
-        <p class="aviso">
-            ⚠️ Esta é uma reserva, não um pedido<br>
-            ⚠️ Sujeita à confirmação da loja<br>
-            ⚠️ Validade: 24h
-        </p>
+    <p class="aviso">
+      ⚠️ Esta é uma reserva, não um pedido<br>
+      ⚠️ Sujeita à confirmação da loja<br>
+      ⚠️ Validade: 24h
+    </p>
 
-        <div>
-            <button id="cancelarReserva">Cancelar</button>
-            <button id="confirmarReserva">Confirmar reserva</button>
-        </div>
+    <div>
+      <button id="cancelarReserva">Cancelar</button>
+      <button id="confirmarReserva">Confirmar reserva</button>
     </div>
+  </div>
 </div>
-
 
 <!-- MODAL LOGIN -->
 <div class="modal-overlay" id="modalLogin" style="display:none;">
-    <div class="modal">
-        <h2>Login</h2>
+  <div class="modal">
+    <h2>Login</h2>
 
-        <input type="email" id="loginEmail" placeholder="Email">
-        <input type="password" id="loginSenha" placeholder="Senha">
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginSenha" placeholder="Senha">
 
-        <div style="margin-top:10px;">
-            <button id="btnLogin">Entrar</button>
-            <button id="btnFecharLogin">Cancelar</button>
-        </div>
-
-        <p id="loginErro" style="color:red; display:none; margin-top:5px;"></p>
+    <div style="margin-top:10px;">
+      <button id="btnLogin">Entrar</button>
+      <button id="btnFecharLogin">Cancelar</button>
     </div>
+
+    <p id="loginErro" style="color:red; display:none; margin-top:5px;"></p>
+  </div>
 </div>
 
-
 <!-- JS -->
+<script src="auth.js"></script> 
 <script src="script.js"></script>
 <script src="reserva.js"></script>
 

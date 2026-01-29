@@ -14,7 +14,8 @@ function setToken(token) {
 
 function logout() {
   localStorage.removeItem("token");
-  // Redireciona para a página de login
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userEmail");
   window.location.href = "login.html";
 }
 
@@ -49,9 +50,24 @@ if (loginForm) {
         return;
       }
 
-      // Salva token e redireciona para a página inicial
+      // salva token e dados do usuário
       setToken(data.token);
-      window.location.href = "../index.html";
+
+      if (data.user) {
+        localStorage.setItem("userName", data.user.nome);
+        localStorage.setItem("userEmail", data.user.email);
+      }
+
+      // redirecionamento pós-login
+      const redirect = sessionStorage.getItem("redirectAfterLogin");
+
+      if (redirect) {
+        sessionStorage.removeItem("redirectAfterLogin");
+        window.location.href = redirect;
+      } else {
+        window.location.href = "../Pagina2/index2.html";
+      }
+
     } catch (err) {
       alert("Erro ao conectar com o servidor");
       console.error(err);
@@ -87,31 +103,27 @@ if (registerForm) {
         return;
       }
 
-      // Salva token e redireciona para a página inicial
+      // salva token e dados do usuário
       setToken(data.token);
-      window.location.href = "../index.html";
+
+      if (data.user) {
+        localStorage.setItem("userName", data.user.nome);
+        localStorage.setItem("userEmail", data.user.email);
+      }
+
+      // redirecionamento pós-cadastro
+      const redirect = sessionStorage.getItem("redirectAfterLogin");
+
+      if (redirect) {
+        sessionStorage.removeItem("redirectAfterLogin");
+        window.location.href = redirect;
+      } else {
+        window.location.href = "../Pagina2/index2.html";
+      }
+
     } catch (err) {
       alert("Erro ao conectar com o servidor");
       console.error(err);
     }
   });
 }
-
-// =====================
-// REDIRECIONAMENTO E MENU DINÂMICO
-// =====================
-
-// Esta parte será usada na página inicial (index.html) para mostrar "Meus Pedidos" dinamicamente
-document.addEventListener("DOMContentLoaded", () => {
-  const menu = document.querySelector(".menu-topo ul");
-
-  if (isLogged() && menu) {
-    // Evita duplicar o item
-    if (!document.getElementById("menuMeusPedidos")) {
-      const li = document.createElement("li");
-      li.id = "menuMeusPedidos";
-      li.innerHTML = `<a href="meus-pedidos.html">Meus Pedidos</a>`;
-      menu.appendChild(li);
-    }
-  }
-});

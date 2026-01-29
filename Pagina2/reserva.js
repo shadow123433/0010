@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
    // Calcula total real da reserva a partir do carrinho
 let totalCalculado = 0;
 for (const item of window.carrinho) {
-  const preco = PRECOS[item.produto]; // PRECOS deve estar disponível globalmente
+const preco = item.precoUnitario;
   if (!preco) continue;
   for (const qtd of Object.values(item.tamanhos)) {
     totalCalculado += Number(qtd || 0) * preco;
