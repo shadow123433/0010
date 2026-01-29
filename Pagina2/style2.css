@@ -1256,59 +1256,127 @@ html, body {
 
 
 
-.user-controls {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  z-index: 9999;
+
+
+/* ===============================
+   DROPDOWN USUÁRIO
+=============================== */
+
+.user-dropdown {
+  position: absolute;
+  bottom: 75px;
+  right: 0;
+
+  background: white;
+  padding: 12px 16px;
+  min-width: 160px;
+
+  border-radius: 14px;
+
+  box-shadow: 0 15px 40px rgba(0,0,0,.25);
+
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+
+  z-index: 10000;
 }
 
-.user-btn,
-.pedidos-btn {
+/* 👇 QUANDO JS ADICIONAR "open" */
+.user-dropdown.open {
+  display: flex;
+}
+
+
+#userNome {
+  font-weight: 600;
+  color: #111;
+}
+
+#btnLogout {
+  border: none;
+  background: #ef4444;
+  color: white;
+
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+
+/* BOTÕES */
+
+.perfil-btn,
+.pedido-btn {
   width: 55px;
   height: 55px;
   border-radius: 50%;
   border: none;
+  cursor: pointer;
+
   font-size: 22px;
-  cursor: pointer;
-  background: #2563eb;
+
+  background: linear-gradient(135deg, #2c7be5, #1a56c4);
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,.25);
+
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
 }
 
-.user-menu {
-  position: absolute;
-  bottom: 75px;
-  right: 0;
-  background: white;
-  border-radius: 14px;
-  padding: 14px 18px;
-  min-width: 160px;
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: 0 15px 40px rgba(0,0,0,.2);
+.perfil-btn:hover,
+.pedido-btn:hover {
+  transform: scale(1.08);
 }
 
-.user-menu.open {
-  display: flex;
+
+
+
+/* ===============================
+   MOBILE AJUSTES USUÁRIO
+=============================== */
+
+@media (max-width: 600px) {
+
+  .acoes-flutuantes {
+    bottom: 15px;
+    right: 15px;
+    gap: 8px;
+  }
+
+  .perfil-btn,
+  .pedido-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(0,0,0,.18);
+  }
+
+  .user-dropdown {
+    bottom: 60px;
+    right: 0;
+    min-width: 140px;
+    padding: 10px 12px;
+  }
+
+  #userNome {
+    font-size: 14px;
+  }
+
+  #btnLogout {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+}
+@media (max-width: 600px) {
+
+  .acoes-flutuantes {
+    bottom: 150px; /* sobe os ícones */
+  }
+
 }
 
-.user-menu span {
-  font-weight: 600;
-}
 
-.user-menu button {
-  border: none;
-  background: #ef4444;
-  color: white;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
+
+

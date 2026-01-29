@@ -542,143 +542,74 @@ lightboxImg.addEventListener("touchend", () => {
 });
 
 
-
-const btnPerfil = document.getElementById("btnPerfil");
-const btnPedidos = document.getElementById("btnPedidos");
-
-if (!localStorage.getItem("token") && btnPedidos) {
-  btnPedidos.style.display = "none";
-}
-
-if (btnPerfil) {
-  btnPerfil.onclick = () => {
-    sessionStorage.setItem("redirectAfterLogin", "../compras/index2.html");
-    window.location.href = "../login-usuarios/login.html";
-  };
-}
-
-if (btnPedidos) {
-  btnPedidos.onclick = () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Faça login para ver seus pedidos.");
-      sessionStorage.setItem("redirectAfterLogin", "../compras/index2.html");
-      window.location.href = "../login-usuarios/login.html";
-      return;
-    }
-
-    window.location.href = "../login-usuarios/meus-pedidos.html";
-  };
-}
-
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ========================
-  // ELEMENTOS
-  // ========================
   const btnPerfil = document.getElementById("btnPerfil");
   const btnPedidos = document.getElementById("btnPedidos");
   const dropdown = document.getElementById("userDropdown");
   const userNome = document.getElementById("userNome");
   const btnLogout = document.getElementById("btnLogout");
 
-  // ========================
-  // FUNÇÕES AUXILIARES
-  // ========================
-  const getToken = () => localStorage.getItem("token");
-  const getUserName = () => localStorage.getItem("userName");
+  if (!btnPerfil || !dropdown) {
+    console.error("Elementos do menu não encontrados");
+    return;
+  }
 
-  const atualizarUI = () => {
-    const token = getToken();
-    const nome = getUserName();
+  function atualizarUI() {
+  const token = getToken();
+  const nome = localStorage.getItem("userName");
 
-    if (token) {
-      btnPedidos.style.display = "block";
-      userNome.textContent = nome || "Minha conta";
-    } else {
-      btnPedidos.style.display = "none";
-      dropdown.style.display = "none";
-      userNome.textContent = "";
-    }
-  };
+  if (token) {
+    btnPedidos.style.display = "flex";
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
+    userNome.textContent = nome || "Usuário";
 
-    // Atualiza UI sem recarregar página
-    atualizarUI();
-  };
+    // dropdown começa fechado
+    dropdown.classList.remove("open");
 
-  // ========================
-  // ESTADO INICIAL
-  // ========================
+  } else {
+    btnPedidos.style.display = "none";
+
+    dropdown.classList.remove("open");
+
+    userNome.textContent = "";
+  }
+}
+
+
+
   atualizarUI();
 
-  // ========================
-  // CLIQUE NO PERFIL (BONECO AZUL)
-  // ========================
   btnPerfil.addEventListener("click", (e) => {
     e.stopPropagation();
 
-    const token = getToken();
-
-    if (!token) {
-      // Usuário não logado → redireciona para login
+    if (!getToken()) {
       sessionStorage.setItem("redirectAfterLogin", "../Pagina2/index2.html");
       window.location.href = "../login-usuarios/login.html";
       return;
     }
 
-    // Alterna dropdown de forma suave
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    dropdown.classList.toggle("open");
   });
 
-  // ========================
-  // CLIQUE NO BOTÃO PEDIDOS
-  // ========================
   btnPedidos.addEventListener("click", () => {
-    const token = getToken();
-    if (!token) {
-      alert("Você precisa estar logado para acessar seus pedidos.");
-      return;
-    }
     window.location.href = "../login-usuarios/meus-pedidos.html";
   });
 
-  // ========================
-  // LOGOUT
-  // ========================
   btnLogout.addEventListener("click", () => {
-    logout();
-    dropdown.style.display = "none";
-    alert("Você saiu da conta.");
-  });
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userEmail");
 
-  // ========================
-  // FECHAR DROPDOWN AO CLICAR FORA
-  // ========================
-  document.addEventListener("click", (e) => {
-    if (dropdown.style.display === "block") {
-      if (!dropdown.contains(e.target) && e.target !== btnPerfil) {
-        dropdown.style.display = "none";
-      }
-    }
-  });
-
-  // ========================
-  // ATUALIZA UI QUANDO STORAGE MUDA (OUTRA ABA/GUIA)
-  // ========================
-  window.addEventListener("storage", () => {
     atualizarUI();
   });
 
-});
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && e.target !== btnPerfil) {
+      dropdown.classList.remove("open");
+    }
+  });
 
+});
 
 

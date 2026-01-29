@@ -124,3 +124,8 @@ function carregarPedidos() {
     });
 
 }
+
+
+document.getElementById("btnVoltar").onclick = () => {
+  window.location.href = "../Pagina2/index2.html";
+};

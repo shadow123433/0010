@@ -16,8 +16,8 @@ function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("userName");
   localStorage.removeItem("userEmail");
-  window.location.href = "login.html";
 }
+
 
 function isLogged() {
   return !!getToken();
@@ -127,3 +127,54 @@ if (registerForm) {
     }
   });
 }
+
+
+
+
+// =====================
+// CONTROLE DE USUÁRIO NA PAGINA2
+// =====================
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnPerfil = document.getElementById("btnPerfil");
+  const btnPedidos = document.getElementById("btnPedidos");
+  const userDropdown = document.getElementById("userDropdown");
+  const userNome = document.getElementById("userNome");
+  const btnLogout = document.getElementById("btnLogout");
+
+  // se não for essa página, não faz nada
+  if (!btnPerfil) return;
+
+  const token = getToken();
+
+  if (token) {
+    // LOGADO
+    if (btnPedidos) btnPedidos.style.display = "flex";
+
+    if (userNome) {
+      const nome = localStorage.getItem("userName");
+      userNome.textContent = nome || "Usuário";
+    }
+  }
+
+  // toggle dropdown
+  btnPerfil.addEventListener("click", () => {
+    if (!getToken()) {
+      sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+      window.location.href = "../login-usuarios/login.html";
+      return;
+    }
+
+    if (userDropdown) {
+      userDropdown.style.display =
+        userDropdown.style.display === "none" ? "block" : "none";
+    }
+  });
+
+  // logout
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      logout();
+    });
+  }
+});
