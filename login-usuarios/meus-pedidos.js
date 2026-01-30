@@ -98,21 +98,48 @@ function carregarPedidos() {
             ? new Date(pedido.data).toLocaleString()
             : "—";
 
-        div.innerHTML = `
-          <strong>Tipo:</strong> ${pedido.tipo || "PEDIDO"}<br/>
-          <strong>ID:</strong> ${pedido.pedidoID || "—"}<br/>
-          <strong>Nome:</strong> ${pedido.nome || "—"}<br/>
-          <strong>Total:</strong> ${total}<br/>
-          <strong>Status:</strong> ${status}<br/>
-          <strong>Data:</strong> ${data}
+      div.innerHTML = `
+  <strong>Tipo:</strong> ${pedido.tipo || "PEDIDO"}<br/>
+  <strong>ID:</strong> ${pedido.pedidoID || "—"}<br/>
+  <strong>Nome:</strong> ${pedido.nome || "—"}<br/>
+  <strong>Total:</strong> ${total}<br/>
+  <strong>Status:</strong> ${status}<br/>
+  <strong>Data:</strong> ${data}
 
-          <div class="itens">
-            <strong>Itens:</strong>
-            <ul>${itensHTML}</ul>
-          </div>
-        `;
+  <div class="itens">
+    <strong>Itens:</strong>
+    <ul>${itensHTML}</ul>
+  </div>
+
+  <button class="btn-excluir" data-id="${pedido.pedidoID}">🗑️ Excluir pedido</button>
+`;
+
 
         lista.appendChild(div);
+        const btnExcluir = div.querySelector(".btn-excluir");
+btnExcluir.onclick = () => {
+  if (!confirm("Tem certeza que deseja excluir este pedido/reserva?")) return;
+
+  fetch(`http://localhost:3000/meus-pedidos/${pedido.pedidoID}`, {
+  method: "PATCH",
+  headers: {
+    Authorization: "Bearer " + localStorage.getItem("token")
+  }
+})
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      div.remove(); // Remove do HTML apenas se o servidor confirmou
+      alert("Pedido oculto da sua conta!");
+    } else {
+      alert(data.error || "Não foi possível ocultar o pedido");
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Erro ao ocultar o pedido. Tente novamente.");
+  });
+};
 
       });
 

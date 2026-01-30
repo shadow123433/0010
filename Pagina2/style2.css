@@ -1430,20 +1430,20 @@ html, body {
 /* MENU FLUTUANTE NO CANTO INFERIOR DIREITO */
 .menu-flutuante {
     position: fixed;
-    bottom: 15px;
-    right: 15px;
+    bottom: 5px;
+    right: 5px;
     z-index: 10000;
 }
 
 /* BOTÃO DE TRÊS PONTOS */
 .menu-btn {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     border: none;
     background: #1e3a8a;
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
     display: flex;
     justify-content: center;

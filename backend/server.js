@@ -190,8 +190,16 @@ app.post("/pedidos", auth, (req, res) => {
 // CLIENTE VE SEUS PEDIDOS
 // ===============================
 
+db.all("PRAGMA table_info(pedidos)", (err, cols) => {
+  if (err) throw err;
+  const hasAtivoUsuario = cols.some(col => col.name === "ativo_usuario");
+  if (!hasAtivoUsuario) {
+    db.run("ALTER TABLE pedidos ADD COLUMN ativo_usuario INTEGER DEFAULT 1");
+  }
+});
+
 app.get("/meus-pedidos", auth, (req, res) => {
-  db.all("SELECT * FROM pedidos WHERE user_id=? ORDER BY id DESC", [req.user.id], (err, rows) => {
+  db.all("SELECT * FROM pedidos WHERE user_id=? AND ativo_usuario=1 ORDER BY id DESC", [req.user.id], (err, rows) => {
     if (err) return res.status(500).json({ error: "Erro ao buscar pedidos" });
     const pedidos = (rows || []).map(pedido => ({
       ...pedido,
@@ -200,6 +208,7 @@ app.get("/meus-pedidos", auth, (req, res) => {
     res.json(pedidos);
   });
 });
+
 
 // ===============================
 // ADMIN VE TODOS PEDIDOS / RESERVAS
@@ -233,6 +242,31 @@ app.put("/pedidos/:pedidoID/retirar", auth, onlyAdmin, (req, res) => {
     res.json({ success: true });
   });
 });
+
+
+
+// ===============================
+// EXCLUIR PEDIDO DO USUÁRIO
+// ===============================
+
+app.patch("/meus-pedidos/:pedidoID", auth, (req, res) => {
+  const pedidoID = req.params.pedidoID;
+  const userId = req.user.id;
+
+  db.run(
+    "UPDATE pedidos SET ativo_usuario=0 WHERE pedidoID=? AND user_id=?",
+    [pedidoID, userId],
+    function(err) {
+      if (err) return res.status(500).json({ error: "Erro ao atualizar pedido" });
+      if (this.changes === 0)
+        return res.status(404).json({ error: "Pedido não encontrado ou não pertence a você" });
+      res.json({ success: true, msg: "Pedido oculto da sua conta" });
+    }
+  );
+});
+
+
+
 
 // ===============================
 // START SERVER

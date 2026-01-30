@@ -10,17 +10,24 @@
 <body>
 
   <header class="topo-pedidos">
-
-  <button id="btnVoltar" class="btn-voltar">← Voltar</button>
-
-  <h1>Meus Pedidos</h1>
-
-</header>
-
+    <button id="btnVoltar" class="btn-voltar">← Voltar</button>
+    <h1>Meus Pedidos</h1>
+  </header>
 
   <main class="pedidos-container">
     <div id="listaPedidos">
-      <!-- pedidos aparecem aqui -->
+      <!-- Cada pedido será renderizado aqui via JS -->
+      <!-- Exemplo de estrutura que o JS vai criar:
+      <div class="pedido-item">
+        <strong>Pedido #123456</strong><br>
+        Nome: João<br>
+        Endereço: Rua Exemplo, 123<br>
+        Itens: Camisa (M×1), Calça (G×2)<br>
+        Total: R$ 234,90<br>
+        <button class="btn-excluir" data-id="123456">🗑️ Excluir pedido</button>
+        <hr>
+      </div>
+      -->
     </div>
   </main>
 

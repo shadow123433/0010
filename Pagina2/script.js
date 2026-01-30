@@ -238,9 +238,9 @@ function atualizarCarrinho() {
       const linha = document.createElement("div");
       linha.className = "linha-carrinho";
       linha.innerHTML = `
-        <span>• ${item.produto} (${tamanho} × ${qtd})</span>
-        <button class="btn-remover" data-produto="${item.produto}" data-tamanho="${tamanho}">✖</button>
-      `;
+  <span>• ${item.produto} (${tamanho} × ${qtd})</span>
+  <button class="btn-remover" data-produto="${item.produto}" data-tamanho="${tamanho}">✖</button>
+`;
       carrinhoContainer.appendChild(linha);
     });
   });
