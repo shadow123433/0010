@@ -306,7 +306,7 @@ finalizarBtn.onclick = () => {
     const btnMenu = document.getElementById("btnMenu");
 
     // Mostra alerta para o usuário
-    alert("Faça login para continuar.");
+    alert("Faça login para prosseguir com o pedido.");
 
     // Adiciona animação de piscar/balançar
     btnMenu.classList.add("piscar");
