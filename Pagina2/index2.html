@@ -9,28 +9,7 @@
 
 <body class="pagina2">
 
-<!-- ======================
-     USUÁRIO / PEDIDOS
-====================== -->
-<div class="acoes-flutuantes" id="userArea">
 
-  <!-- PERFIL -->
-  <button id="btnPerfil" class="perfil-btn" title="Conta">
-    👤
-  </button>
-
-  <!-- PEDIDOS -->
-  <button id="btnPedidos" class="pedido-btn" title="Meus pedidos" style="display:none;">
-    📦
-  </button>
-
-  <!-- DROPDOWN PERFIL -->
-<div id="userDropdown" class="user-dropdown">
-    <div id="userNome"></div>
-    <button id="btnLogout">Sair</button>
-  </div>
-
-</div>
 
 <div class="container">
 
@@ -160,6 +139,24 @@
     <p id="loginErro" style="color:red; display:none; margin-top:5px;"></p>
   </div>
 </div>
+
+
+
+
+
+<div class="menu-flutuante">
+  <button id="btnMenu" class="menu-btn" title="Menu">⋮</button>
+  
+  <div id="menuDropdown" class="menu-dropdown" style="display:none;">
+    <button id="btnPedidosMenu" class="menu-item" title="Meus pedidos">
+      📦 Meus Pedidos <span class="badge-pedidos" style="display:none;">0</span>
+    </button>
+    <button id="btnLoginMenu" class="menu-item" title="Login">👤 Login</button>
+    <button id="btnLogoutMenu" class="menu-item" title="Sair">🚪 Sair da conta</button>
+  </div>
+</div>
+
+
 
 <!-- JS -->
 <script src="script.js"></script>

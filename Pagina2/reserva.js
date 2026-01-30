@@ -176,15 +176,19 @@ const reserva = {
       }
       return res.json();
     })
-    .then(() => {
-      pedidoLoading.style.display = "none";
-      reservaConfirmada.style.display = "block";
+   .then(() => {
+  pedidoLoading.style.display = "none";
+  reservaConfirmada.style.display = "block";
 
-      sessionStorage.setItem(
-        "reservaConfirmada",
-        JSON.stringify({ reservaID })
-      );
-    })
+  // 🔴 MOSTRA BADGE IMEDIATAMENTE (MESMA LÓGICA DO PEDIDO)
+  localStorage.setItem("pedidosBadge", "1");
+
+  sessionStorage.setItem(
+    "reservaConfirmada",
+    JSON.stringify({ reservaID })
+  );
+})
+
     .catch((err) => {
       console.error(err);
       alert("Erro ao conectar com o servidor");

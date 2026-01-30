@@ -1,49 +1,52 @@
-
 /* ===============================
-   RESET
+   RESET & BASE
 =============================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #1e3a8a, #007bff);
-    color: #333;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    font-size: 16px;
 }
 
 /* ===============================
-   CONTAINER LOGIN
+   LOGIN CARD
 =============================== */
 .login-container {
-    background: #ffffff;
-    padding: 40px 30px;
-    border-radius: 16px;
+    background: rgba(255,255,255,0.95);
+    padding: 50px 40px;
+    border-radius: 20px;
     width: 90%;
-    max-width: 400px;
+    max-width: 420px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    transition: transform 0.3s;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    transition: all 0.4s ease;
 }
 
 .login-container:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
 }
 
 .login-container h1 {
-    margin-bottom: 30px;
-    color: #1e3a8a;
-    font-size: 28px;
+    font-size: 32px;
+    color: #0f2027;
+    margin-bottom: 35px;
+    letter-spacing: 1px;
+    font-weight: 700;
 }
 
 /* ===============================
-   FORMULÁRIO
+   FORM
 =============================== */
 .login-container form {
     display: flex;
@@ -51,57 +54,62 @@ body {
 }
 
 .login-container input {
-    padding: 14px 12px;
-    margin-bottom: 15px;
+    padding: 15px 18px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    background: #f7f7f7;
+    color: #333;
 }
 
 .login-container input:focus {
-    border-color: #1e3a8a;
+    border-color: #2c5364;
+    box-shadow: 0 0 10px rgba(44, 83, 100, 0.5);
     outline: none;
-    box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
 }
 
 /* ===============================
    BOTÃO
 =============================== */
 .login-container button {
-    padding: 14px 0;
+    padding: 16px 0;
     border: none;
-    border-radius: 8px;
-    background: #1e3a8a;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #0f2027, #2c5364);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
 }
 
 .login-container button:hover {
-    background: #007bff;
-    transform: translateY(-2px);
+    background: linear-gradient(90deg, #203a43, #0f2027);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.3);
 }
 
 /* ===============================
    LINKS
 =============================== */
 .login-container p {
-    margin-top: 20px;
+    margin-top: 25px;
     font-size: 14px;
+    color: #555;
 }
 
 .login-container p a {
-    color: #1e3a8a;
-    font-weight: bold;
+    color: #2c5364;
+    font-weight: 600;
     text-decoration: none;
-    transition: 0.3s;
+    transition: color 0.3s ease;
 }
 
 .login-container p a:hover {
-    color: #007bff;
+    color: #0f2027;
 }
 
 /* ===============================
@@ -111,7 +119,8 @@ body {
     color: #e53935;
     font-size: 14px;
     margin-top: 10px;
-    font-weight: bold;
+    font-weight: 600;
+    text-align: left;
 }
 
 /* ===============================
@@ -119,10 +128,37 @@ body {
 =============================== */
 @media (max-width: 500px) {
     .login-container {
-        padding: 30px 20px;
+        padding: 35px 25px;
+    }
+
+    .login-container h1 {
+        font-size: 28px;
+    }
+
+    .login-container button {
+        font-size: 16px;
     }
 }
 
 
+.voltar-btn {
+    position: fixed;  /* fixo na tela, não no container */
+    top: 20px;
+    left: 20px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    z-index: 1000; /* garante que fique acima de tudo */
+}
 
-
+.voltar-btn:hover {
+    background: rgba(255,255,255,1);
+    transform: translateY(-2px);
+}

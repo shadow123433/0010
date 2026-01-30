@@ -388,19 +388,22 @@ fetch(API_URL + "/pedidos", {
     return res.json();
   })
 
-  .then(() => {
-    pedidoLoading.style.display = "none";
+.then(() => {
+  pedidoLoading.style.display = "none";
 
-    // Mostra modal de confirmação
-    pedidoIdModal.textContent = pedidoID;
-    pedidoModalConfirmacao.style.display = "flex";
+  // 🔴 MOSTRA BADGE IMEDIATAMENTE
+  localStorage.setItem("pedidosBadge", "1");
 
-    // salva confirmação temporária
-    sessionStorage.setItem(
-      "pedidoConfirmado",
-      JSON.stringify({ pedidoID })
-    );
-  })
+  pedidoIdModal.textContent = pedidoID;
+  pedidoModalConfirmacao.style.display = "flex";
+
+  sessionStorage.setItem(
+    "pedidoConfirmado",
+    JSON.stringify({ pedidoID })
+  );
+})
+
+
   .catch(() => alert("Erro ao conectar com o servidor"));
 
 fecharPedidoModal.onclick = () => {
@@ -555,26 +558,40 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  function atualizarUI() {
-  const token = getToken();
-  const nome = localStorage.getItem("userName");
+ function atualizarUI() {
+    const token = getToken();
 
-  if (token) {
-    btnPedidos.style.display = "flex";
+    const btnPedidosMenu = document.getElementById('btnPedidosMenu');
+    const btnLoginMenu = document.getElementById('btnLoginMenu');
+    const btnLogoutMenu = document.getElementById('btnLogoutMenu');
+    const badge = btnPedidosMenu.querySelector(".badge-pedidos");
+    const mostrarBadge = localStorage.getItem("pedidosBadge");
 
-    userNome.textContent = nome || "Usuário";
+    if (token) {
+        btnPedidosMenu.style.display = "flex";
+        btnLogoutMenu.style.display = "flex";
+        btnLoginMenu.style.display = "none";
 
-    // dropdown começa fechado
-    dropdown.classList.remove("open");
-
-  } else {
-    btnPedidos.style.display = "none";
-
-    dropdown.classList.remove("open");
-
-    userNome.textContent = "";
-  }
+        if (mostrarBadge === "1") {
+            badge.textContent = "1";
+            badge.style.display = "block";
+        } else {
+            badge.style.display = "none";
+        }
+    } else {
+        btnPedidosMenu.style.display = "none";
+        btnLogoutMenu.style.display = "none";
+        btnLoginMenu.style.display = "flex";
+        if (badge) badge.style.display = "none";
+    }
 }
+
+document.getElementById("btnLogoutMenu").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("pedidosBadge");
+    atualizarUI();
+});
 
 
 
@@ -592,17 +609,32 @@ document.addEventListener("DOMContentLoaded", () => {
     dropdown.classList.toggle("open");
   });
 
-  btnPedidos.addEventListener("click", () => {
-    window.location.href = "../login-usuarios/meus-pedidos.html";
-  });
+ btnPedidos.addEventListener("click", () => {
 
-  btnLogout.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
+  // 🔴 REMOVE NOTIFICAÇÃO
+localStorage.removeItem("pedidosBadge"); // 👈 CERTO
 
-    atualizarUI();
-  });
+  const badge = document.getElementById("badgePedidos");
+  if (badge) badge.style.display = "none";
+
+  window.location.href = "../login-usuarios/meus-pedidos.html";
+});
+
+
+btnLogout.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("pedidosCount"); // 👈 LIMPA CONTADOR
+
+  // 🔴 Fecha o dropdown imediatamente
+  const dropdown = document.getElementById("userDropdown");
+  if (dropdown) dropdown.classList.remove("open");
+
+  atualizarUI();
+});
+
+
 
   document.addEventListener("click", (e) => {
     if (!dropdown.contains(e.target) && e.target !== btnPerfil) {
@@ -613,3 +645,70 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+/* =========================
+   MENU DE TRÊS PONTOS
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const btnMenu = document.getElementById("btnMenu");
+  const menuDropdown = document.getElementById("menuDropdown");
+  const btnPedidosMenu = document.getElementById("btnPedidosMenu");
+  const btnLoginMenu = document.getElementById("btnLoginMenu");
+  const btnLogoutMenu = document.getElementById("btnLogoutMenu");
+  const badge = btnPedidosMenu.querySelector(".badge-pedidos");
+
+  // 🔴 Estado inicial: apenas login visível
+  function atualizarUI() {
+    if (getToken()) {
+      btnLoginMenu.style.display = "none";
+      btnPedidosMenu.style.display = "flex";
+      btnLogoutMenu.style.display = "flex";
+
+      const mostrarBadge = localStorage.getItem("pedidosBadge");
+      if (mostrarBadge === "1") {
+        badge.textContent = "1";
+        badge.style.display = "block";
+      } else {
+        badge.style.display = "none";
+      }
+    } else {
+      btnLoginMenu.style.display = "flex";
+      btnPedidosMenu.style.display = "none";
+      btnLogoutMenu.style.display = "none";
+      badge.style.display = "none";
+    }
+  }
+
+  atualizarUI();
+
+  // Abrir/fechar dropdown do menu
+  btnMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menuDropdown.style.display = menuDropdown.style.display === "flex" ? "none" : "flex";
+  });
+
+  window.addEventListener("click", (e) => {
+    if (!menuDropdown.contains(e.target) && e.target !== btnMenu) {
+      menuDropdown.style.display = "none";
+    }
+  });
+
+  // Botão login
+  btnLoginMenu.addEventListener("click", () => {
+    window.location.href = "../login-usuarios/login.html";
+  });
+
+  // Botão pedidos
+  btnPedidosMenu.addEventListener("click", () => {
+    localStorage.removeItem("pedidosBadge");
+    atualizarUI();
+    window.location.href = "../login-usuarios/meus-pedidos.html";
+  });
+
+  // Botão sair
+  btnLogoutMenu.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("pedidosBadge");
+    atualizarUI();
+  });
+});

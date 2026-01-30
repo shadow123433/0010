@@ -1380,3 +1380,127 @@ html, body {
 
 
 
+/* BOTÃO DE PEDIDOS */
+.pedido-btn {
+    position: relative;
+    width: 50px;                /* tamanho fixo */
+    height: 50px;
+    border: none;
+    border-radius: 50%;          /* deixa redondo */
+    background: linear-gradient(135deg, #1e3a8a, #007bff); /* gradiente moderno */
+    color: white;
+    font-size: 24px;             /* emoji grande */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2); /* sombra leve */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pedido-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* BADGE DE QUANTIDADE */
+.badge-pedidos {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #e53935;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 3px 6px;
+    border-radius: 50%;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
+
+
+
+/* MENU FLUTUANTE NO CANTO INFERIOR DIREITO */
+.menu-flutuante {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    z-index: 10000;
+}
+
+/* BOTÃO DE TRÊS PONTOS */
+.menu-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #1e3a8a;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: all 0.2s ease;
+}
+
+.menu-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+/* DROPDOWN */
+.menu-dropdown {
+    position: absolute;
+    bottom: 45px; /* sobe acima do botão */
+    right: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    display: none; /* escondido por padrão */
+    flex-direction: column;
+    min-width: 140px;
+    overflow: hidden;
+}
+
+/* ITENS DO MENU */
+.menu-item {
+    background: none;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.menu-item:hover {
+    background: rgba(30,58,138,0.1);
+}
+
+/* BADGE DE PEDIDOS */
+.badge-pedidos {
+    background: #e53935;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px; /* separa do emoji */
+}

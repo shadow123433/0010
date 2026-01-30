@@ -9,22 +9,25 @@
 </head>
 <body>
 
-  <main class="login-container">
-    <h1>Criar Conta</h1>
+  <!-- BOTÃO DE VOLTAR FORA DO LOGIN -->
+<button class="voltar-btn" onclick="history.back()">← Voltar</button>
 
-    <form id="registerForm">
-      <input type="text" id="nome" placeholder="Nome completo" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="senha" placeholder="Senha" required />
+<main class="login-container">
+  <h1>Criar Conta</h1>
 
-      <button type="submit">Registrar</button>
-    </form>
+  <form id="registerForm">
+    <input type="text" id="nome" placeholder="Nome completo" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="senha" placeholder="Senha" required />
 
-    <p>
-      Já tem conta?
-      <a href="login.html">Entrar</a>
-    </p>
-  </main>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p>
+    Já tem conta?
+    <a href="login.html">Entrar</a>
+  </p>
+</main>
 
   <script src="auth.js"></script>
 </body>
