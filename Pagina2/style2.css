@@ -1504,3 +1504,16 @@ html, body {
     align-items: center;
     margin-left: 5px; /* separa do emoji */
 }
+
+.menu-btn.piscar {
+  animation: piscarBalançar 1s infinite;
+}
+
+@keyframes piscarBalançar {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(-3px) rotate(-10deg); }
+  50%  { transform: translateY(0) rotate(0deg); }
+  75%  { transform: translateY(3px) rotate(10deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+

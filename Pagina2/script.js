@@ -301,19 +301,35 @@ document.body.appendChild(modal);
    FINALIZAR PEDIDO
 ========================= */
 finalizarBtn.onclick = () => {
-
+  // Verifica se o usuário está logado
   if (!isLogged()) {
+    const btnMenu = document.getElementById("btnMenu");
+
+    // Mostra alerta para o usuário
     alert("Faça login para continuar.");
-    return;
+
+    // Adiciona animação de piscar/balançar
+    btnMenu.classList.add("piscar");
+
+    // Remove a animação depois de 3 segundos
+    setTimeout(() => {
+      btnMenu.classList.remove("piscar");
+    }, 3000);
+
+    return; // impede continuar com o fluxo
   }
 
-  if (!window.carrinho.length) {
+  // Verifica se o carrinho está vazio
+  if (!window.carrinho || window.carrinho.length === 0) {
     alert("Carrinho vazio");
     return;
   }
 
+  // Se passou nas verificações, abre o modal de finalização
   modal.style.display = "flex";
 };
+
+
 
 
 modal.querySelector("#cancelar").onclick = () => modal.style.display = "none";

@@ -91,9 +91,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // Verifica se o usuário está logado
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("Faça login para prosseguir com a reserva");
-    return; // impede que o modal seja aberto
-  }
+  // Faz o botão do menu piscar
+  const btnMenu = document.getElementById("btnMenu");
+  btnMenu.classList.add("piscar");
+
+  // Para a animação depois de 3 segundos
+  setTimeout(() => {
+    btnMenu.classList.remove("piscar");
+  }, 3000);
+
+  alert("Faça login para prosseguir com a reserva");
+  return; // impede que o modal seja aberto
+}
+
 
   // Verifica se o carrinho não está vazio
   if (!window.carrinho || window.carrinho.length === 0) {
