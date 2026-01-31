@@ -17,7 +17,10 @@
 
   <form id="loginForm">
     <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="senha" placeholder="Senha" required />
+<div class="senha-container">
+  <input type="password" id="senha" placeholder="Senha" required />
+  <span class="toggle-senha" onclick="toggleSenha()">👁️</span>
+</div>
     <button type="submit">Entrar</button>
   </form>
 
