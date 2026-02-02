@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "http://localhost:3000"; // define pra onde vão as requisições fethch
 
 function getToken() {
   return localStorage.getItem("token");
@@ -16,7 +16,7 @@ function logout() {
 function isLogged() {
   return !!getToken();
 }
-
+// guarda o token enviado pelo backend após login bem-sucedido
 
 
 /* =========================
@@ -393,6 +393,8 @@ fetch(API_URL + "/pedidos", {
   },
   body: JSON.stringify(pedido)
 })
+// chama o node backend/server.js, envia json, cria pedido no banco de dados
+
   .then(res => {
 
     if (res.status === 401) {
@@ -402,7 +404,7 @@ fetch(API_URL + "/pedidos", {
     }
 
     return res.json();
-  })
+  }) // caso o backend negar a requisição por token inválido, força logout/novo login
 
 .then(() => {
   pedidoLoading.style.display = "none";
@@ -618,7 +620,7 @@ document.getElementById("btnLogoutMenu").addEventListener("click", () => {
 
     if (!getToken()) {
       sessionStorage.setItem("redirectAfterLogin", "../Pagina2/index2.html");
-      window.location.href = "../login-usuarios/login.html";
+      window.location.href = "../login-usuarios/login.html"; // redireciona para login
       return;
     }
 
@@ -672,11 +674,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnLogoutMenu = document.getElementById("btnLogoutMenu");
   const badge = btnPedidosMenu.querySelector(".badge-pedidos");
 
-  // 🔴 Estado inicial: apenas login visível
+  // Estado inicial: apenas login visível
   function atualizarUI() {
     if (getToken()) {
       btnLoginMenu.style.display = "none";
-      btnPedidosMenu.style.display = "flex";
+      btnPedidosMenu.style.display = "flex"; // mostra pedidos, depende da autenticação feita pelo backend
       btnLogoutMenu.style.display = "flex";
 
       const mostrarBadge = localStorage.getItem("pedidosBadge");
