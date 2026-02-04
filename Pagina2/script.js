@@ -667,19 +667,22 @@ btnLogout.addEventListener("click", () => {
    MENU DE TRÊS PONTOS
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
-  const btnMenu = document.getElementById("btnMenu");
-  const menuDropdown = document.getElementById("menuDropdown");
   const btnPedidosMenu = document.getElementById("btnPedidosMenu");
   const btnLoginMenu = document.getElementById("btnLoginMenu");
   const btnLogoutMenu = document.getElementById("btnLogoutMenu");
   const badge = btnPedidosMenu.querySelector(".badge-pedidos");
 
-  // Estado inicial: apenas login visível
+  // Função fictícia para obter token (substituir pela sua lógica real)
+  function getToken() {
+    return localStorage.getItem("token");
+  }
+
+  // Atualiza a interface conforme autenticação
   function atualizarUI() {
     if (getToken()) {
-      btnLoginMenu.style.display = "none";
-      btnPedidosMenu.style.display = "flex"; // mostra pedidos, depende da autenticação feita pelo backend
-      btnLogoutMenu.style.display = "flex";
+      btnLoginMenu.style.display = "none";          // esconde login
+      btnPedidosMenu.style.display = "flex";        // mostra pedidos
+      btnLogoutMenu.style.display = "flex";         // mostra logout
 
       const mostrarBadge = localStorage.getItem("pedidosBadge");
       if (mostrarBadge === "1") {
@@ -689,26 +692,14 @@ document.addEventListener("DOMContentLoaded", () => {
         badge.style.display = "none";
       }
     } else {
-      btnLoginMenu.style.display = "flex";
-      btnPedidosMenu.style.display = "none";
-      btnLogoutMenu.style.display = "none";
+      btnLoginMenu.style.display = "flex";          // mostra login
+      btnPedidosMenu.style.display = "none";        // esconde pedidos
+      btnLogoutMenu.style.display = "none";         // esconde logout
       badge.style.display = "none";
     }
   }
 
   atualizarUI();
-
-  // Abrir/fechar dropdown do menu
-  btnMenu.addEventListener("click", (e) => {
-    e.stopPropagation();
-    menuDropdown.style.display = menuDropdown.style.display === "flex" ? "none" : "flex";
-  });
-
-  window.addEventListener("click", (e) => {
-    if (!menuDropdown.contains(e.target) && e.target !== btnMenu) {
-      menuDropdown.style.display = "none";
-    }
-  });
 
   // Botão login
   btnLoginMenu.addEventListener("click", () => {
