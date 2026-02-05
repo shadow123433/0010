@@ -1430,8 +1430,8 @@ html, body {
 /* MENU FLUTUANTE NO CANTO INFERIOR DIREITO */
 .menu-flutuante {
   position: fixed;
-  bottom: 20px;       /* distância da parte inferior da tela */
-  right: 20px;        /* distância da lateral direita */
+  bottom: 200px;       /* distância da parte inferior da tela */
+  right: 16px;        /* distância da lateral direita */
   display: flex;
   gap: 15px;          /* espaço entre os ícones */
   z-index: 1000;      /* garante que fique acima de outros elementos */
@@ -1441,12 +1441,12 @@ html, body {
   background: #fff;          /* fundo branco */
   border: none;
   border-radius: 50%;        /* botão redondo */
-  width: 50px;
+  width: 40px;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;           /* tamanho do ícone */
+  font-size: 25px;           /* tamanho do ícone */
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* sombra elegante */
   transition: transform 0.2s, background 0.2s;
@@ -1489,5 +1489,27 @@ html, body {
   50%  { transform: translateY(0) rotate(0deg); }
   75%  { transform: translateY(3px) rotate(10deg); }
   100% { transform: translateY(0) rotate(0deg); }
+}
+
+
+/* animação de pulsar o botão de login */
+@keyframes pulsarLogin {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* classe que ativa o efeito */
+.menu-item.pulsar-login {
+  animation: pulsarLogin 0.8s infinite;
 }
 

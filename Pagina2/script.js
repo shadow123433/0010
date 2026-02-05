@@ -303,20 +303,23 @@ document.body.appendChild(modal);
 finalizarBtn.onclick = () => {
   // Verifica se o usuário está logado
   if (!isLogged()) {
-    const btnMenu = document.getElementById("btnMenu");
 
-    // Mostra alerta para o usuário
+    // Mostra alerta
     alert("Faça login para prosseguir com o pedido.");
 
-    // Adiciona animação de piscar/balançar
-    btnMenu.classList.add("piscar");
+    // 🔴 BOTÃO DE LOGIN DO MENU FLUTUANTE
+    const btnLoginMenu = document.getElementById("btnLoginMenu");
 
-    // Remove a animação depois de 3 segundos
-    setTimeout(() => {
-      btnMenu.classList.remove("piscar");
-    }, 3000);
+    if (btnLoginMenu) {
+      btnLoginMenu.classList.add("pulsar-login");
 
-    return; // impede continuar com o fluxo
+      // remove a animação após 3 segundos
+      setTimeout(() => {
+        btnLoginMenu.classList.remove("pulsar-login");
+      }, 3000);
+    }
+
+    return; // bloqueia finalização
   }
 
   // Verifica se o carrinho está vazio
@@ -325,9 +328,10 @@ finalizarBtn.onclick = () => {
     return;
   }
 
-  // Se passou nas verificações, abre o modal de finalização
+  // Abre modal normalmente
   modal.style.display = "flex";
 };
+
 
 
 
@@ -664,7 +668,7 @@ btnLogout.addEventListener("click", () => {
 
 
 /* =========================
-   MENU DE TRÊS PONTOS
+   BONECO MENU LOGIN/PEDIDOS/Sair
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
   const btnPedidosMenu = document.getElementById("btnPedidosMenu");
@@ -721,3 +725,5 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarUI();
   });
 });
+
+

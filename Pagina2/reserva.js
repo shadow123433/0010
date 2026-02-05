@@ -87,33 +87,38 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   // ABRIR MODAL RESERVA
   // =========================
-  reservarBtn.addEventListener("click", () => {
+ reservarBtn.onclick = () => {
   // Verifica se o usuário está logado
-  const token = localStorage.getItem("token");
-  if (!token) {
-  // Faz o botão do menu piscar
-  const btnMenu = document.getElementById("btnMenu");
-  btnMenu.classList.add("piscar");
+  if (!isLogged()) {
 
-  // Para a animação depois de 3 segundos
-  setTimeout(() => {
-    btnMenu.classList.remove("piscar");
-  }, 3000);
+    // Mostra alerta
+    alert("Faça login para prosseguir com a reserva.");
 
-  alert("Faça login para prosseguir com a reserva");
-  return; // impede que o modal seja aberto
-}
+    // 🔴 BOTÃO DE LOGIN DO MENU FLUTUANTE
+    const btnLoginMenu = document.getElementById("btnLoginMenu");
 
+    if (btnLoginMenu) {
+      btnLoginMenu.classList.add("pulsar-login");
 
-  // Verifica se o carrinho não está vazio
+      // remove a animação após 3 segundos
+      setTimeout(() => {
+        btnLoginMenu.classList.remove("pulsar-login");
+      }, 3000);
+    }
+
+    return; // bloqueia reserva
+  }
+
+  // Verifica se o carrinho está vazio
   if (!window.carrinho || window.carrinho.length === 0) {
     alert("Adicione itens ao carrinho antes de reservar");
     return;
   }
 
-  // Se passou nas verificações, abre o modal de reserva
+  // Abre modal normalmente
   modal.style.display = "flex";
-});
+};
+
 
 
 
