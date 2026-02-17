@@ -1,7 +1,4 @@
-// ===============================
-// SERVER.JS COMPLETO FUNCIONAL COM ADMIN
-// ===============================
-
+//importações
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
