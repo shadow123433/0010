@@ -68,6 +68,10 @@ db.serialize(() => {
     }
   });
 });
+//essa parte acima é para criar o banco de dados e as tabelas necessárias, além de configurar o modo de operação do SQLite para melhorar a performance. Também cria um usuário admin padrão caso ele não exista.
+
+
+
 
 // ===============================
 // HELPERS
@@ -85,12 +89,12 @@ function auth(req, res, next) {
   } catch {
     return res.status(401).json({ error: "Token inválido" });
   }
-}
+} //essa parte permite que apenas usuarios com tokem jwt façam requisições para rotas protegidas, verificando o token e extraindo as informações do usuário.
 
 function onlyAdmin(req, res, next) {
   if (req.user.role !== "admin") return res.status(403).json({ error: "Acesso negado" });
   next();
-}
+}    //essa parte permite que o adm apareça no banco de dados e o login seja praticamente de forma automatica.
 
 // ===============================
 // AUTENTICAÇÃO
