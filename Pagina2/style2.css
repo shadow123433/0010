@@ -20,11 +20,11 @@ hr {
    BODY (MANTIDO)
 ========================= */
 body {
-    background-color: #E6F2FF; /* NÃO ALTERADO */
-    margin: 0;
-    padding: 0 20px;
+  background: linear-gradient(to bottom, #3b82f6, #93c5fd); /* do azul claro para azul médio */
+  margin: 0;
+  padding: 0 20px;
+  min-height: 100vh; /* garante que o gradiente ocupe a tela toda */
 }
-
 /* =========================
    CONTAINER PADRÃO
 ========================= */
@@ -374,7 +374,6 @@ h2 {
 ========================= */
 .header {
     width: 100%;
-    background-color: #E6F2FF;
 }
 
 .header-inner {
@@ -1441,8 +1440,8 @@ html, body {
   background: #fff;          /* fundo branco */
   border: none;
   border-radius: 50%;        /* botão redondo */
-  width: 40px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1513,3 +1512,58 @@ html, body {
   animation: pulsarLogin 0.8s infinite;
 }
 
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.75);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  background: #ffffff;
+  color: #000;
+  padding: 30px;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  animation: aparecer 0.3s ease;
+}
+
+.modal h2 {
+  margin-bottom: 15px;
+}
+
+.modal button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #38BDF8;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal button:hover {
+  background: #0EA5E9;
+}
+
+@keyframes aparecer {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+
+.label {
+  font-size: 12px;
+}

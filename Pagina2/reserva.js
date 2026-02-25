@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!isLogged()) {
 
     // Mostra alerta
-    alert("Faça login para prosseguir com a reserva.");
+    abrirModal("Faça login para prosseguir com a reserva.");
 
     // 🔴 BOTÃO DE LOGIN DO MENU FLUTUANTE
     const btnLoginMenu = document.getElementById("btnLoginMenu");
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Verifica se o carrinho está vazio
   if (!window.carrinho || window.carrinho.length === 0) {
-    alert("Adicione itens ao carrinho antes de reservar");
+    abrirModal("Adicione itens ao carrinho antes de reservar");
     return;
   }
 
@@ -170,7 +170,7 @@ const reserva = {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      alert("Você precisa estar logado para fazer uma reserva.");
+      abrirModal("Você precisa estar logado para fazer uma reserva.");
       window.location.href = "login.html";
       return;
     }
@@ -186,7 +186,7 @@ const reserva = {
     .then(async res => {
       if (!res.ok) {
         const erro = await res.json();
-        alert("Erro ao salvar reserva: " + (erro.error || "Erro desconhecido"));
+        abrirModal("Erro ao salvar reserva: " + (erro.error || "Erro desconhecido"));
         throw new Error(erro.error || "Erro desconhecido");
       }
       return res.json();
@@ -206,7 +206,7 @@ const reserva = {
 
     .catch((err) => {
       console.error(err);
-      alert("Erro ao conectar com o servidor");
+      abrirModal("Erro ao conectar com o servidor");
       pedidoLoading.style.display = "none";
       pedidoForm.style.display = "block";
     });
@@ -249,3 +249,13 @@ const reserva = {
   }
 
 });
+
+
+function abrirModal(mensagem) {
+  document.getElementById("modalMessage").innerText = mensagem;
+  document.getElementById("modalOverlay").style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modalOverlay").style.display = "none";
+}

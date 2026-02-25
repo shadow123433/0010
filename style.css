@@ -1,7 +1,8 @@
 body {
-  background-color: #E6F2FF; /* azul claro elegante */
+  background: linear-gradient(to bottom, #3b82f6, #93c5fd); /* do azul claro para azul médio */
   margin: 0;
-  padding: 0 20px; /* dá espaço nas laterais */
+  padding: 0 20px;
+  min-height: 100vh; /* garante que o gradiente ocupe a tela toda */
 }
 
 
@@ -169,7 +170,6 @@ img {
 ========================= */
 .header {
     width: 100%;
-    background-color: #E6F2FF;
 }
 
 .header-inner {

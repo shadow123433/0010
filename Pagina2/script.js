@@ -194,7 +194,7 @@ function mostrarProdutos(escola) {
       const tamanho = select.value;
 
       if (!tamanho) {
-        showToast("Selecione um tamanho");
+        abrirModal("Selecione um tamanho");
         select.classList.add("tamanho-destaque");
         setTimeout(() => select.classList.remove("tamanho-destaque"), 3000);
         return;
@@ -227,7 +227,7 @@ function addCarrinho(produto, tamanho, preco) {
   window.total += preco;
 
   atualizarCarrinho();
-  showToast("Este item foi adicionado ao carrinho");
+  abrirModal("Este item foi adicionado ao carrinho");
 }
 
 function atualizarCarrinho() {
@@ -269,7 +269,7 @@ function removerItem(produto, tamanho) {
   if (!Object.keys(item.tamanhos).length) window.carrinho.splice(itemIndex, 1);
 
   atualizarCarrinho();
-  showToast("Este item foi removido do carrinho");
+  abrirModal("Este item foi removido do carrinho");
 }
 
 /* =========================
@@ -305,7 +305,7 @@ finalizarBtn.onclick = () => {
   if (!isLogged()) {
 
     // Mostra alerta
-    alert("Faça login para prosseguir com o pedido.");
+    abrirModal("Faça login👤 para prosseguir com o pedido.");
 
     // 🔴 BOTÃO DE LOGIN DO MENU FLUTUANTE
     const btnLoginMenu = document.getElementById("btnLoginMenu");
@@ -324,7 +324,7 @@ finalizarBtn.onclick = () => {
 
   // Verifica se o carrinho está vazio
   if (!window.carrinho || window.carrinho.length === 0) {
-    alert("Carrinho vazio");
+    abrirModal("Carrinho vazio");
     return;
   }
 
@@ -426,7 +426,7 @@ fetch(API_URL + "/pedidos", {
 })
 
 
-  .catch(() => alert("Erro ao conectar com o servidor"));
+  .catch(() => abrirModal("Erro ao conectar com o servidor"));
 
 fecharPedidoModal.onclick = () => {
   // Fecha modal
@@ -727,3 +727,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+function abrirModal(mensagem) {
+  document.getElementById("modalMessage").innerText = mensagem;
+  document.getElementById("modalOverlay").style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modalOverlay").style.display = "none";
+}

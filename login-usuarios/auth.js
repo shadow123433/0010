@@ -69,7 +69,7 @@ if (loginForm) {
       }
 
     } catch (err) {
-      alert("Erro ao conectar com o servidor");
+      abrirModal("Erro ao conectar com o servidor");
       console.error(err);
     }
   });
@@ -122,7 +122,7 @@ if (registerForm) {
       }
 
     } catch (err) {
-      alert("Erro ao conectar com o servidor");
+      abrirModal("Erro ao conectar com o servidor");
       console.error(err);
     }
   });
@@ -184,4 +184,13 @@ document.addEventListener("DOMContentLoaded", () => {
 function toggleSenha() {
   const senhaInput = document.getElementById("senha");
   senhaInput.type = senhaInput.type === "password" ? "text" : "password";
+}
+
+function abrirModal(mensagem) {
+  document.getElementById("modalMessage").innerText = mensagem;
+  document.getElementById("modalOverlay").style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modalOverlay").style.display = "none";
 }
