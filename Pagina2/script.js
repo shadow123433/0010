@@ -402,7 +402,7 @@ fetch(API_URL + "/pedidos", {
   .then(res => {
 
     if (res.status === 401) {
-      alert("Sessão expirada. Faça login novamente.");
+      abrirModal("Sessão expirada. Faça login novamente.");
       logout();
       return;
     }

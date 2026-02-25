@@ -20,7 +20,7 @@ hr {
    BODY (MANTIDO)
 ========================= */
 body {
-  background: linear-gradient(to bottom, #3b82f6, #93c5fd); /* do azul claro para azul médio */
+  background: linear-gradient(135deg, #FFFFFF, #DCEEFF);
   margin: 0;
   padding: 0 20px;
   min-height: 100vh; /* garante que o gradiente ocupe a tela toda */
@@ -56,7 +56,6 @@ body {
     content: "";                      /* Obrigatório para o pseudo-elemento existir */
     position: absolute;               /* Permite cobrir todo o banner */
     inset: 0;                         /* Ocupa 100% da largura e altura do container */
-    background-color: rgba(0, 0, 0, 0.55); /* Escurece a imagem sem escondê-la */
     z-index: 1;                       /* Fica acima da imagem e abaixo do texto */
     border-radius: 20px;
   }

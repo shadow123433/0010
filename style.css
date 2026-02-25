@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(to bottom, #3b82f6, #93c5fd); /* do azul claro para azul médio */
+  background: linear-gradient(135deg, #FFFFFF, #DCEEFF);
   margin: 0;
   padding: 0 20px;
   min-height: 100vh; /* garante que o gradiente ocupe a tela toda */
