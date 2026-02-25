@@ -122,7 +122,7 @@ app.post("/auth/login", (req, res) => {
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: "8h" });
     res.json({ token, role: user.role });
   });
-});
+}); //ou seja se ja existir um usuario cadastrado, o get vai buscar os dados no banco pra conferir.
 
 // ===============================
 // PRECOS
