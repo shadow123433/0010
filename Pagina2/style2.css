@@ -16,12 +16,11 @@ hr {
 }
 
 
-
 /* =========================
    BODY (MANTIDO)
 ========================= */
 body {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(135deg, #FFFFFF, #DCEEFF);
   margin: 0;
   padding: 0 20px;
   min-height: 100vh; /* garante que o gradiente ocupe a tela toda */
@@ -57,7 +56,6 @@ body {
     content: "";                      /* Obrigatório para o pseudo-elemento existir */
     position: absolute;               /* Permite cobrir todo o banner */
     inset: 0;                         /* Ocupa 100% da largura e altura do container */
-    background-color: rgba(0, 0, 0, 0.55); /* Escurece a imagem sem escondê-la */
     z-index: 1;                       /* Fica acima da imagem e abaixo do texto */
     border-radius: 20px;
   }
@@ -69,7 +67,7 @@ body {
 h2 {
     text-align: center;
     font-size: 28px;
-    color: #fff;
+    color: #111;
     margin-bottom: 30px;
 }
 
@@ -212,10 +210,10 @@ h2 {
 ========================= */
 .carrinho {
     margin-top: 70px;
-    background: #0f2027;
+    background: #fff;
     padding: 26px;
     border-radius: 16px;
-    
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .carrinho h2 {
@@ -226,7 +224,6 @@ h2 {
     margin: 20px 0;
     font-size: 18px;
     font-weight: bold;
-    color: #fff;
 }
 
 .finalizar {
@@ -234,7 +231,7 @@ h2 {
     padding: 14px;
     border-radius: 12px;
     border: none;
-    background-color: #2c5364;
+    background-color: #25D366;
     color: #fff;
     font-size: 16px;
     font-weight: bold;
@@ -243,7 +240,7 @@ h2 {
 }
 
 .finalizar:hover {
-    background-color: #203a43;
+    background-color: #1da851;
     transform: scale(1.02);
 }
 
@@ -367,6 +364,44 @@ h2 {
     color: #fff;
     transform: scale(1.05);
 }
+
+
+
+
+/* =========================
+   HEADER PROFISSIONAL
+========================= */
+.header {
+    width: 100%;
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+/* =========================
+   LOGO
+========================= */
+.logo {
+    width: 110px;   /* tamanho profissional */
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+
+.pagina2 .container {
+    padding-top: 0;
+}
+
+.header {
+    padding: 10px 0;
+}
+
 
 
 .produto-img {
@@ -711,78 +746,90 @@ html, body {
 
 
 
-/* BOTÃO ESCOLAS — ESTILO PREMIUM MODERNO */
+/* BOTÃO ESCOLAS — AZUL COM LINHA CIRCULANDO */
 .escola-card button {
   position: relative;
   width: 100%;
   padding: 14px 0;
 
   font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
+  font-weight: 700;
   color: #ffffff;
 
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 12px;
+  border: none;
+  border-radius: 14px;
   cursor: pointer;
 
-  background-color: #2c5364;
-  
-  box-shadow:
-    0 6px 16px rgba(37, 99, 235, 0.35),
-    inset 0 1px 0 rgba(255,255,255,0.25);
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #2563eb,
+    #1d4ed8
+  );
 
-  transition: 
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.2s ease;
-  
+  box-shadow:
+    0 10px 26px rgba(37, 99, 235, 0.45),
+    inset 0 2px 4px rgba(255,255,255,0.35);
+
   overflow: hidden;
+  z-index: 1;
 }
 
-/* EFEITO DE LUZ AO PASSAR O MOUSE */
+/* LINHA AZUL GIRANDO */
 .escola-card button::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: -120%;
-  width: 120%;
-  height: 100%;
+  inset: -2px;
+  border-radius: inherit;
+
+  background: conic-gradient(
+  from 0deg,
+  transparent 20%,
+  #93c5fd,   /* azul claro bem visível */
+  #60a5fa,   /* azul claro forte */
+  #93c5fd,   /* volta suave */
+  transparent 80%
+);
+
+
+  animation: girar-borda 3s linear infinite;
+  z-index: -1;
+}
+/* MÁSCARA INTERNA (AZUL CLARO) */
+.escola-card button::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 12px;
 
   background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.35),
-    transparent
-  );
+  135deg,
+  #4f8cff,  /* azul real, porém suave */
+  #3b82f6,  /* azul padrão profissional */
+  #2563eb   /* azul real levemente mais forte */
+);
 
-  transition: left 0.5s ease;
+
+  z-index: -1;
 }
 
-/* HOVER */
+/* ANIMAÇÃO */
+@keyframes girar-borda {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* HOVER SUAVE */
 .escola-card button:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 12px 28px rgba(37, 99, 235, 0.45);
-}
-
-.escola-card button:hover::before {
-  left: 120%;
+    0 16px 34px rgba(37, 99, 235, 0.6);
 }
 
 /* CLICK */
 .escola-card button:active {
-  transform: translateY(0) scale(0.97);
-  box-shadow:
-    0 4px 10px rgba(37, 99, 235, 0.35);
-}
-
-/* FOCO (ACESSIBILIDADE — NÍVEL PROFISSIONAL) */
-.escola-card button:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 3px rgba(59, 130, 246, 0.35),
-    0 8px 20px rgba(37, 99, 235, 0.35);
+  transform: scale(0.96);
 }
 
 
@@ -862,7 +909,7 @@ html, body {
 
 /* ===== CARD ===== */
 .escola-card {
-  background: #0f2027;
+  background: #ffffff;
   border-radius: 18px;
   padding: 24px 16px;
   text-align: center;
@@ -884,14 +931,11 @@ html, body {
   border-radius: 14px;
   border: none;
   font-weight: 600;
- 
+  background: linear-gradient(135deg, #4f8cff, #3b6fe0);
   color: #ffffff;
   cursor: pointer;
 }
 
-h3 {
-  color: #fff;
-}
 
 
 .reservar {
@@ -899,7 +943,7 @@ h3 {
     margin-top: 12px;
     padding: 14px;
     border-radius: 12px;
-    border: 2px solid #ffff;
+    border: 2px solid #2563eb;
 
     background: transparent;
     color: #2563eb;
@@ -980,71 +1024,47 @@ h3 {
    NAVEGAÇÃO (IGUAL À 1ª PÁGINA)
 ========================= */
 
+/* Remover margin e padding padrão do body */
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .menu-topo {
   position: sticky;
   top: 0;
   z-index: 1000;
   background-color: #0f2027;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
 }
 
 .menu-topo ul {
   list-style: none;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0 6px;
+  padding: 0;
   margin: 0;
+  width: 100%;
 }
 
 .menu-topo ul li {
-  flex: 1;
+  flex: 1;              /* cada item ocupa espaço igual */
   text-align: center;
 }
 
 .menu-topo ul li a {
   display: block;
-  padding: 12px 6px;
+  width: 100%;          /* ocupa toda a largura do li */
+  padding: 16px 0;      /* botão mais alto */
   color: #ffffff;
   text-decoration: none;
   font-size: 14px;
-  white-space: nowrap;
+  transition: background-color 0.3s ease;
 }
 
-
-.menu-topo ul li a:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;   /* distância da linha pro texto */
-  text-decoration-thickness: 2px;
-}
-
-
-/* Hover */
+/* Hover grande ocupando tudo */
 .menu-topo ul li a:hover {
   background-color: #1a1a1a;
-  border-radius: 6px;
-}
-
-/* =========================
-   MOBILE (mesmo comportamento)
-========================= */
-
-@media (max-width: 767px) {
-
-  .menu-topo ul {
-    justify-content: space-between;
-  }
-
-  .menu-topo ul li {
-    display: block;
-    flex: 1;
-  }
-
-  .menu-topo ul li a {
-    font-size: 13px;
-    padding: 10px 6px;
-  }
-
 }
 
 

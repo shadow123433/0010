@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(135deg, #FFFFFF, #DCEEFF);
   margin: 0;
   padding: 0 20px;
   min-height: 100vh; /* garante que o gradiente ocupe a tela toda */
@@ -38,12 +38,12 @@ body {
 
 
 p {
-    color: #fff; /* cor do texto */
+    color: #0f2027; /* cor do texto */
 }
 
 h3 {
   font-size: 18px;
-  color: #fff;
+  color: #0f2027;
 }
 
 
