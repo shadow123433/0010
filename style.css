@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(135deg, #FFFFFF, #DCEEFF);
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
   margin: 0;
   padding: 0 20px;
   min-height: 100vh; /* garante que o gradiente ocupe a tela toda */
@@ -8,7 +8,7 @@ body {
 
 /* MENU DE NAVEGAÇÃO */
 .menu {
-  background-color: #111;
+  background-color: #9ca3af;
   padding: 15px;
   position: sticky;
   top: 0;
@@ -38,11 +38,12 @@ body {
 
 
 p {
-    color: #333333; /* cor do texto */
+    color: #fff; /* cor do texto */
 }
 
 h3 {
   font-size: 18px;
+  color: #fff;
 }
 
 
@@ -64,9 +65,9 @@ hr {
 
  .titulo-bg {                           /* Container do banner/título */
     position: relative;               /* Base para posicionar o overlay (::before) */
-    background-image: url("imagensdapagina1/imagem3.jpeg"); /* Imagem de fundo do banner */
+    background-image: url("imagensdapagina1/imagem3.jpg"); /* Imagem de fundo do banner */
     background-size: cover;           /* Faz a imagem cobrir todo o container (pode cortar) */
-    background-position: center 10%;  /* Ajusta a posição vertical da imagem (desce um pouco) */
+    background-position: center 36%;  /* Ajusta a posição vertical da imagem (desce um pouco) */
     min-height: 300px;                /* Define altura mínima do banner */
     display: flex;                    /* Ativa flexbox para alinhamento do conteúdo */
     align-items: center;              /* Centraliza o conteúdo verticalmente */
@@ -161,111 +162,6 @@ img {
     text-decoration: none;
     font-weight: bold;
 }
-
-
-
-
-/* =========================
-   HEADER PROFISSIONAL
-========================= */
-.header {
-    width: 100%;
-}
-
-.header-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-/* =========================
-   LOGO
-========================= */
-.logo {
-    width: 110px;   /* tamanho profissional */
-    height: auto;
-    display: block;
-    border-radius: 12px;
-    margin-left: 10px;
-}
-
-
-/* =========================
-   AJUSTES MOBILE PROFISSIONAIS
-========================= */
-@media (max-width: 768px) {
-
-  /* Layout geral */
-  body {
-    padding: 0 12px;
-  }
-
-  /* Banner */
-  .titulo-bg {
-    min-height: 220px;
-    padding: 20px;
-  }
-
-  .titulo-bg h1 {
-    font-size: 26px;
-    line-height: 1.2;
-  }
-
-  /* Seção imagem + texto */
-  .secao {
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px 0;
-    text-align: center;
-  }
-
-  .lado-esquerdo,
-  .lado-direito {
-    width: 100%;
-  }
-
-  /* Imagens */
-  .secao img {
-    max-width: 100%;
-    margin: 0 auto;
-  }
-
-  /* Textos */
-  h1, h2, h3 {
-    text-align: center;
-  }
-
-  p {
-    text-align: left;
-    font-size: 15px;
-    line-height: 1.5;
-  }
-
-  /* Container */
-  .container {
-    padding: 12px;
-  }
-
-  /* Botão */
-  .botao-pagina {
-    float: none;
-    display: block;
-    margin: 20px auto 0;
-    text-align: center;
-  }
-
-  /* Logo */
-  .logo {
-    width: 90px;
-  }
-
-}
-
-
-
 
 
 
@@ -509,8 +405,9 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background-color: #0b0b0b;
+  background-color: #0f2027;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;       /* garante largura total */
 }
 
 .menu ul {
@@ -518,7 +415,9 @@ html, body {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 6px;
+  padding: 0;         /* remove padding */
+  margin: 0;          /* remove margin */
+  width: 100%;        /* garante largura total */
 }
 
 .menu ul li {
@@ -541,59 +440,10 @@ html, body {
   border-radius: 6px;
 }
 
-/* =========================
-   DESKTOP
-========================= */
-
-/* =========================
-   MENU – CELULAR
-   (mesmo estilo do desktop)
-========================= */
-@media (max-width: 767px) {
-
-  /* Mantém o menu centralizado */
-  .menu ul {
-    justify-content: center;
-  }
-
-  /* Esconde todos os itens do menu */
-  .menu ul li {
-    display: none;
-  }
-
-  /* Mostra somente o botão COMPRAR */
-  .menu ul li:last-child {
-    display: block;
-  }
-
-  /* Botão COMPRAR – versão limpa e profissional (mobile) */
-  .menu ul li:last-child a {
-    border: none;                /* REMOVE a linha branca */
-    border-radius: 999px;
-    padding: 12px 30px;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.4px;
-    text-align: center;
-    display: inline-block;
-    min-width: 220px;
-    transition:
-      background-color 0.2s ease,
-      transform 0.15s ease;
-  }
-
-  /* Feedback ao toque */
-  .menu ul li:last-child a:active {
-    transform: scale(0.97);
-    background-color: rgba(255, 255, 255, 0.15);
-  }
-
-  /* Texto menor no celular */
-  h3 {
-    font-size: 13px;
-    line-height: 1.4;
-  }
-
+/* Remove margem/padding padrão do body para mobile */
+body {
+  margin: 0;
+  padding: 0;
 }
 
 
@@ -602,7 +452,7 @@ html, body {
 ========================= */
 
 .rodape {
-  background-color: #0b0b0b;
+  background-color: #0f2027;
   color: #e5e7eb;
   padding: 60px 20px 30px;
   font-family: 'Inter', 'Segoe UI', sans-serif;

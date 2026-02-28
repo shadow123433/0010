@@ -262,14 +262,42 @@ async function carregarPedidos(){
     card.className="card";
 
     card.innerHTML = `
-      <div class="grid">
-        <div><div class="label">Tipo</div><div class="value">${p.tipo}</div></div>
-        <div><div class="label">Status</div><div class="status ${p.status}">${p.status}</div></div>
-        <div><div class="label">Nome</div><div class="value">${p.nome}</div></div>
-        <div><div class="label">Total</div><div class="value">R$ ${p.total}</div></div>
-        <div><div class="label">Endereço</div><div class="value">${p.endereco} ${p.numeroCasa}</div></div>
-        <div><div class="label">Referência</div><div class="value">${p.referencia || "-"}</div></div>
-      </div>
+  <div class="grid">
+    <div>
+      <div class="label">ID do Pedido</div>
+      <div class="value">${p.pedidoID}</div>
+    </div>
+
+    <div>
+      <div class="label">Tipo</div>
+      <div class="value">${p.tipo}</div>
+    </div>
+
+    <div>
+      <div class="label">Status</div>
+      <div class="status ${p.status}">${p.status}</div>
+    </div>
+
+    <div>
+      <div class="label">Nome</div>
+      <div class="value">${p.nome}</div>
+    </div>
+
+    <div>
+      <div class="label">Total</div>
+      <div class="value">R$ ${Number(p.total).toFixed(2)}</div>
+    </div>
+
+    <div>
+      <div class="label">Endereço</div>
+      <div class="value">${p.endereco || "-"} ${p.numeroCasa || ""}</div>
+    </div>
+
+    <div>
+      <div class="label">Referência</div>
+      <div class="value">${p.referencia || "-"}</div>
+    </div>
+  </div>
 
       <div class="itens">${itensHtml}</div>
 
