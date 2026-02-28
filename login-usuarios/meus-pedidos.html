@@ -9,6 +9,16 @@
 </head>
 <body>
 
+  <div id="modalOverlay" style="display:none;" class="modal-overlay">
+  <div class="modal">
+    <p id="modalMessage"></p>
+    <div class="modal-buttons">
+      <button onclick="confirmarModal()">Confirmar</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
   <header class="topo-pedidos">
     <button id="btnVoltar" class="btn-voltar">← Voltar</button>
     <h1>Meus Pedidos</h1>

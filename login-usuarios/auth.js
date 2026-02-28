@@ -186,11 +186,23 @@ function toggleSenha() {
   senhaInput.type = senhaInput.type === "password" ? "text" : "password";
 }
 
-function abrirModal(mensagem) {
+let confirmCallback = null;
+
+function abrirModal(mensagem, callback) {
   document.getElementById("modalMessage").innerText = mensagem;
   document.getElementById("modalOverlay").style.display = "flex";
+  confirmCallback = callback;
+}
+
+function confirmarModal() {
+  if (confirmCallback) {
+    confirmCallback();
+    confirmCallback = null;
+  }
+  fecharModal();
 }
 
 function fecharModal() {
   document.getElementById("modalOverlay").style.display = "none";
+  confirmCallback = null;
 }

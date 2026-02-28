@@ -10,33 +10,72 @@ const db = new sqlite3.Database(
 db.configure("busyTimeout", 10000);
 
 db.serialize(() => {
+  // Performance
   db.run("PRAGMA journal_mode = WAL;");
   db.run("PRAGMA synchronous = NORMAL;");
 
-  db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    role TEXT DEFAULT 'cliente',
-    criado_em TEXT DEFAULT CURRENT_TIMESTAMP
-  )`);
+  // ===============================
+  // TABELA USERS
+  // ===============================
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT DEFAULT 'cliente',
+      criado_em TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 
-  db.run(`CREATE TABLE IF NOT EXISTS pedidos (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tipo TEXT NOT NULL,
-    pedidoID TEXT NOT NULL,
-    nome TEXT NOT NULL,
-    endereco TEXT,
-    numeroCasa TEXT,
-    referencia TEXT,
-    itens TEXT NOT NULL,
-    total REAL NOT NULL,
-    data TEXT NOT NULL,
-    status TEXT DEFAULT 'pendente',
-    user_id INTEGER,
-    ativo_usuario INTEGER DEFAULT 1
-  )`);
+  // ===============================
+  // TABELA PEDIDOS
+  // ===============================
+  db.run(`
+    CREATE TABLE IF NOT EXISTS pedidos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tipo TEXT NOT NULL,
+      pedidoID TEXT NOT NULL,
+      nome TEXT NOT NULL,
+      endereco TEXT,
+      numeroCasa TEXT,
+      referencia TEXT,
+      itens TEXT NOT NULL,
+      total REAL NOT NULL,
+      data TEXT NOT NULL,
+      status TEXT DEFAULT 'pendente',
+      user_id INTEGER,
+      ativo_usuario INTEGER DEFAULT 1
+    )
+  `);
+
+  // ===============================
+  // GARANTIR COLUNA ativo_usuario
+  // (caso banco antigo não tenha)
+  // ===============================
+  db.all("PRAGMA table_info(pedidos)", (err, columns) => {
+    if (err) {
+      console.log("Erro ao verificar estrutura da tabela:", err.message);
+      return;
+    }
+
+    const temColuna = columns.some(col => col.name === "ativo_usuario");
+
+    if (!temColuna) {
+      db.run(
+        `ALTER TABLE pedidos ADD COLUMN ativo_usuario INTEGER DEFAULT 1`,
+        (err) => {
+          if (err) {
+            console.log("Erro ao adicionar ativo_usuario:", err.message);
+          } else {
+            console.log("Coluna ativo_usuario adicionada");
+          }
+        }
+      );
+    } else {
+      console.log("Coluna ativo_usuario OK");
+    }
+  });
 
   console.log("✅ Banco e tabelas prontos");
 
@@ -46,18 +85,34 @@ db.serialize(() => {
   const adminEmail = process.env.ADMIN_EMAIL;
   const adminSenha = process.env.ADMIN_PASSWORD;
 
-  db.get("SELECT * FROM users WHERE email=?", [adminEmail], async (err, user) => {
-    if (!user) {
-      const hash = await bcrypt.hash(adminSenha, 10);
-      db.run(
-        `INSERT INTO users (nome,email,password_hash,role) VALUES (?,?,?,?)`,
-        ["Admin", adminEmail, hash, "admin"],
-        () => console.log(`Admin criado: ${adminEmail}`)
-      );
-    } else {
-      console.log("✅ Admin já existe:", adminEmail);
+  if (!adminEmail || !adminSenha) {
+    console.log("⚠️ ADMIN_EMAIL ou ADMIN_PASSWORD não definidos no .env");
+    return;
+  }
+
+  db.get(
+    "SELECT * FROM users WHERE email=?",
+    [adminEmail],
+    async (err, user) => {
+      if (err) {
+        console.log("Erro ao buscar admin:", err.message);
+        return;
+      }
+
+      if (!user) {
+        const hash = await bcrypt.hash(adminSenha, 10);
+
+        db.run(
+          `INSERT INTO users (nome,email,password_hash,role)
+           VALUES (?,?,?,?)`,
+          ["Admin", adminEmail, hash, "admin"],
+          () => console.log(`Admin criado: ${adminEmail}`)
+        );
+      } else {
+        console.log("Admin já existe:", adminEmail);
+      }
     }
-  });
+  );
 });
 
 module.exports = db;

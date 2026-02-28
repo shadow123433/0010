@@ -1,326 +1,326 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Painel Administrativo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    /* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+<meta charset="UTF-8">
+<title>Painel Administrativo</title>
+
+<style>
+body{
+  margin:0;
+  font-family: "Segoe UI", Arial;
+  background:#f1f5f9;
 }
 
-/* Variáveis de cores (visual profissional) */
-:root {
-  --primary: #3b82f6;
-  --primary-dark: #2563eb;
-  --success: #22c55e;
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --text: #1e293b;
-  --text-light: #64748b;
-  --border: #e2e8f0;
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  --radius: 10px;
-  --transition: 0.2s ease;
+/* HEADER */
+header{
+  background:linear-gradient(90deg,#0d6efd,#4da3ff);
+  color:#fff;
+  padding:18px 30px;
+  font-size:22px;
+  font-weight:600;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
-/* Body */
-body {
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  background: linear-gradient(135deg, #eef2ff, #f8fafc);
-  color: var(--text);
-  padding: 30px;
-  min-height: 100vh;
+/* CONTAINER */
+.container{
+  padding:25px;
+  max-width:1200px;
+  margin:auto;
 }
 
-/* Título */
-h1 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-weight: 600;
-  color: var(--text);
+/* LOGIN */
+.login-box{
+  background:#fff;
+  max-width:360px;
+  margin:100px auto;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
-/* Login box */
-#login {
-  max-width: 420px;
-  margin: 60px auto;
-  background: var(--card);
-  padding: 30px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  text-align: center;
+.login-box input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:6px;
+  border:1px solid #ddd;
 }
 
-#login h2 {
-  margin-bottom: 20px;
+.login-box button{
+  width:100%;
+  padding:12px;
+  background:#0d6efd;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
 }
 
-#login input {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  font-size: 14px;
-  transition: var(--transition);
+/* PAINEL */
+.painel{
+  display:none;
 }
 
-#login input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
 }
 
-/* Painel */
-#painel {
-  max-width: 1000px;
-  margin: 0 auto;
+.logout{
+  background:#dc3545;
+  color:#fff;
+  border:none;
+  padding:8px 14px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-/* Botões */
-button {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: 0 3px 10px rgba(59, 130, 246, 0.2);
+/* CARDS */
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 5px 18px rgba(0,0,0,0.06);
+  transition:0.2s;
 }
 
-button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
+.card:hover{
+  transform:translateY(-2px);
 }
 
-/* Lista de pedidos */
-#listaPedidos {
-  margin-top: 20px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:10px;
+  margin-bottom:10px;
 }
 
-/* Card do pedido */
-.pedido {
-  background: var(--card);
-  padding: 20px;
-  margin-bottom: 18px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  transition: var(--transition);
+.label{
+  font-size:13px;
+  color:#6b7280;
 }
 
-.pedido:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+.value{
+  font-weight:600;
 }
 
-/* Barra lateral por tipo */
-.pedido.reserva {
-  border-left: 5px solid var(--primary);
+/* STATUS BADGE */
+.status{
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  display:inline-block;
 }
 
-.pedido.pedido {
-  border-left: 5px solid var(--success);
+.pendente{ background:#fff3cd; color:#856404; }
+.pago{ background:#d1e7dd; color:#0f5132; }
+.aguardando{ background:#cfe2ff; color:#084298; }
+.retirado{ background:#e2e3e5; color:#41464b; }
+
+/* AÇÕES */
+.acoes{
+  margin-top:10px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
-/* Textos */
-.pedido strong {
-  display: block;
-  font-size: 13px;
-  color: var(--text-light);
-  margin-top: 8px;
+.btn{
+  padding:8px 14px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
 }
 
-.pedido span {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
+.btn-success{ background:#198754; color:#fff; }
+.btn-delete{ background:#dc3545; color:#fff; }
+
+.itens{
+  margin-top:8px;
+  font-size:14px;
+  color:#374151;
 }
-
-/* Itens */
-.itens {
-  margin-top: 12px;
-  padding: 12px;
-  background: #f1f5f9;
-  border-radius: 6px;
-}
-
-.itens ul {
-  padding-left: 18px;
-}
-
-.itens li {
-  margin-bottom: 4px;
-  font-size: 14px;
-}
-
-/* Botões dentro do card */
-.pedido button {
-  margin-top: 10px;
-  margin-right: 8px;
-}
-
-/* Mensagem de erro/login */
-#msgLogin {
-  margin-top: 10px;
-  color: #ef4444;
-  font-size: 14px;
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-  body {
-    padding: 15px;
-  }
-
-  .pedido {
-    padding: 15px;
-  }
-
-  button {
-    width: 100%;
-    margin-top: 8px;
-  }
-}
-  </style>
-  
+</style>
 </head>
 <body>
 
-<h1>📦 Painel Administrativo</h1>
+<header>Painel Administrativo</header>
 
-<div id="login">
-  <h2>Login Admin</h2>
-  <input type="email" id="email" placeholder="Email" value="admin@admin.com">
-  <input type="password" id="senha" placeholder="Senha" value="admin123">
-  <button onclick="loginAdmin()">Login</button>
-  <p id="msgLogin"></p>
+<div class="container">
+
+<!-- LOGIN -->
+<div class="login-box" id="loginBox">
+  <h3>Login Admin</h3>
+  <input id="email" placeholder="Email">
+  <input id="senha" type="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
 </div>
 
-<div id="painel" style="display:none;">
-  <button onclick="carregarPedidos()">🔄 Atualizar</button>
-  <div id="listaPedidos">Carregando pedidos...</div>
+<!-- PAINEL -->
+<div class="painel" id="painel">
+
+  <div class="top-bar">
+    <h2>Pedidos e Reservas</h2>
+    <button class="logout" onclick="logout()">Sair</button>
+  </div>
+
+  <div id="listaPedidos"></div>
+
+</div>
 </div>
 
 <script>
-async function loginAdmin() {
-  const email = document.getElementById("email").value;
-  const senha = document.getElementById("senha").value;
-  const msg = document.getElementById("msgLogin");
+const API = "http://localhost:3000";
 
-  try {
-    const res = await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ email, senha })
-    });
-    const data = await res.json();
-
-    if(data.token) {
-      localStorage.setItem("token", data.token);
-      document.getElementById("login").style.display = "none";
-      document.getElementById("painel").style.display = "block";
-      carregarPedidos();
-    } else {
-      msg.textContent = data.error || "Erro no login";
-    }
-  } catch(e) {
-    msg.textContent = "Erro ao conectar com o servidor";
-    console.error(e);
-  }
+function getToken(){
+  return localStorage.getItem("token");
 }
 
-async function carregarPedidos() {
+function setToken(t){
+  localStorage.setItem("token", t);
+}
+
+function logout(){
+  localStorage.removeItem("token");
+  location.reload();
+}
+
+/* LOGIN */
+async function login() {
+  const emailInput = document.getElementById("email");
+  const senhaInput = document.getElementById("senha");
+
+  const email = emailInput.value;
+  const senha = senhaInput.value;
+
+  const res = await fetch(API + "/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, senha })
+  });
+
+  const data = await res.json();
+
+  if (!data.token) {
+    alert("Login inválido");
+    return;
+  }
+
+  setToken(data.token);
+  iniciarPainel();
+}
+
+/* INICIAR */
+function iniciarPainel(){
+  loginBox.style.display="none";
+  painel.style.display="block";
+
+  carregarPedidos();
+  setInterval(carregarPedidos,5000);
+}
+
+/* BUSCAR */
+async function carregarPedidos(){
+  const token = getToken();
+
+  const res = await fetch(API + "/pedidos",{
+    headers:{ "Authorization":"Bearer " + token }
+  });
+
+  const response = await res.json();
+  const pedidos = response.data || [];
+
   const lista = document.getElementById("listaPedidos");
-  lista.innerHTML = "Carregando pedidos...";
+  lista.innerHTML="";
 
-  try {
-    const res = await fetch("http://localhost:3000/pedidos", {
-      headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
-    });
-    const pedidos = await res.json();
+  pedidos.forEach(p => {
 
-    if(!pedidos.length) {
-      lista.innerHTML = "<p>Nenhum pedido recebido.</p>";
-      return;
-    }
-
-    lista.innerHTML = "";
-    pedidos.forEach(pedido => {
-      const div = document.createElement("div");
-      div.className = "pedido " + (pedido.tipo === "RESERVA" ? "reserva" : "pedido");
-
-      let itensHTML = "";
-      if(pedido.itens && pedido.itens.length) {
-        pedido.itens.forEach(item => {
-          if(item.tamanhos) {
-            Object.entries(item.tamanhos).forEach(([tam,qtd]) => {
-              if(qtd>0) itensHTML += `<li>${item.produto} - ${tam} × ${qtd}</li>`;
-            });
-          }
-        });
-      } else itensHTML = "<li>—</li>";
-
-      const total = pedido.total !== undefined ? `R$ ${pedido.total}` : "—";
-      const status = pedido.status || "pendente";
-      const data = pedido.data ? new Date(pedido.data).toLocaleString() : "—";
-
-      div.innerHTML = `
-        <strong>Tipo:</strong> <span>${pedido.tipo || "PEDIDO"}</span>
-        <strong>ID:</strong> <span>${pedido.pedidoID || "—"}</span>
-        <strong>Nome:</strong> <span>${pedido.nome || "—"}</span>
-        <strong>Endereço:</strong> <span>${pedido.endereco || "—"}</span>
-        <strong>Número da casa:</strong> <span>${pedido.numeroCasa || "—"}</span>
-        <strong>Referência:</strong> <span>${pedido.referencia || "—"}</span>
-        <strong>Total:</strong> <span>${total}</span>
-        <strong>Status:</strong> <span>${status}</span>
-
-        ${pedido.tipo === "PEDIDO" ? `<button onclick="marcarPago('${pedido.pedidoID}')">💰 Marcar como pago</button>` : ""}
-        ${pedido.tipo === "RESERVA" ? `<button onclick="marcarRetirado('${pedido.pedidoID}')">✅ Marcar como retirado</button>` : ""}
-
-        <strong>Data:</strong> <span>${data}</span>
-        <div class="itens">
-          <strong>Itens:</strong>
-          <ul>${itensHTML}</ul>
-        </div>
-      `;
-      lista.appendChild(div);
+    let itensHtml = "";
+    p.itens.forEach(item=>{
+      for(const [tam,qtd] of Object.entries(item.tamanhos)){
+        itensHtml += `<div>• ${item.produto} (${tam} x ${qtd})</div>`;
+      }
     });
 
-  } catch(e) {
-    console.error(e);
-    lista.innerHTML = "Erro ao carregar pedidos.";
-  }
+    const acaoTexto =
+      p.tipo === "RESERVA"
+      ? "Marcar como retirado"
+      : "Marcar como pago";
+
+    const novoStatus =
+      p.tipo === "RESERVA"
+      ? "retirado"
+      : "pago";
+
+    const card = document.createElement("div");
+    card.className="card";
+
+    card.innerHTML = `
+      <div class="grid">
+        <div><div class="label">Tipo</div><div class="value">${p.tipo}</div></div>
+        <div><div class="label">Status</div><div class="status ${p.status}">${p.status}</div></div>
+        <div><div class="label">Nome</div><div class="value">${p.nome}</div></div>
+        <div><div class="label">Total</div><div class="value">R$ ${p.total}</div></div>
+        <div><div class="label">Endereço</div><div class="value">${p.endereco} ${p.numeroCasa}</div></div>
+        <div><div class="label">Referência</div><div class="value">${p.referencia || "-"}</div></div>
+      </div>
+
+      <div class="itens">${itensHtml}</div>
+
+      <div class="acoes">
+        <button class="btn btn-success" onclick="alterarStatus(${p.id}, '${novoStatus}')">
+          ${acaoTexto}
+        </button>
+
+        <button class="btn btn-delete" onclick="deletarPedido(${p.id})">
+          Excluir
+        </button>
+      </div>
+    `;
+
+    lista.appendChild(card);
+  });
 }
 
-async function marcarPago(pedidoID) {
-  try {
-    const res = await fetch(`http://localhost:3000/pedidos/${pedidoID}/pagar`, {
-      method: "PUT",
-      headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
-    });
-    const data = await res.json();
-    if(data.success) carregarPedidos();
-    else alert("Erro ao marcar como pago");
-  } catch(e) { console.error(e); alert("Erro ao conectar com o backend"); }
+/* STATUS */
+async function alterarStatus(id, status){
+  const token = getToken();
+
+  await fetch(API + "/pedidos/" + id + "/status",{
+    method:"PATCH",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer " + token
+    },
+    body: JSON.stringify({ status })
+  });
+
+  carregarPedidos();
 }
 
-async function marcarRetirado(pedidoID) {
-  try {
-    const res = await fetch(`http://localhost:3000/pedidos/${pedidoID}/retirar`, {
-      method: "PUT",
-      headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
-    });
-    const data = await res.json();
-    if(data.success) carregarPedidos();
-    else alert("Erro ao marcar como retirado");
-  } catch(e) { console.error(e); alert("Erro ao conectar com o backend"); }
+/* DELETE */
+async function deletarPedido(id){
+  if(!confirm("Excluir pedido?")) return;
+
+  const token = getToken();
+
+  await fetch(API + "/pedidos/" + id,{
+    method:"DELETE",
+    headers:{ "Authorization":"Bearer " + token }
+  });
+
+  carregarPedidos();
+}
+
+/* AUTO LOGIN */
+if(getToken()){
+  iniciarPainel();
 }
 </script>
 

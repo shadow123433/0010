@@ -73,7 +73,7 @@ router.post("/", auth, (req, res) => {
 // ===============================
 router.get("/meus", auth, (req, res) => {
   db.all(
-    "SELECT * FROM pedidos WHERE user_id=? ORDER BY id DESC",
+    "SELECT * FROM pedidos WHERE user_id=? AND ativo_usuario=1 ORDER BY id DESC",
     [req.user.id],
     (err, rows) => {
       if (err)
@@ -140,6 +140,28 @@ router.delete("/:id", auth, onlyAdmin, (req, res) => {
 
     res.json({ success: true });
   });
+});
+
+
+// ===============================
+// CLIENTE - OCULTAR PEDIDO (apenas para ele)
+// ===============================
+router.patch("/ocultar/:id", auth, (req, res) => {
+  db.run(
+    `UPDATE pedidos 
+     SET ativo_usuario=0 
+     WHERE pedidoID=? AND user_id=?`,
+    [req.params.id, req.user.id],
+    function (err) {
+      if (err)
+        return res.status(500).json({ error: "Erro ao ocultar pedido" });
+
+      if (this.changes === 0)
+        return res.status(404).json({ error: "Pedido não encontrado" });
+
+      res.json({ success: true });
+    }
+  );
 });
 
 module.exports = router;

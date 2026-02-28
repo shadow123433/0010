@@ -13,7 +13,16 @@ require("./database/db"); // inicializa banco
 const app = express();
 
 // Middlewares globais
-app.use(cors({ origin: "http://localhost:5500" }));
+const corsOptions = {
+  origin: [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
+  ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..")));
 
