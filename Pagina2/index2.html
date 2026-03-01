@@ -11,10 +11,23 @@
 
 <!-- MENU FORA DO CONTAINER -->
 <nav class="menu-topo">
-  <ul>
+  <ul class="menu-esquerda">
     <li><a href="../index.html">Início</a></li>
     <li><a href="#pedido-form">Carrinho</a></li>
-    <li><a href="../login-usuarios/login.html">Login</a></li>
+  </ul>
+
+  <ul class="menu-direita">
+    <li id="navLogin">
+      <a href="../login-usuarios/login.html" id="abrirLogin">Login</a>
+    </li>
+
+    <li id="navPedidos" style="display:none;">
+      <a href="../login-usuarios/meus-pedidos.html">Meus Pedidos</a>
+    </li>
+
+    <li id="navLogout" style="display:none;">
+      <a href="#" id="btnLogoutNav">Sair da conta</a>
+    </li>
   </ul>
 </nav>
 
@@ -148,22 +161,6 @@
   </div>
 </div>
 
-<div class="menu-flutuante">
-  <button id="btnPedidosMenu" class="menu-item" title="Meus Pedidos">
-    📦 <span class="badge-pedidos" style="display:none;">0</span>
-    <span class="label">Meus Pedidos</span>
-  </button>
-
-  <button id="btnLoginMenu" class="menu-item" title="Login">
-    👤
-    <span class="label">Login</span>
-  </button>
-
-  <button id="btnLogoutMenu" class="menu-item" title="Sair">
-    ⬅️
-    <span class="label">Sair da conta</span>
-  </button>
-</div>
 
 <!-- JS -->
 <script src="script.js"></script>

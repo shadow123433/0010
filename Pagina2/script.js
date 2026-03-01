@@ -1,21 +1,33 @@
-const API_URL = "http://localhost:3000"; // define pra onde vão as requisições fethch
+const API_URL = "http://localhost:3000";
 
-function getToken() {
-  return localStorage.getItem("token");
-}
+/* =========================
+   AUTH
+========================= */
+const Auth = {
+  getToken() {
+    return localStorage.getItem("token");
+  },
 
-function setToken(token) {
-  localStorage.setItem("token", token);
-}
+  setToken(token) {
+    localStorage.setItem("token", token);
+  },
 
-function logout() {
-  localStorage.removeItem("token");
-  location.reload();
-}
+  logout() {
+    // Remove token e badge de pedidos
+    localStorage.removeItem("token");
+    localStorage.removeItem("pedidosBadge");
 
-function isLogged() {
-  return !!getToken();
-}
+    // Atualiza o menu para mostrar Login novamente
+    atualizarMenu();
+
+    // Mostra notificação de logout
+    showToast("Você saiu da conta");
+  },
+
+  isLogged() {
+    return !!this.getToken();
+  }
+};
 // guarda o token enviado pelo backend após login bem-sucedido
 
 
@@ -301,34 +313,16 @@ document.body.appendChild(modal);
    FINALIZAR PEDIDO
 ========================= */
 finalizarBtn.onclick = () => {
-  // Verifica se o usuário está logado
-  if (!isLogged()) {
-
-    // Mostra alerta
-    abrirModal("Faça login👤 para prosseguir com o pedido.");
-
-    // 🔴 BOTÃO DE LOGIN DO MENU FLUTUANTE
-    const btnLoginMenu = document.getElementById("btnLoginMenu");
-
-    if (btnLoginMenu) {
-      btnLoginMenu.classList.add("pulsar-login");
-
-      // remove a animação após 3 segundos
-      setTimeout(() => {
-        btnLoginMenu.classList.remove("pulsar-login");
-      }, 3000);
-    }
-
-    return; // bloqueia finalização
+  if (!Auth.isLogged()) {
+    abrirModal("Faça login para prosseguir com o pedido.");
+    return;
   }
 
-  // Verifica se o carrinho está vazio
-  if (!window.carrinho || window.carrinho.length === 0) {
+  if (!window.carrinho.length) {
     abrirModal("Carrinho vazio");
     return;
   }
 
-  // Abre modal normalmente
   modal.style.display = "flex";
 };
 
@@ -393,7 +387,7 @@ fetch(API_URL + "/pedidos", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "Authorization": "Bearer " + getToken()
+    "Authorization": "Bearer " + Auth.getToken()
   },
   body: JSON.stringify(pedido)
 })
@@ -403,7 +397,7 @@ fetch(API_URL + "/pedidos", {
 
     if (res.status === 401) {
       abrirModal("Sessão expirada. Faça login novamente.");
-      logout();
+      Auth.logout();
       return;
     }
 
@@ -456,7 +450,7 @@ fecharPedidoModal.onclick = () => {
 };
 document.addEventListener("DOMContentLoaded", () => {
 
-  if (!isLogged()) return;
+  if (!Auth.isLogged()) return;
 
   const pedidoSalvo = sessionStorage.getItem("pedidoConfirmado");
   if (!pedidoSalvo) return;
@@ -465,8 +459,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   pedidoForm.style.display = "none";
   pedidoLoading.style.display = "none";
+  const pedidoModalConfirmacao = document.getElementById("pedido-modal-confirmacao");
+
+if (pedidoModalConfirmacao) {
   pedidoModalConfirmacao.style.display = "flex";
   document.getElementById("pedidoIdModal").textContent = pedidoID;
+}
 });
 
 
@@ -567,165 +565,10 @@ lightboxImg.addEventListener("touchend", () => {
 });
 
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  const btnPerfil = document.getElementById("btnPerfil");
-  const btnPedidos = document.getElementById("btnPedidos");
-  const dropdown = document.getElementById("userDropdown");
-  const userNome = document.getElementById("userNome");
-  const btnLogout = document.getElementById("btnLogout");
-
-  if (!btnPerfil || !dropdown) {
-    console.error("Elementos do menu não encontrados");
-    return;
-  }
-
- function atualizarUI() {
-    const token = getToken();
-
-    const btnPedidosMenu = document.getElementById('btnPedidosMenu');
-    const btnLoginMenu = document.getElementById('btnLoginMenu');
-    const btnLogoutMenu = document.getElementById('btnLogoutMenu');
-    const badge = btnPedidosMenu.querySelector(".badge-pedidos");
-    const mostrarBadge = localStorage.getItem("pedidosBadge");
-
-    if (token) {
-        btnPedidosMenu.style.display = "flex";
-        btnLogoutMenu.style.display = "flex";
-        btnLoginMenu.style.display = "none";
-
-        if (mostrarBadge === "1") {
-            badge.textContent = "1";
-            badge.style.display = "block";
-        } else {
-            badge.style.display = "none";
-        }
-    } else {
-        btnPedidosMenu.style.display = "none";
-        btnLogoutMenu.style.display = "none";
-        btnLoginMenu.style.display = "flex";
-        if (badge) badge.style.display = "none";
-    }
-}
-
-document.getElementById("btnLogoutMenu").addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("pedidosBadge");
-    atualizarUI();
-});
 
 
 
-  atualizarUI();
-
-  btnPerfil.addEventListener("click", (e) => {
-    e.stopPropagation();
-
-    if (!getToken()) {
-      sessionStorage.setItem("redirectAfterLogin", "../Pagina2/index2.html");
-      window.location.href = "../login-usuarios/login.html"; // redireciona para login
-      return;
-    }
-
-    dropdown.classList.toggle("open");
-  });
-
- btnPedidos.addEventListener("click", () => {
-
-  // 🔴 REMOVE NOTIFICAÇÃO
-localStorage.removeItem("pedidosBadge"); // 👈 CERTO
-
-  const badge = document.getElementById("badgePedidos");
-  if (badge) badge.style.display = "none";
-
-  window.location.href = "../login-usuarios/meus-pedidos.html";
-});
-
-
-btnLogout.addEventListener("click", () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("userName");
-  localStorage.removeItem("userEmail");
-  localStorage.removeItem("pedidosCount"); // 👈 LIMPA CONTADOR
-
-  // 🔴 Fecha o dropdown imediatamente
-  const dropdown = document.getElementById("userDropdown");
-  if (dropdown) dropdown.classList.remove("open");
-
-  atualizarUI();
-});
-
-
-
-  document.addEventListener("click", (e) => {
-    if (!dropdown.contains(e.target) && e.target !== btnPerfil) {
-      dropdown.classList.remove("open");
-    }
-  });
-
-});
-
-
-/* =========================
-   BONECO MENU LOGIN/PEDIDOS/Sair
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-  const btnPedidosMenu = document.getElementById("btnPedidosMenu");
-  const btnLoginMenu = document.getElementById("btnLoginMenu");
-  const btnLogoutMenu = document.getElementById("btnLogoutMenu");
-  const badge = btnPedidosMenu.querySelector(".badge-pedidos");
-
-  // Função fictícia para obter token (substituir pela sua lógica real)
-  function getToken() {
-    return localStorage.getItem("token");
-  }
-
-  // Atualiza a interface conforme autenticação
-  function atualizarUI() {
-    if (getToken()) {
-      btnLoginMenu.style.display = "none";          // esconde login
-      btnPedidosMenu.style.display = "flex";        // mostra pedidos
-      btnLogoutMenu.style.display = "flex";         // mostra logout
-
-      const mostrarBadge = localStorage.getItem("pedidosBadge");
-      if (mostrarBadge === "1") {
-        badge.textContent = "1";
-        badge.style.display = "block";
-      } else {
-        badge.style.display = "none";
-      }
-    } else {
-      btnLoginMenu.style.display = "flex";          // mostra login
-      btnPedidosMenu.style.display = "none";        // esconde pedidos
-      btnLogoutMenu.style.display = "none";         // esconde logout
-      badge.style.display = "none";
-    }
-  }
-
-  atualizarUI();
-
-  // Botão login
-  btnLoginMenu.addEventListener("click", () => {
-    window.location.href = "../login-usuarios/login.html";
-  });
-
-  // Botão pedidos
-  btnPedidosMenu.addEventListener("click", () => {
-    localStorage.removeItem("pedidosBadge");
-    atualizarUI();
-    window.location.href = "../login-usuarios/meus-pedidos.html";
-  });
-
-  // Botão sair
-  btnLogoutMenu.addEventListener("click", () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("pedidosBadge");
-    atualizarUI();
-  });
-});
-
+  
 
 function abrirModal(mensagem) {
   document.getElementById("modalMessage").innerText = mensagem;
@@ -735,3 +578,37 @@ function abrirModal(mensagem) {
 function fecharModal() {
   document.getElementById("modalOverlay").style.display = "none";
 }
+
+
+
+
+// ======= ELEMENTOS DO MENU =======
+const navLogin = document.getElementById("navLogin");
+const navPedidos = document.getElementById("navPedidos");
+const navLogout = document.getElementById("navLogout");
+const btnLogoutNav = document.getElementById("btnLogoutNav");
+
+// ======= FUNÇÃO PARA ATUALIZAR MENU =======
+function atualizarMenu() {
+  if (Auth.isLogged()) {
+    navLogin.style.display = "none";      // Esconde "Login"
+    navPedidos.style.display = "block";   // Mostra "Meus Pedidos"
+    navLogout.style.display = "block";    // Mostra "Sair da Conta"
+  } else {
+    navLogin.style.display = "block";
+    navPedidos.style.display = "none";
+    navLogout.style.display = "none";
+  }
+}
+
+// ======= LOGOUT =======
+btnLogoutNav.onclick = () => {
+  Auth.logout();       // Remove token + pedidosBadge
+  atualizarMenu();     // Atualiza menu para mostrar login novamente
+  abrirModal("Você saiu da conta");
+};
+
+// ======= ATUALIZA MENU AO CARREGAR =======
+document.addEventListener("DOMContentLoaded", () => {
+  atualizarMenu();
+});
