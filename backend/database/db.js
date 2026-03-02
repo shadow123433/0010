@@ -79,7 +79,6 @@ db.serialize(() => {
 
   console.log("✅ Banco e tabelas prontos");
 
-  
   // ===============================
   // CRIAR ADMIN PADRÃO
   // ===============================
