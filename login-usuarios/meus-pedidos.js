@@ -86,20 +86,62 @@ function carregarPedidos(token) {
           <strong>ID:</strong> ${pedido.pedidoID}<br>
           <strong>Nome:</strong> ${pedido.nome}<br>
           <strong>Total:</strong> ${total}<br>
-          <strong>Status:</strong> ${status}<br>
-          <strong>Data:</strong> ${data}
+          <strong>Status:</strong> 
+          <span class="status-${status}">${status}</span><br>
+          <strong>Data:</strong> ${data}<br>
+          <strong>Endereço:</strong> ${pedido.endereco || "—"}<br>
+          <strong>Número da casa:</strong> ${pedido.numeroCasa || "—"}<br>
+          <strong>Referência:</strong> ${pedido.referencia || "—"}
 
           <div class="itens">
             <strong>Itens:</strong>
             <ul>${itensHTML}</ul>
           </div>
 
+          ${(status === "pendente" || status === "aguardando")
+          ? `<button class="btn-cancelar">Cancelar Pedido</button>`
+          : ""}
+
           <button class="btn-ocultar">Excluir da minha conta</button>
-        `;
+          `;
 
         // ===============================
         // BOTÃO OCULTAR
         // ===============================
+        
+        const btnCancelar = div.querySelector(".btn-cancelar");
+
+if (btnCancelar) {
+  btnCancelar.onclick = () => {
+    abrirModal("Cancelar este pedido?", () => {
+
+      fetch(
+        `http://localhost:3000/pedidos/${pedido.id}/cancelar`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        }
+      )
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            abrirModal("Pedido cancelado com sucesso!");
+            carregarPedidos(token);
+          } else {
+            alert(data.error || "Erro ao cancelar pedido");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Erro ao conectar com o servidor");
+        });
+
+    });
+  };
+}
+        
         const btnOcultar = div.querySelector(".btn-ocultar");
 
        btnOcultar.onclick = () => {

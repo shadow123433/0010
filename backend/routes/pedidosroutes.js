@@ -10,5 +10,6 @@ router.get("/", auth, onlyAdmin, pedidosController.listarTodosPedidos);
 router.patch("/:id/status", auth, onlyAdmin, pedidosController.alterarStatus);
 router.delete("/:id", auth, onlyAdmin, pedidosController.deletarPedido);
 router.patch("/ocultar/:id", auth, pedidosController.ocultarPedido);
+router.patch("/:id/cancelar", auth, pedidosController.cancelarPedido);
 
 module.exports = router;

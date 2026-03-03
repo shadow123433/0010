@@ -121,6 +121,7 @@ header{
 .pago{ background:#d1e7dd; color:#0f5132; }
 .aguardando{ background:#cfe2ff; color:#084298; }
 .retirado{ background:#e2e3e5; color:#41464b; }
+.cancelado_cliente{ background:#f8d7da; color:#842029; }
 
 /* AÇÕES */
 .acoes{
@@ -296,9 +297,14 @@ async function carregarPedidos(){
     </div>
 
     <div>
-      <div class="label">Endereço</div>
-      <div class="value">${p.endereco || "-"} ${p.numeroCasa || ""}</div>
-    </div>
+  <div class="label">Endereço</div>
+  <div class="value">${p.endereco || "-"}</div>
+</div>
+
+<div>
+  <div class="label">Número da casa</div>
+  <div class="value">${p.numeroCasa || "-"}</div>
+</div>
 
     <div>
       <div class="label">Referência</div>
@@ -309,19 +315,29 @@ async function carregarPedidos(){
       <div class="itens">${itensHtml}</div>
 
       <div class="acoes">
-        <button class="btn btn-success" onclick="alterarStatus(${p.id}, '${novoStatus}')">
-          ${acaoTexto}
-        </button>
+      ${
+      p.status === "cancelado_cliente"
+      ? `<span style="color:#dc3545;font-weight:bold;">
+          Pedido cancelado pelo cliente
+        </span>`
+      : `
+        ${(p.status === "pendente" || p.status === "aguardando")
+          ? `<button class="btn btn-success" onclick="alterarStatus(${p.id}, '${novoStatus}')">
+              ${acaoTexto}
+            </button>`
+          : ""}
 
         <button class="btn btn-delete" onclick="deletarPedido(${p.id})">
           Excluir
         </button>
-      </div>
-    `;
+        `
+        }
+        </div>
+        `;
 
-    lista.appendChild(card);
-  });
-}
+        lista.appendChild(card);
+        });
+        }
 
 /* STATUS */
 async function alterarStatus(id, status){

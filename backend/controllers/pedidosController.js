@@ -134,3 +134,27 @@ exports.ocultarPedido = (req, res) => {
     }
   );
 };
+
+
+exports.cancelarPedido = (req, res) => {
+  db.get(
+    "SELECT status FROM pedidos WHERE id=? AND user_id=?",
+    [req.params.id, req.user.id],
+    (err, pedido) => {
+      if (err) return res.status(500).json({ error: "Erro interno" });
+      if (!pedido) return res.status(404).json({ error: "Pedido não encontrado" });
+
+      if (!["pendente", "aguardando"].includes(pedido.status))
+        return res.status(400).json({ error: "Pedido não pode ser cancelado" });
+
+      db.run(
+        "UPDATE pedidos SET status=? WHERE id=?",
+        ["cancelado_cliente", req.params.id],
+        function (err) {
+          if (err) return res.status(500).json({ error: "Erro ao cancelar pedido" });
+          res.json({ success: true });
+        }
+      );
+    }
+  );
+};
