@@ -1,5 +1,23 @@
 const API_URL = "http://localhost:3000";
 
+async function apiFetch(url, options = {}) {
+  const token = Auth.getToken();
+
+  options.headers = {
+    ...(options.headers || {}),
+    Authorization: token ? `Bearer ${token}` : ""
+  };
+
+  const res = await fetch(API_URL + url, options);
+
+  if (res.status === 401) {
+    Auth.logout();
+    throw new Error("Não autorizado");
+  }
+
+  return res;
+}
+
 /* =========================
    AUTH
 ========================= */
@@ -36,6 +54,23 @@ const Auth = {
 ========================= */
 window.carrinho = [];
 window.total = 0;
+function salvarCarrinho() {
+  localStorage.setItem("carrinho", JSON.stringify(window.carrinho));
+  localStorage.setItem("total", window.total);
+}
+
+
+function carregarCarrinho() { //carrega o carrinho salvo no localStorage, caso exista
+  const carrinhoSalvo = localStorage.getItem("carrinho");
+  const totalSalvo = localStorage.getItem("total");
+
+  if (carrinhoSalvo) {
+    window.carrinho = JSON.parse(carrinhoSalvo);
+    window.total = parseFloat(totalSalvo) || 0;
+    atualizarCarrinho();
+  }
+}
+
 
 function gerarPedidoID() {
   return "PED-" + Date.now().toString().slice(-6);
@@ -239,6 +274,7 @@ function addCarrinho(produto, tamanho, preco) {
   window.total += preco;
 
   atualizarCarrinho();
+  salvarCarrinho();
   abrirModal("Este item foi adicionado ao carrinho");
 }
 
@@ -281,6 +317,7 @@ function removerItem(produto, tamanho) {
   if (!Object.keys(item.tamanhos).length) window.carrinho.splice(itemIndex, 1);
 
   atualizarCarrinho();
+  salvarCarrinho();
   abrirModal("Este item foi removido do carrinho");
 }
 
@@ -313,13 +350,17 @@ document.body.appendChild(modal);
    FINALIZAR PEDIDO
 ========================= */
 finalizarBtn.onclick = () => {
-  if (!Auth.isLogged()) {
-    abrirModal("Faça login para prosseguir com o pedido.");
-    return;
-  }
 
   if (!window.carrinho.length) {
     abrirModal("Carrinho vazio");
+    return;
+  }
+
+  if (!Auth.isLogged()) {
+    // salva intenção de finalizar
+sessionStorage.setItem("redirectAfterLogin", window.location.pathname);    
+    // redireciona para login
+    window.location.href = "/login-usuarios/login.html";
     return;
   }
 
@@ -383,26 +424,16 @@ if (!pedidoModalConfirmacao) {
 const pedidoIdModal = document.getElementById("pedidoIdModal");
 const fecharPedidoModal = document.getElementById("fecharPedidoModal");
 
-fetch(API_URL + "/pedidos", {
+apiFetch("/pedidos", {
   method: "POST",
   headers: {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer " + Auth.getToken()
+    "Content-Type": "application/json"
   },
   body: JSON.stringify(pedido)
 })
 // chama o node backend/server.js, envia json, cria pedido no banco de dados
 
-  .then(res => {
-
-    if (res.status === 401) {
-      abrirModal("Sessão expirada. Faça login novamente.");
-      Auth.logout();
-      return;
-    }
-
-    return res.json();
-  }) // caso o backend negar a requisição por token inválido, força logout/novo login
+  .then(res => res.json())// converte resposta para json
 
 .then(() => {
   pedidoLoading.style.display = "none";
@@ -420,7 +451,6 @@ fetch(API_URL + "/pedidos", {
 })
 
 
-  .catch(() => abrirModal("Erro ao conectar com o servidor"));
 
 fecharPedidoModal.onclick = () => {
   // Fecha modal
@@ -429,6 +459,8 @@ fecharPedidoModal.onclick = () => {
   // Zera carrinho e total
   window.carrinho = [];
   window.total = 0;
+  localStorage.removeItem("carrinho");
+  localStorage.removeItem("total");
 
   atualizarCarrinho();
 
@@ -610,5 +642,18 @@ btnLogoutNav.onclick = () => {
 
 // ======= ATUALIZA MENU AO CARREGAR =======
 document.addEventListener("DOMContentLoaded", () => {
+
   atualizarMenu();
+  carregarCarrinho();
+
+  // Se voltou do login para finalizar
+const redirect = sessionStorage.getItem("redirectAfterLogin");
+
+if (redirect === window.location.pathname) {    sessionStorage.removeItem("redirectAfterLogin");
+
+    if (Auth.isLogged() && window.carrinho.length) {
+      modal.style.display = "flex";
+    }
+  }
+
 });

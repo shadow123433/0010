@@ -16,6 +16,8 @@ function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("userName");
   localStorage.removeItem("userEmail");
+
+  window.location.href = "/login-usuarios/login.html";
 }
 
 
@@ -201,12 +203,6 @@ function confirmarModal() {
   }
   fecharModal();
 }
-
-function fecharModal() {
-  document.getElementById("modalOverlay").style.display = "none";
-  confirmCallback = null;
-}
-
 
 
  // TOGGLE SENHA
