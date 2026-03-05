@@ -193,3 +193,45 @@ if (btnVoltar) {
     window.location.href = "../Pagina2/index2.html";
   };
 }
+
+// Variável global para armazenar o que deve ser feito ao confirmar
+let acaoAoConfirmar = null;
+
+/**
+ * Função para abrir o modal personalizado
+ * @param {string} mensagem - O texto que aparecerá no modal
+ * @param {function} callback - (Opcional) A função que será executada ao clicar em Confirmar
+ */
+function abrirModal(mensagem, callback = null) {
+    const modal = document.getElementById("modalOverlay");
+    const texto = document.getElementById("modalMessage");
+    
+    if (modal && texto) {
+        texto.innerText = mensagem;
+        modal.style.display = "flex";
+        
+        // Se passarmos uma função (callback), guardamos ela para usar no confirmarModal
+        acaoAoConfirmar = callback;
+    }
+}
+
+/**
+ * Função chamada pelo botão "Confirmar" no HTML
+ */
+window.confirmarModal = function() {
+    if (acaoAoConfirmar && typeof acaoAoConfirmar === "function") {
+        acaoAoConfirmar(); // Executa o cancelamento ou exclusão que estava pendente
+    }
+    fecharModal(); // Fecha o modal após a ação
+};
+
+/**
+ * Função chamada pelo botão "Cancelar" no HTML ou após confirmar
+ */
+window.fecharModal = function() {
+    const modal = document.getElementById("modalOverlay");
+    if (modal) {
+        modal.style.display = "none";
+        acaoAoConfirmar = null; // Limpa a ação pendente
+    }
+};
