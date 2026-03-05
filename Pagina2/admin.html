@@ -176,6 +176,16 @@ header{
 </div>
 </div>
 
+<div id="modalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:25px; border-radius:12px; text-align:center; min-width:300px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+    <h3 style="margin-top:0;">Confirmação</h3>
+    <p id="modalMessage" style="margin-bottom:20px; color:#4b5563;"></p>
+    <div style="display:flex; gap:10px; justify-content:center;">
+      <button id="btnFecharModalAviso" onclick="fecharModal()" style="padding:10px 20px; border:none; border-radius:6px; cursor:pointer; background:#e2e8f0; font-weight:600;">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = "http://localhost:3000";
 
@@ -320,33 +330,65 @@ async function carregarPedidos(){
   }
 }
 
-/* ALTERAR STATUS */
-async function alterarStatus(id, status){
-  const token = getToken();
-  try {
-    await fetch(`${API}/pedidos/${id}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-      },
-      body: JSON.stringify({ status })
-    });
-    carregarPedidos();
-  } catch (err) { alert("Erro ao atualizar status."); }
+/* FUNÇÕES DO MODAL */
+function abrirModal(mensagem) {
+    document.getElementById("modalMessage").innerText = mensagem;
+    document.getElementById("modalOverlay").style.display = "flex";
 }
 
-/* DELETAR */
-async function deletarPedido(id){
-  if(!confirm("Excluir pedido permanentemente?")) return;
-  const token = getToken();
-  try {
-    await fetch(`${API}/pedidos/${id}`, {
-      method: "DELETE",
-      headers: { "Authorization": "Bearer " + token }
-    });
-    carregarPedidos();
-  } catch (err) { alert("Erro ao deletar."); }
+function fecharModal() {
+    const modal = document.getElementById("modalOverlay");
+    const btn = document.getElementById("btnFecharModalAviso");
+    modal.style.display = "none";
+    btn.innerText = "Fechar";
+    btn.style.background = "#e2e8f0";
+    btn.style.color = "#000";
+    btn.onclick = fecharModal;
+}
+
+/* ALTERAR STATUS */
+async function alterarStatus(id, status){
+    const token = getToken();
+    try {
+        await fetch(`${API}/pedidos/${id}/status`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({ status })
+        });
+        carregarPedidos();
+    } catch (err) { 
+        abrirModal("Erro ao atualizar status."); 
+    }
+}
+
+/* DELETAR COM MODAL */
+function deletarPedido(id) {
+    abrirModal("Excluir pedido permanentemente?");
+    const btn = document.getElementById("btnFecharModalAviso");
+    btn.innerText = "Sim, Excluir";
+    btn.style.background = "#dc3545";
+    btn.style.color = "#fff";
+
+    btn.onclick = async () => {
+        const token = getToken();
+        try {
+            const res = await fetch(`${API}/pedidos/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token }
+            });
+            if (res.ok) {
+                fecharModal();
+                carregarPedidos();
+            } else {
+                abrirModal("Erro ao deletar.");
+            }
+        } catch (err) {
+            abrirModal("Erro de conexão.");
+        }
+    };
 }
 
 /* AUTO LOGIN */

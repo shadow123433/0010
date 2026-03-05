@@ -22,27 +22,56 @@
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--bg-gradiente);
-  color: #fff;
-  font-size: 16px;
-  position: relative;
-  overflow: hidden;
+/* Ajuste na base para o fundo não "quebrar" */
+html {
+    background-color: #0f172a; /* Cor de segurança (a mais escura do seu gradiente) */
 }
 
-/* efeito leve no fundo */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* Garante que o fundo ocupe toda a tela */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg-gradiente);
+    background-attachment: fixed; /* O fundo fica parado enquanto você rola */
+    color: #fff;
+    font-size: 16px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Permite scroll se o card for maior que a tela */
+}
+
+/* Brilho de fundo fixo para não criar espaços brancos */
 body::before {
-  content: "";
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(255,255,255,.08), transparent 70%);
-  top: -200px;
-  right: -200px;
+    content: "";
+    position: fixed; 
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at top right, rgba(255,255,255,.08), transparent 70%);
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@media (max-width: 480px) {
+    body {
+        /* Centraliza o card de novo, mas com espaço para respirar */
+        display: flex !important;
+        align-items: center !important; 
+        justify-content: center !important;
+        padding: 20px 15px !important;
+        min-height: 100vh !important;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 380px; /* Garante que ele não estique demais */
+        margin: auto !important; /* Ajuda o flexbox a calcular o centro */
+        padding: 40px 25px !important;
+        box-sizing: border-box !important;
+    }
 }
 
 /* ===============================
@@ -203,67 +232,61 @@ body::before {
 }
 
 /* ===============================
-   MODAL
+   MODAL - FIX DEFINITIVO (BLOQUEIO DE HERANÇA)
 =============================== */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.75);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  backdrop-filter: blur(5px);
+  position: fixed !important; /* Fixa na tela, independente do body */
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(15, 23, 42, 0.85) !important;
+  display: none; /* O JS muda para flex */
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 99999 !important; /* Acima de qualquer z-index: 1000 */
+  backdrop-filter: blur(6px) !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
 }
 
 .modal {
-  background: #ffffff;
-  color: #000;
-  padding: 30px;
-  border-radius: 16px;
-  width: 320px;
-  text-align: center;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
-  animation: aparecer 0.25s ease;
+  background: #ffffff !important;
+  padding: 30px !important;
+  border-radius: 24px !important;
+  width: 90% !important; /* Ocupa quase tudo em telas minúsculas */
+  max-width: 340px !important; /* Limite para não ficar gigante no PC */
+  text-align: center !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  
+  /* Reset de qualquer margem intrusa */
+  margin: 0 !important;
+  position: relative !important;
+  animation: surgimento 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modal h2 {
-  margin-bottom: 15px;
-  font-size: 20px;
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  margin-bottom: 10px !important;
+}
+
+.modal p {
+  color: #475569 !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
 }
 
 .modal button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 10px;
-  background: var(--azul-principal);
-  color: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  transition: .2s;
-}
-
-.modal button:hover {
-  background: var(--azul-escuro);
-  transform: translateY(-2px);
-}
-
-/* ===============================
-   RESPONSIVO
-=============================== */
-@media (max-width: 500px) {
-  .login-container {
-    padding: 35px 25px;
-  }
-
-  .login-container h1 {
-    font-size: 24px;
-  }
-
-  .login-container button {
-    font-size: 16px;
-  }
+  width: 100% !important;
+  margin-top: 20px !important;
+  padding: 15px !important;
+  background: #2563eb !important; /* Azul principal */
+  color: #fff !important;
+  border-radius: 14px !important;
+  font-weight: 700 !important;
+  border: none !important;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3) !important;
 }
 
 /* ===============================
@@ -358,4 +381,32 @@ body::before {
     25% { margin-left: 0.5rem; }
     75% { margin-left: -0.5rem; }
     100% { margin-left: 0rem; }
+}
+
+
+/* Estado Normal/Foco (Azul) */
+input {
+    border: 1px solid #ccc; /* Cor padrão */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+    border-color: #007bff !important; /* Azul de foco */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2) !important;
+    outline: none;
+}
+
+/* Estado de Erro (Vermelho) - Sobrescreve o azul */
+input.input-error {
+    border: 2px solid #ff4d4d !important;
+    background-color: rgba(255, 77, 77, 0.05) !important;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.3) !important;
+    animation: shake 0.4s ease-in-out !important;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-3px); }
 }

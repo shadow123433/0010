@@ -59,34 +59,52 @@ if (loginForm) {
             });
 
             const data = await res.json();
+               if (!res.ok) {
+                // Limpa o erro de ambos antes de decidir qual marcar
+                emailInput.classList.remove('input-error');
+                senhaInput.classList.remove('input-error');
 
-            if (!res.ok) {
-                if (res.status === 401) {
+                if (res.status === 404) {
+                    // ERRO SÓ NO EMAIL: E-mail não cadastrado
                     emailInput.classList.add('input-error');
+                    // O campo de senha permanece normal (azul no foco)
+                } else if (res.status === 401) {
+                    // ERRO SÓ NA SENHA: E-mail existe, mas a senha está incorreta
                     senhaInput.classList.add('input-error');
-                    abrirModal("E-mail ou senha incorretos.");
-                } else if (res.status === 404) {
-                    emailInput.classList.add('input-error');
-                    abrirModal("Este e-mail não está cadastrado.");
+                    // O campo de e-mail permanece normal/azul
                 } else {
-                    abrirModal(data.error || "Erro ao realizar login.");
+                    // Outros erros: Marca o e-mail por padrão
+                    emailInput.classList.add('input-error');
                 }
+
+                const mensagemServidor = data.message || data.error || data.msg;
+                let mensagemFinal = mensagemServidor;
+
+                if (!mensagemServidor) {
+                    if (res.status === 404) mensagemFinal = "Este e-mail não está cadastrado.";
+                    else if (res.status === 401) mensagemFinal = "Senha incorreta.";
+                    else mensagemFinal = "Erro ao realizar login.";
+                }
+
+                abrirModal(mensagemFinal);
                 return;
             }
 
+            // =====================
             // SUCESSO
+            // =====================
             setToken(data.token);
-            const nomeExibicao = (data.user && data.user.nome) || data.nome || "Usuário";
             
-            if (data.user) {
-                localStorage.setItem("userName", data.user.nome);
-                localStorage.setItem("userEmail", data.user.email);
-            }
+            const usuario = data.user || data; // Adapta caso o user venha dentro de um objeto ou direto
+            const nomeExibicao = usuario.nome || "Usuário";
+            
+            localStorage.setItem("userName", nomeExibicao);
+            localStorage.setItem("userEmail", usuario.email || "");
 
-            // AVISO PARA A PÁGINA 2: Abrir checkout automaticamente
+            // Aviso para o Checkout na Página 2
             localStorage.setItem("abrirModalCheckout", "true");
 
-            abrirModal(`Bem-vindo de volta, ${nomeExibicao}! Redirecionando para o seu pedido...`);
+            abrirModal(`Bem-vindo de volta, ${nomeExibicao}! Redirecionando...`);
 
             setTimeout(() => {
                 const redirect = sessionStorage.getItem("redirectAfterLogin");

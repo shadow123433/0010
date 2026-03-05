@@ -45,12 +45,16 @@ exports.login = (req, res) => {
   const { email, senha } = req.body;
 
   db.get("SELECT * FROM users WHERE email=?", [email], async (err, user) => {
-    if (!user)
-      return res.status(401).json({ error: "Credenciais inválidas" });
+    // 1. Se o usuário não existe, retorna 404
+    if (!user) {
+      return res.status(404).json({ error: "Este e-mail não está cadastrado" });
+    }
 
+    // 2. Se o usuário existe, mas a senha está errada, retorna 401
     const ok = await bcrypt.compare(senha, user.password_hash);
-    if (!ok)
-      return res.status(401).json({ error: "Credenciais inválidas" });
+    if (!ok) {
+      return res.status(401).json({ error: "Senha incorreta" });
+    }
 
     const token = jwt.sign(
       { id: user.id, role: user.role },

@@ -1448,50 +1448,71 @@ body {
 
 
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.75);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important; /* vh/vw garantem o tamanho total da tela */
+  height: 100vh !important;
+  background: rgba(15, 23, 42, 0.85) !important;
+  display: none; /* JS muda para flex */
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 99999 !important; /* Valor bem alto para ignorar o card */
+  backdrop-filter: blur(5px);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .modal {
-  background: #ffffff;
-  color: #000;
-  padding: 30px;
-  border-radius: 12px;
-  width: 320px;
+  background: #ffffff !important;
+  color: #000 !important;
+  padding: 25px !important;
+  border-radius: 20px !important;
+  
+  /* MUDANÇA ESSENCIAL PARA CELULAR */
+  width: 100% !important;
+  max-width: 320px !important; 
+  margin: auto !important; /* Garante centralização extra */
+  
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  animation: aparecer 0.3s ease;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  animation: aparecer 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-sizing: border-box;
 }
 
 .modal h2 {
-  margin-bottom: 15px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.modal p {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #475569;
 }
 
 .modal button {
+  width: 100%; /* No celular, botão largo é muito melhor */
   margin-top: 20px;
-  padding: 10px 20px;
+  padding: 14px 0;
   border: none;
-  border-radius: 8px;
-  background: #38BDF8;
+  border-radius: 12px;
+  background: #2563eb;
   color: #fff;
   cursor: pointer;
   font-weight: bold;
+  font-size: 16px;
+  transition: transform 0.2s;
 }
 
-.modal button:hover {
-  background: #0EA5E9;
+.modal button:active {
+  transform: scale(0.95);
 }
 
 @keyframes aparecer {
-  from { transform: scale(0.9); opacity: 0; }
+  from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
