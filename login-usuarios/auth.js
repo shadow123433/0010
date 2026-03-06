@@ -95,11 +95,11 @@ if (loginForm) {
             // =====================
             setToken(data.token);
             
-            const usuario = data.user || data; // Adapta caso o user venha dentro de um objeto ou direto
-            const nomeExibicao = usuario.nome || "Usuário";
-            
+            // Pegamos o nome que agora vem dentro de data.user
+            const nomeExibicao = data.user?.nome || "Usuário";
+
             localStorage.setItem("userName", nomeExibicao);
-            localStorage.setItem("userEmail", usuario.email || "");
+            localStorage.setItem("userEmail", data.user?.email || "");
 
             // Aviso para o Checkout na Página 2
             localStorage.setItem("abrirModalCheckout", "true");
@@ -165,7 +165,7 @@ if (registerForm) {
                 if (erroMsg.includes("nome")) nomeInput.classList.add('input-error');
                 if (erroMsg.includes("senha")) senhaInput.classList.add('input-error');
                 abrirModal(data.error || "Erro ao cadastrar.");
-                return;
+                return;  //permite os campos ficarem vermelho se caso um estiver errado.
             }
 
             // SUCESSO

@@ -62,7 +62,14 @@ exports.login = (req, res) => {
       { expiresIn: "8h" }
     );
 
-    res.json({ token, role: user.role });
+    res.json({ 
+    token, 
+    role: user.role,
+    user: {
+        nome: user.nome, // Enviando o nome que está no banco de dados
+        email: user.email
+    }
+});
   });
 };
 
