@@ -1,11 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
 
-  // Se não estiver logado
-  if (!token) {
+ if (!token) {
+  abrirModal("Você precisa fazer login para acessar seus pedidos.", () => {
     window.location.href = "../login-usuarios/login.html";
-    return;
-  }
+  });
+  return;
+}
 
   carregarPedidos(token);
 });
@@ -25,9 +26,11 @@ function carregarPedidos(token) {
   })
     .then(res => {
       if (res.status === 401) {
-        localStorage.removeItem("token");
-        window.location.href = "../login-usuarios/login.html";
-        throw new Error("Sessão expirada");
+    localStorage.removeItem("token");
+    abrirModal("Sua sessão expirou. Faça login novamente.", () => {
+     window.location.href = "../login-usuarios/login.html";
+     });
+     throw new Error("Sessão expirada");
       }
       return res.json();
     })
@@ -126,16 +129,15 @@ if (btnCancelar) {
           }
         }
       )
-       .then(data => {
-     if (data.success) {
-     // Abre como aviso (sem callback)
-     abrirModal("Pedido cancelado com sucesso!");
-     carregarPedidos(token);
-     } else {
-      // Joga o erro do back-end (Pedido não pode ser cancelado) no modal
-      abrirModal(data.error || "O cancelamento só é permitido para pedidos com status 'Pendente' ou 'Aguardando'.");
-     }
-     })
+      .then(res => res.json()) // converte para JSON primeiro
+.then(data => {
+    if (data.success) {
+        abrirModal("Pedido cancelado com sucesso!");
+        carregarPedidos(token);
+    } else {
+        abrirModal(data.error || "O cancelamento só é permitido para pedidos com status 'Pendente' ou 'Aguardando'.");
+    }
+})
         .catch(err => {
           console.error(err);
           alert("Erro ao conectar com o servidor");

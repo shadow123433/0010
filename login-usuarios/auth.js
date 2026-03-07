@@ -7,10 +7,12 @@ const getToken = () => localStorage.getItem("token");
 const setToken = (token) => localStorage.setItem("token", token);
 
 function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userEmail");
-    window.location.href = "/login-usuarios/login.html";
+    abrirModal("Token expirado, faça login novamente", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userEmail");
+        window.location.href = "/login-usuarios/login.html";
+    });
 }
 
 // =====================
