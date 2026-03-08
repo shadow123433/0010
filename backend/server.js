@@ -38,9 +38,9 @@ app.use(express.static(path.join(__dirname, "..")));
 // ===============================
 // Rotas da API
 // ===============================
-app.use("/auth", authRoutes);
-app.use("/pedidos", pedidosRoutes);
-
+app.use("/auth", authRoutes);   //authroutes.js
+app.use("/pedidos", pedidosRoutes); //pedidosroutes.js
+// essas duas linhas sao o gatilho para as rotas funcionarem, tudo aqui e enviado para a pasta routes.
 
 
 

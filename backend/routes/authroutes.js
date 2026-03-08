@@ -8,5 +8,6 @@ const { auth } = require("../middlewares/auth");
 router.post("/register", authController.register);
 router.post("/login", authController.login);
 router.get("/me", auth, authController.me);
+// aqui sao as rotas de api somente, a logica dessas rotas vao ser feitas na pasta controllers.
 
 module.exports = router;
