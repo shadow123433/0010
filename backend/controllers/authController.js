@@ -95,4 +95,4 @@ exports.me = (req, res) => {
     id: req.user.id,
     role: req.user.role
   });
-};
+};      //o navegador manda uma req, e eu envio uma resposta com base no banco de dados, se for admin ou usuario.
