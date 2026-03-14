@@ -1,6 +1,8 @@
 # Sistema de Pedidos
 
-Aplicação web full stack desenvolvida para gerenciamento de pedidos, com autenticação de usuários e integração entre frontend, backend e banco de dados.
+Aplicação web **Full Stack** desenvolvida para gerenciamento de pedidos, com autenticação de usuários e integração entre frontend, backend e banco de dados.
+
+---
 
 ## Tecnologias utilizadas
 
@@ -10,6 +12,8 @@ Aplicação web full stack desenvolvida para gerenciamento de pedidos, com auten
 - HTML
 - CSS
 - Banco de dados SQL
+
+---
 
 ## Funcionalidades
 
@@ -21,25 +25,39 @@ Aplicação web full stack desenvolvida para gerenciamento de pedidos, com auten
 - Exclusão de pedidos
 - API REST para comunicação entre cliente e servidor
 
+---
+
 ## Estrutura do projeto
 
-/frontend → Interface da aplicação  
-/backend → Servidor e API  
-/database → Estrutura do banco de dados  
+```
+/frontend   → Interface da aplicação
+/backend    → Servidor e API
+/database   → Estrutura do banco de dados
+```
+
+---
 
 ## Como executar o projeto
 
 Clone o repositório:
 
+```bash
 git clone https://github.com/shadow123433/0010.git
+```
 
 Entre na pasta do projeto:
 
+```bash
 cd 0010
+```
 
 Instale as dependências:
 
+```bash
 npm install
+```
+
+---
 
 ## Variáveis de ambiente
 
@@ -47,14 +65,22 @@ Este projeto utiliza um arquivo `.env` para armazenar configurações sensíveis
 
 Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
+```
 PORT=3000
 ADMIN_PASSWORD=admin123
 ADMIN_EMAIL=admin@gmail.com
 JWT_SECRET=sua_chave_secreta
+```
 
-Inicie o servidor:
+---
 
+## Iniciar o servidor
+
+```bash
 node server
+```
+
+---
 
 ## Objetivo do projeto
 
