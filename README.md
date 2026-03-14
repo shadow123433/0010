@@ -51,7 +51,13 @@ Entre na pasta do projeto:
 cd school-uniform-order-system
 ```
 
-Instale as dependências:
+Entre na pasta backend:
+
+```bash
+cd backend
+```
+
+Instale as dependências dentro da pasta backend:
 
 ```bash
 npm install
