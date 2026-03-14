@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const { PORT } = require("./config/env");
+require("dotenv").config(); // Carrega as variáveis do painel da Render
+const JWT_SECRET = process.env.JWT_SECRET || "chave_mestra_local"; // Define a chave global
 
 const authRoutes = require("./routes/authroutes");
 const pedidosRoutes = require("./routes/pedidosroutes");
