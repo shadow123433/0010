@@ -48,7 +48,7 @@ git clone https://github.com/shadow123433/school-uniform-order-system.git
 Entre na pasta do projeto:
 
 ```bash
-cd 0010
+cd school-uniform-order-system
 ```
 
 Instale as dependências:
