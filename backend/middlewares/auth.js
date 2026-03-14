@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
-const env = require("../config/env");
 const db = require("../database/db"); 
 
-const JWT_SECRET = env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "chave_mestra_local";
 
 function auth(req, res, next) {   // porteiro que identifica o cliente, verificando se ele tem um token válido para acessar as rotas protegidas. Ele verifica se o client forneceu um token JWT no cabeçalho de autorização da requisição, e se o token for válido, ele decodifica o token e adiciona as informações do usuário à requisição para que as rotas possam usar essas informações para autorizar o acesso. Se o token for inválido ou expirado, ele retorna uma resposta de erro com status 401 e uma mensagem indicando que o token é inválido ou expirado.
   const header = req.headers.authorization; // porteiro pede o token JWT que o cliente deve fornecer no cabeçalho de autorização da requisição. O token é uma string que o cliente recebe após fazer login e que deve ser incluída em todas as requisições subsequentes para acessar rotas protegidas. O middleware "auth" verifica se o token está presente e é válido antes de permitir o acesso às rotas protegidas, garantindo que apenas usuários autenticados possam acessar essas rotas.
