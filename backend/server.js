@@ -1,17 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const { PORT } = require("./config/env");
-require("dotenv").config(); // Carrega as variáveis do painel da Render
-const JWT_SECRET = process.env.JWT_SECRET || "chave_mestra_local"; // Define a chave global
+// Puxamos PORT e JWT_SECRET já configurados pela "inteligência" do env.js
+const { PORT, JWT_SECRET } = require("./config/env"); 
 
 const authRoutes = require("./routes/authroutes");
 const pedidosRoutes = require("./routes/pedidosroutes");
 
-require("./database/db"); // Inicializa o banco ao subir o servidor
+require("./database/db"); 
 
-const app = express(); //coração do server, sem isso a framework nao funciona.
-
+const app = express();
 
 // ===============================
 // CORS
@@ -20,32 +18,27 @@ const corsOptions = {
   origin: [
     "http://localhost:5500",
     "http://127.0.0.1:5500",
-    "https://school-uniform-order-system.onrender.com" // minha url da render
+    "https://school-uniform-order-system.onrender.com" 
   ],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], //metodos que o sistema vai aceitar.
-  allowedHeaders: ["Content-Type", "Authorization"]  // cabeçalhos permitidos, incluindo o Authorization para tokens JWT, permite que o usuario entre com o tokem jwt.
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 };
 
-app.use(cors(corsOptions)); // Permite que o front-end acesse a API sem problemas de CORS, garantindo que apenas os domínios especificados possam fazer requisições.
-
+app.use(cors(corsOptions));
 
 // ===============================
 // Middlewares Globais
 // ===============================
-app.use(express.json()); // Permite que o Express entenda JSON no corpo das requisições
+app.use(express.json());
 
-// Servir arquivos do front (coloque seu front na pasta /public)
+// Serve arquivos do front-end
 app.use(express.static(path.join(__dirname, "..")));
-
 
 // ===============================
 // ENDEREÇO DAS ROTAS DE API
 // ===============================
-app.use("/auth", authRoutes);   //authroutes.js
-app.use("/pedidos", pedidosRoutes); //pedidosroutes.js
-// essas duas linhas sao o gatilho para as rotas funcionarem, tudo aqui e enviado para a pasta routes.
-
-
+app.use("/auth", authRoutes);
+app.use("/pedidos", pedidosRoutes);
 
 // ===============================
 // Middleware de erro global
@@ -55,15 +48,16 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     error: "Erro interno do servidor"
   });
-});   // se der algum erro no servidor, ele cai aqui e mostra a mensagem de erro, evitando que o servidor quebre.
-
+});
 
 // ===============================
 // Inicialização do servidor
 // ===============================
-// A Render define a porta automaticamente, se não houver, usa 10000
+// A Render prioriza process.env.PORT, se não houver, usa a do env.js ou 10000
 const runningPort = process.env.PORT || PORT || 10000;
 
 app.listen(runningPort, "0.0.0.0", () => {
   console.log(`Servidor rodando na porta ${runningPort}`);
+  // Log de segurança para você ver no console se a chave está presente
+  console.log("JWT_SECRET carregado:", JWT_SECRET ? "SIM ✅" : "NÃO ❌");
 });

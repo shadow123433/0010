@@ -1,20 +1,20 @@
 const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../../.env")
-});
+const fs = require("fs");
 
-const required = ["JWT_SECRET", "ADMIN_EMAIL", "ADMIN_PASSWORD"]; // Removi o PORT daqui
+// Caminho para o seu arquivo .env local
+const envPath = path.resolve(__dirname, "../../.env");
 
-required.forEach((key) => {
-  if (!process.env[key]) {
-    console.warn(`AVISO: ${key} não definido nas variáveis de ambiente!`);
-    // Removido o process.exit(1) para não derrubar o servidor na Render
-  }
-});
+// Só tenta carregar o arquivo se ele realmente existir (evita erro na Render)
+if (fs.existsSync(envPath)) {
+  require("dotenv").config({ path: envPath });
+} else {
+  // Na Render, apenas inicializa o dotenv padrão
+  require("dotenv").config();
+}
 
 module.exports = {
-  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_SECRET: process.env.JWT_SECRET || "chave_mestra_local",
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
-  PORT: process.env.PORT || 10000 // A Render usa 10000 por padrão
+  PORT: process.env.PORT || 10000
 };
