@@ -41,6 +41,17 @@ Instale as dependências:
 
 npm install
 
+## Variáveis de ambiente
+
+Este projeto utiliza um arquivo `.env` para armazenar configurações sensíveis.
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+PORT=3000
+ADMIN_PASSWORD=admin123
+ADMIN_EMAIL=admin@gmail.com
+JWT_SECRET=sua_chave_secreta
+
 Inicie o servidor:
 
 node server
