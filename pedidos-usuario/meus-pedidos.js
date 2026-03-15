@@ -1,3 +1,14 @@
+// Verifica se a API_URL já foi definida para evitar o erro de "already declared"
+if (typeof API_URL === 'undefined') {
+    window.API_URL = (
+      window.location.hostname === "localhost" || 
+      window.location.hostname === "127.0.0.1" || 
+      window.location.protocol === "file:"
+    ) 
+    ? "http://localhost:3000" 
+    : "https://school-uniform-order-system.onrender.com";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
 
@@ -18,7 +29,7 @@ function carregarPedidos(token) {
   const lista = document.getElementById("listaPedidos");
   lista.innerHTML = "Carregando pedidos...";
 
-  fetch("http://localhost:3000/pedidos/meus", {
+  fetch(`${API_URL}/pedidos/meus`, {
     method: "GET",
     headers: {
       Authorization: "Bearer " + token
@@ -121,7 +132,7 @@ if (btnCancelar) {
     abrirModal("Cancelar este pedido?", () => {
 
       fetch(
-        `http://localhost:3000/pedidos/${pedido.id}/cancelar`,
+        `${API_URL}/pedidos/${pedido.id}/cancelar`,
         {
           method: "PATCH",
           headers: {
@@ -153,7 +164,7 @@ if (btnCancelar) {
   abrirModal("Excluir este pedido da sua conta?", () => {
 
     fetch(
-      `http://localhost:3000/pedidos/ocultar/${pedido.id}`,
+      `${API_URL}/pedidos/ocultar/${pedido.id}`,
       {
         method: "PATCH",
         headers: {
