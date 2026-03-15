@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 const db = require("../database/db"); 
 
-const JWT_SECRET = process.env.JWT_SECRET || "chave_mestra_local";
+
+const { JWT_SECRET } = require("../config/env");
+
 
 function auth(req, res, next) {
   const header = req.headers.authorization;

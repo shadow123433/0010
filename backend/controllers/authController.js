@@ -1,8 +1,10 @@
-const db = require("../database/db"); //importando banco de dados juntamente com o arquivo db.js
+const db = require("../database/db"); 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET || "chave_mestra_local";
+// AQUI ESTÁ A CHAVE PARA O SUCESSO:
+const { JWT_SECRET } = require("../config/env");
+
 
 // ===============================
 // REGISTER
