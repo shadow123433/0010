@@ -35,7 +35,9 @@ async function carregarPedidos(){
     });
 
     if (res.status === 401 || res.status === 403) {
-      logout();
+      console.error("Acesso negado pelo servidor. Verifique o console para detalhes.");
+      // logout(); // Comentado para você não ser expulso enquanto debugamos
+      alert("Erro de permissão: O servidor não te reconhece como Admin.");
       return;
     }
 
